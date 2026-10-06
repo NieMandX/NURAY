@@ -81,7 +81,7 @@ fn meshPath(origin:vec3f,direction:vec3f)->vec3f {
 @compute @workgroup_size(8,8)
 fn meshMain(@builtin(global_invocation_id) gid:vec3u){
   let size=vec2u(u.viewport.xy);if any(gid.xy>=size){return;}
-  let index=gid.x+gid.y*size.x;var mean=vec3f(0);
+  let index=gid.x+gid.y*size.x;var mean=vec3f(0);var fresh=vec3f(0);
   if u.viewport.z>0{mean=meshAccumulation[index].rgb;}
   for(var sample=0u;sample<u32(u.render.x);sample++){
     rng=(index*1973u+(u32(u.viewport.w)+sample)*9277u+89173u)|1u;
@@ -89,6 +89,8 @@ fn meshMain(@builtin(global_invocation_id) gid:vec3u){
     let rd=normalize(u.forward.xyz+u.right.xyz*uv.x*(u.viewport.x/u.viewport.y)*u.right.w-u.up.xyz*uv.y*u.right.w);
     let value=meshPath(u.camera.xyz,rd);let count=u.viewport.z+f32(sample);
     mean=(mean*count+value)/(count+1);
+    fresh+=value;
   }
   meshAccumulation[index]=vec4f(mean,1);
+  if u.render.z>.5 {meshAccumulation[index+size.x*size.y]=vec4f(fresh/u.render.x,1);}
 }

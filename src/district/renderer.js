@@ -1,18 +1,18 @@
-import {GpuTimer} from '../gpu-timer.js';
+import {GpuTimer} from '../gpu-timer.js?v=temporal-1';
 import {makeMaterials,TEXTURE_SIZE,textureBytes} from './materials.js';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from './math.js?v=city-2';
-import {MeshTracer} from './tracer.js?v=mesh-cascades-1';
+import {MeshTracer} from './tracer.js?v=temporal-1';
 import {loadCityMaterials} from './city-materials.js?v=nuray-cloud-1';
 import {identityTransform} from './bvh.js';
 import {cityManifest} from './city-config.js?v=nuray-cloud-1';
-import {renderSize} from './resolution.js';
+import {renderSize} from './resolution.js?v=temporal-1';
 export const cameraDefaults=()=>({yaw:.64,pitch:.78,distance:160,target:[0,3,0]});
 const vertexLayout={arrayStride:32,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'snorm16x2'},{shaderLocation:2,offset:16,format:'float32x2'},{shaderLocation:3,offset:24,format:'uint32'}]};
 const median=values=>{const a=[...values].sort((x,y)=>x-y);return a[Math.floor(a.length/2)];};
 export class DistrictRenderer {
   constructor(canvas,onStatus,onError){
     this.canvas=canvas;this.onStatus=onStatus;this.onError=onError;
-    this.camera=cameraDefaults();this.state={materials:15,textures:true,culling:true,shadows:true,engine:'trace',indirect:true,bounces:8,ior:1.5,pixels:180000,exposure:1.03};this.sceneName='district';
+    this.camera=cameraDefaults();this.state={materials:15,textures:true,culling:true,shadows:true,engine:'trace',reconstruction:true,indirect:true,bounces:8,ior:1.5,pixels:180000,exposure:1.03};this.sceneName='district';
     this.tracer=new MeshTracer(this);
     this.chunks=[];this.revision=0;this.inFlight=0;this.running=false;this.ready=false;this.loading=false;
     this.lastTime=0;this.frameMs=16.7;this.lastStatus=0;this.stats={triangles:0,vertices:0,geometryBytes:0,textureBytes:0,buildMs:0,uploadMs:0,submitted:0,draws:0};
@@ -53,7 +53,7 @@ export class DistrictRenderer {
   }
   resize(){
     if(!this.device)return;const r=this.canvas.getBoundingClientRect();
-    const {width,height,limited}=renderSize(r.width,r.height,devicePixelRatio,this.state.pixels,this.device.limits);
+    const {width,height,limited}=renderSize(r.width,r.height,devicePixelRatio,this.state.pixels,this.device.limits,this.state.reconstruction?48:32);
     this.resolutionLimited=limited;this.pixelRatio=devicePixelRatio;
     if(width===this.canvas.width&&height===this.canvas.height&&this.depth)return;
     this.canvas.width=width;this.canvas.height=height;this.depth?.destroy();
@@ -209,7 +209,7 @@ export class DistrictRenderer {
   publish(force=false){
     const now=performance.now();if(!force&&now-this.lastStatus<200)return;this.lastStatus=now;
     this.onStatus({...this.stats,gpu:this.gpu,shadowMs:this.shadowMs,frameMs:this.frameMs,timer:!!this.timer?.enabled,
-      resolutionLimited:!!this.resolutionLimited,ready:this.ready,loading:this.loading,phase:this.phase,progress:this.progress??0,targetTriangles:this.plannedTriangles,width:this.canvas.width,height:this.canvas.height,materials:this.state.materials,engine:this.state.engine,samples:this.tracer.samples,sampleLimit:this.tracer.limit,cacheSamples:this.tracer.cache.samples,cacheLimit:this.tracer.cache.limit,cacheVersion:this.tracer.cache.version,cacheUpdates:this.tracer.cache.updates,cacheMs:this.tracer.cache.ms,cacheBytes:this.tracer.cache.bytes,pathMs:this.tracer.pathMs,batch:this.tracer.batch,cacheSpan:this.tracer.cache.field?.size[0]});
+      resolutionLimited:!!this.resolutionLimited,ready:this.ready,loading:this.loading,phase:this.phase,progress:this.progress??0,targetTriangles:this.plannedTriangles,width:this.canvas.width,height:this.canvas.height,materials:this.state.materials,engine:this.state.engine,samples:this.tracer.samples,sampleLimit:this.tracer.limit,cacheSamples:this.tracer.cache.samples,cacheLimit:this.tracer.cache.limit,cacheVersion:this.tracer.cache.version,cacheUpdates:this.tracer.cache.updates,cacheMs:this.tracer.cache.ms,cacheBytes:this.tracer.cache.bytes,reconstructionMs:this.tracer.reconstruction.ms,guideMs:this.tracer.reconstruction.guideMs,reconstructionBytes:this.tracer.reconstruction.bytes,reconstructionVersion:this.tracer.reconstruction.version,pathMs:this.tracer.pathMs,batch:this.tracer.batch,cacheSpan:this.tracer.cache.field?.size[0]});
   }
   resetCamera(){this.camera=this.sceneName==='moscow'?{yaw:.45,pitch:.95,distance:this.city.extentMetres*11/6,target:[0,20,0]}:cameraDefaults();}
   focus(id,material){

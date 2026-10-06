@@ -1,4 +1,4 @@
-import {DistrictRenderer} from './renderer.js?v=mesh-cascades-1';
+import {DistrictRenderer} from './renderer.js?v=temporal-1';
 const $=id=>document.getElementById(id);const number=n=>n.toLocaleString('ru-RU');
 const mib=n=>`${(n/1048576).toFixed(1)} МиБ`;const milliseconds=n=>n===null||n===undefined?'—':`${n.toFixed(2)} мс`;
 let busy=false,benchmarking=false,stopRequested=false;let triangles=1000000,scene='moscow';
@@ -16,6 +16,11 @@ const renderer=new DistrictRenderer($('district-scene'),s=>{
   $('cache-memory').textContent=mib(s.cacheBytes??0);
   $('path-time').textContent=s.timer?milliseconds(s.pathMs||null):'недоступно';
   $('trace-batch').textContent=s.batch;
+  $('reconstruction-status').hidden=!renderer.state.reconstruction;
+  $('reconstruction-time').textContent=s.timer?milliseconds(s.reconstructionMs||null):'недоступно';
+  $('guide-time').textContent=s.timer?milliseconds(s.guideMs||null):'недоступно';
+  $('reconstruction-memory').textContent=mib(s.reconstructionBytes??0);
+  $('accumulation-note').textContent=renderer.state.reconstruction?'новых сэмплов в этом ракурсе · история проверяется по поверхности':'камера сбрасывает накопление';
   $('cache-state').textContent=!renderer.state.indirect?'Непрямой свет выключен':s.cacheSamples>=s.cacheLimit?'Кэш готов · вращение камеры сохраняет его':'Прогрев кэша освещения…';
   $('build-time').textContent=`${(s.buildMs/1000).toFixed(2)} с`;$('upload-time').textContent=milliseconds(s.uploadMs);$('shadow-time').textContent=milliseconds(s.shadowMs);
   $('footer-triangles').textContent=number(s.triangles);$('footer-materials').textContent=s.materials;$('gpu-time').textContent=s.timer?milliseconds(s.gpu):'недоступно';
@@ -42,6 +47,7 @@ $('engine').onchange=async e=>{
   lock(true);renderer.ready=false;renderer.resize();syncEngine();
   try{await load(triangles);}catch(e){if(!stopRequested)error(e.message);}finally{lock(false);stopRequested=false;}
 };
+$('reconstruction').onchange=e=>{renderer.state.reconstruction=e.target.checked;renderer.tracer.reset();renderer.resize();renderer.publish(true);};
 $('trace-quality').onchange=e=>{renderer.state.pixels=Number(e.target.value);renderer.resize();};
 $('trace-bounces').onchange=e=>{renderer.state.bounces=Number(e.target.value);};
 $('glass-ior').onchange=e=>{renderer.state.ior=Number(e.target.value);};
