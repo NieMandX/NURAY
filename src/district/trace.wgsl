@@ -56,8 +56,8 @@ fn traceHouse(descriptor:u32,ro:vec3f,rd:vec3f,inv:vec3f,previous:MeshHit,anyHit
   }
   return hit;
 }
-fn traceMesh(ro:vec3f,rd:vec3f,anyHit:bool)->MeshHit {
-  let inv=inverseRay(rd);var hit=emptyMeshHit();var node=0u;
+fn traceMeshLimit(ro:vec3f,rd:vec3f,anyHit:bool,limit:f32)->MeshHit {
+  let inv=inverseRay(rd);var hit=emptyMeshHit();hit.t=limit;var node=0u;
   while node<meshScene[0] {
     let o=4u+node*8u;let length=meshScene[o+7u];let first=meshScene[o+3u];
     let lo=bitcast<vec3f>(vec3u(meshScene[o],meshScene[o+1u],meshScene[o+2u]));
@@ -69,12 +69,14 @@ fn traceMesh(ro:vec3f,rd:vec3f,anyHit:bool)->MeshHit {
         let lr=localRay(d,ro,1);let ld=localRay(d,rd,0);
         hit=traceHouse(d,lr,ld,inverseRay(ld),hit,anyHit);
       }else{hit=traceHouse(d,ro,rd,inv,hit,anyHit);}
-      if anyHit&&hit.t<INF{return hit;}
+      if anyHit&&hit.t<limit{return hit;}
     }
     node++;
   }
+  if hit.t>=limit {return emptyMeshHit();}
   return hit;
 }
+fn traceMesh(ro:vec3f,rd:vec3f,anyHit:bool)->MeshHit {return traceMeshLimit(ro,rd,anyHit,INF);}
 struct Surface { color:vec3f,rough:f32,metal:f32,ior:f32,kind:u32,normal:vec3f };
 fn meshSurface(hit:MeshHit,travel:f32)->Surface {
   let packed=word(hit.page,hit.a+6u);let kind=packed&15u;let seed=packed>>4u;let count=u32(u.settings.x);
@@ -130,50 +132,4 @@ fn sampleSky()->vec3f {
     return basis(u.light.xyz)*vec3f(r*cos(angle),r*sin(angle),z);
   }
   let z=random()*2-1;let a=random()*2*PI;let r=sqrt(max(0.0,1-z*z));return vec3f(r*cos(a),z,r*sin(a));
-}
-fn meshPath(origin:vec3f,direction:vec3f)->vec3f {
-  var ro=origin;var rd=direction;var radiance=vec3f(0);var beta=vec3f(1);var inside=false;
-  var etaScale=1.0;var delta=true;var lastPdf=0.0;var travel=0.0;
-  for(var bounce=0u;bounce<u32(u.glass.w);bounce++){
-    let hit=traceMesh(ro,rd,false);
-    if hit.t>=INF {
-      var weight=1.0;if !delta {weight=powerHeuristic(lastPdf,skyPdf(rd));}
-      radiance+=beta*meshSky(rd)*weight;break;
-    }
-    travel+=hit.t;if inside {beta*=exp(-vec3f(.28,.055,.16)*hit.t);}
-    let p=ro+rd*hit.t;let m=meshSurface(hit,travel);let front=dot(rd,m.normal)<0;let n=select(-m.normal,m.normal,front);let wo=-rd;
-    if m.kind==4u {
-      let eta=select(1.0/m.ior,m.ior,front);let F=fresnelDielectric(max(0.0,dot(wo,n)),eta);
-      if random()<F {rd=reflect(rd,n);}
-      else {rd=refract(rd,n,1.0/eta);beta/=eta*eta;etaScale*=eta*eta;inside=front;}
-      ro=p+rd*EPS*2.0;delta=true;
-    }else{
-      let wi=sampleSky();let cosine=max(0.0,dot(n,wi));
-      if cosine>0.0&&traceMesh(p+n*EPS*2.0,wi,true).t>=INF {
-        let pdf=skyPdf(wi);var w=powerHeuristic(pdf,meshPdf(m,n,wo,wi));
-        if (u.settings.y<.5&&m.metal<.5)||bounce+1u>=u32(u.glass.w) {w=1.0;}
-        radiance+=beta*meshBrdf(m,n,wo,wi)*meshSky(wi)*cosine*w/pdf;
-      }
-      if u.settings.y<.5&&m.metal<.5 {break;}
-      var next=vec3f(0);if random()<select(.25,1.0,m.metal>.5){next=sampleGgx(n,wo,max(.002,m.rough*m.rough));}else{next=cosineDirection(n);}
-      let pdf=meshPdf(m,n,wo,next);if pdf<1e-10||dot(n,next)<=0 {break;}
-      beta*=meshBrdf(m,n,wo,next)*max(0.0,dot(n,next))/pdf;
-      ro=p+n*EPS*2.0;rd=next;lastPdf=pdf;delta=false;
-    }
-    if bounce>=4u {
-      let rr=beta*etaScale;let survival=clamp(max(rr.x,max(rr.y,rr.z)),.05,.95);
-      if random()>survival {break;}beta/=survival;
-    }
-  }
-  return max(radiance,vec3f(0));
-}
-@compute @workgroup_size(8,8)
-fn meshMain(@builtin(global_invocation_id) gid:vec3u){
-  let size=vec2u(u.viewport.xy);if any(gid.xy>=size){return;}
-  let index=gid.x+gid.y*size.x;rng=(index*1973u+u32(u.viewport.w)*9277u+89173u)|1u;
-  let uv=(vec2f(gid.xy)+vec2f(random(),random()))/u.viewport.xy*2-1;
-  let rd=normalize(u.forward.xyz+u.right.xyz*uv.x*(u.viewport.x/u.viewport.y)*u.right.w-u.up.xyz*uv.y*u.right.w);
-  let value=meshPath(u.camera.xyz,rd);var mean=value;
-  if u.viewport.z>0 {mean=(meshAccumulation[index].rgb*u.viewport.z+value)/(u.viewport.z+1);}
-  meshAccumulation[index]=vec4f(mean,1);
 }

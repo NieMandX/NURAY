@@ -1,7 +1,7 @@
 import {GpuTimer} from '../gpu-timer.js';
 import {makeMaterials,TEXTURE_SIZE,textureBytes} from './materials.js';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from './math.js?v=city-2';
-import {MeshTracer} from './tracer.js';
+import {MeshTracer} from './tracer.js?v=mesh-cascades-1';
 import {loadCityMaterials} from './city-materials.js?v=nuray-cloud-1';
 import {identityTransform} from './bvh.js';
 import {cityManifest} from './city-config.js?v=nuray-cloud-1';
@@ -79,7 +79,7 @@ export class DistrictRenderer {
     this.device.queue.submit([encoder.finish()]);
     this.bindRaster();
     this.state.materials=count;this.stats.textureBytes=textureBytes(count)+data.byteLength;
-    await this.device.queue.onSubmittedWorkDone();this.tracer.bind();this.changing=false;this.publish(true);
+    await this.device.queue.onSubmittedWorkDone();this.tracer.cache.invalidate();this.tracer.bind();this.changing=false;this.publish(true);
   }
   setInstances(data){
     this.instanceBuffer?.destroy();this.instanceBuffer=this.device.createBuffer({size:data.byteLength,usage:GPUBufferUsage.STORAGE,mappedAtCreation:true});
@@ -146,13 +146,13 @@ export class DistrictRenderer {
         }
         if(data.type==='done'){
           worker.terminate();this.worker=null;this.buildReject=null;this.loading=false;this.ready=true;this.shadowDirty=true;
-          if(this.state.engine==='trace')this.tracer.bind();
+          if(this.state.engine!=='raster')this.tracer.bind();
           this.stats.buildMs=data.elapsed;this.lastTime=0;this.publish(true);resolve();
         }
         if(data.type==='error')abort(new Error(data.message));
         }catch(error){abort(error);}
       };
-      this.phase=city?'Читаем Москва-Сити':'Собираем геометрию';worker.postMessage({type:'build',triangles,trace:this.state.engine==='trace',limit:this.pageLimit,scene:city?this.city:undefined});
+      this.phase=city?'Читаем Москва-Сити':'Собираем геометрию';worker.postMessage({type:'build',triangles,trace:this.state.engine!=='raster',limit:this.pageLimit,scene:city?this.city:undefined});
     });
   }
   cancelBuild(){
@@ -174,7 +174,7 @@ export class DistrictRenderer {
     if(document.hidden){this.lastTime=0;this.cancelMeasurement('Вкладка скрыта; повторите замер в активной вкладке.');return;}
     if(this.pixelRatio!==devicePixelRatio)this.resize();
     if(!this.ready||this.changing||this.inFlight>=2)return;
-    if(this.state.engine==='trace'){this.tracer.frame(time);return;}
+    if(this.state.engine!=='raster'){this.tracer.frame(time);return;}
     const dt=this.lastTime?time-this.lastTime:16.7;this.lastTime=time;this.frameMs=this.frameMs*.92+dt*.08;
     const matrix=this.matrices();const chunks=this.state.culling?this.chunks.filter(c=>(this.sceneName!=='moscow'&&c.id===48)||visible(c.bounds,matrix)):this.chunks;
     this.stats.submitted=chunks.reduce((n,c)=>n+c.triangles*c.instanceCount,0);this.stats.draws=chunks.length;
@@ -192,7 +192,7 @@ export class DistrictRenderer {
     this.device.queue.onSubmittedWorkDone().then(()=>{this.inFlight--;if(!this.timer.enabled)this.collect(null,{revision:this.revision,dt});}).catch(e=>{if(this.running)this.fail(e.message);});
     this.publish();
   }
-  timing(times,meta){if(meta.revision!==this.revision)return;if(meta.trace){this.gpu=times.path+times.display;return;}this.gpu=times.geometry??null;if(times.shadow)this.shadowMs=times.shadow;this.collect(times.geometry,meta);}
+  timing(times,meta){if(meta.revision!==this.revision)return;if(meta.trace){this.gpu=times.total;this.tracer.recordTiming(times,meta);return;}this.gpu=times.geometry??null;if(times.shadow)this.shadowMs=times.shadow;this.collect(times.geometry,meta);}
   collect(gpu,meta){
     const m=this.measurement;if(!m||m.revision!==meta.revision)return;
     if(m.warm-->0)return;
@@ -209,7 +209,7 @@ export class DistrictRenderer {
   publish(force=false){
     const now=performance.now();if(!force&&now-this.lastStatus<200)return;this.lastStatus=now;
     this.onStatus({...this.stats,gpu:this.gpu,shadowMs:this.shadowMs,frameMs:this.frameMs,timer:!!this.timer?.enabled,
-      resolutionLimited:!!this.resolutionLimited,ready:this.ready,loading:this.loading,phase:this.phase,progress:this.progress??0,targetTriangles:this.plannedTriangles,width:this.canvas.width,height:this.canvas.height,materials:this.state.materials,engine:this.state.engine,samples:this.tracer.samples,sampleLimit:this.tracer.limit});
+      resolutionLimited:!!this.resolutionLimited,ready:this.ready,loading:this.loading,phase:this.phase,progress:this.progress??0,targetTriangles:this.plannedTriangles,width:this.canvas.width,height:this.canvas.height,materials:this.state.materials,engine:this.state.engine,samples:this.tracer.samples,sampleLimit:this.tracer.limit,cacheSamples:this.tracer.cache.samples,cacheLimit:this.tracer.cache.limit,cacheVersion:this.tracer.cache.version,cacheUpdates:this.tracer.cache.updates,cacheMs:this.tracer.cache.ms,cacheBytes:this.tracer.cache.bytes,pathMs:this.tracer.pathMs,batch:this.tracer.batch,cacheSpan:this.tracer.cache.field?.size[0]});
   }
   resetCamera(){this.camera=this.sceneName==='moscow'?{yaw:.45,pitch:.95,distance:this.city.extentMetres*11/6,target:[0,20,0]}:cameraDefaults();}
   focus(id,material){
