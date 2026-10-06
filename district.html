@@ -1,0 +1,64 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#151819"><title>NURAY · Москва-Сити — WebGPU</title><link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./district.css?v=city-2"></head>
+<body class="district">
+  <header><h1>NURAY</h1><nav><a href="./materials.html">Сферы</a><span aria-current="page">Квартал</span></nav><span id="device-status">WebGPU</span></header>
+  <main>
+    <section class="viewport" aria-label="Сцена Москва-Сити">
+      <canvas id="district-scene" tabindex="0" aria-label="Городская сцена. Перетаскивайте для вращения, Shift для перемещения, колесо для приближения."></canvas>
+      <p class="scene-caption">Москва-Сити · 5 × 5 км · 2GIS</p><p class="view-badge" id="view-label">Общий план</p>
+      <p class="hint">Перетаскивание — камера <span>·</span> Shift — сдвиг <span>·</span> Колесо — масштаб</p>
+      <div id="loading" role="status"><span class="loader"></span><p id="load-label">Подготавливаем квартал…</p><progress id="load-progress" max="1"></progress><button id="cancel-load" hidden>Отменить сборку</button></div>
+      <div id="error" role="alert" hidden></div>
+    </section>
+    <aside aria-label="Эксперимент с большой сценой">
+      <fieldset id="settings">
+        <section class="controls-section">
+          <h2>Движок</h2>
+          <label class="batch-control" for="engine">Рендерер<select id="engine"><option value="trace" selected>Наш трассировщик</option><option value="raster">Растеризация</option></select></label>
+          <p id="engine-note" class="small-note">Лучевые отражения, преломление и непрямой свет. Изображение уточняется до 256 spp.</p>
+          <label class="batch-control" for="trace-quality">Разрешение<select id="trace-quality"><option value="90000">Быстро · 90 тыс.</option><option value="180000" selected>180 тыс. пикселей</option><option value="360000">Чётко · 360 тыс.</option><option value="720000">720 тыс. пикселей</option><option value="0">Максимум · размер окна</option></select></label>
+          <div id="trace-controls">
+            <label class="batch-control" for="trace-bounces">Глубина луча<select id="trace-bounces"><option value="4">4</option><option value="8" selected>8</option><option value="12">12</option></select></label>
+            <label class="toggle-row" for="indirect">Непрямой свет<input id="indirect" type="checkbox" checked role="switch"><span class="switch"></span></label>
+            <label class="batch-control" for="glass-ior">IOR стекла<select id="glass-ior"><option value="1">1.0 · без преломления</option><option value="1.5" selected>1.5</option><option value="1.8">1.8</option></select></label>
+            <p class="small-note">Накоплено <strong id="trace-samples">0 / 256 spp</strong> · камера сбрасывает накопление</p>
+            <button id="trace-restart" class="reset">Начать накопление заново</button>
+          </div>
+        </section>
+        <section class="controls-section">
+          <h2>Сцена</h2>
+          <label class="batch-control" for="scene-choice">Источник<select id="scene-choice"><option value="moscow" selected>Москва-Сити · 5 × 5 км</option><option value="district">Тестовый квартал</option></select></label>
+          <p id="city-note" class="small-note">Реальная геометрия 2GIS из Blender. Оригинальные текстуры фасадов, PBR-покрытия и экземпляры деревьев.</p>
+          <div id="synthetic-controls" hidden>
+          <div class="segmented budgets" aria-label="Число треугольников"><button data-triangles="1000000" aria-pressed="true">1 млн</button><button data-triangles="5000000" aria-pressed="false">5 млн</button><button data-triangles="17000000" aria-pressed="false">17 млн</button></div>
+          <p class="mode-note">Один квартал, три уровня детализации. Все треугольники хранятся на GPU.</p>
+          <label class="batch-control" for="material-count">Материалов<select id="material-count"><option value="1">1 · серый</option><option value="15" selected>15</option><option value="200">200</option></select></label>
+          </div>
+          <label class="batch-control" for="exposure">Экспозиция <select id="exposure"><option value="0.5">−1 EV</option><option value="0.72" selected>−0.47 EV</option><option value="1.03">0 EV</option><option value="1.4">+0.49 EV</option></select></label>
+          <label class="toggle-row" for="textures">Текстуры<input id="textures" type="checkbox" checked role="switch"><span class="switch"></span></label>
+          <label class="toggle-row" for="culling">Отсечение невидимого<input id="culling" type="checkbox" checked role="switch"><span class="switch"></span></label>
+          <label class="toggle-row" for="shadows">Тени<input id="shadows" type="checkbox" checked role="switch"><span class="switch"></span></label>
+        </section>
+        <section class="controls-section materials">
+          <h2 id="focus-title">Рассмотреть сцену</h2>
+          <div class="material-picks" id="city-picks"><button data-city-focus="0">Башни Сити</button><button data-city-focus="1">Набережная</button><button data-city-focus="2">Вид сверху</button></div>
+          <div id="synthetic-picks" hidden>
+          <p class="material-note">Приблизиться к дому с этим материалом</p>
+          <div class="material-picks">
+            <button data-focus="45" data-name="Кирпич"><i style="--swatch:#a45d44"></i>Кирпич</button><button data-focus="43" data-name="Бетон"><i style="--swatch:#b5b5ad"></i>Бетон</button><button data-focus="44" data-name="Камень"><i style="--swatch:#bbb2a0"></i>Камень</button><button data-focus="44" data-name="Стекло"><i style="--swatch:#92bbb8"></i>Стекло</button><button data-focus="45" data-name="Медь"><i style="--swatch:#c88960"></i>Медь</button><button data-focus="46" data-name="Сталь"><i style="--swatch:#75818a"></i>Сталь</button><button data-focus="47" data-name="Алюминий"><i style="--swatch:#c3d0d6"></i>Алюминий</button>
+          </div>
+          </div><button id="overview" class="reset">Вся сцена</button>
+        </section>
+        <section class="controls-section metrics-section">
+          <h2>Нагрузка</h2><dl class="metrics"><dt>Уникальные треугольники</dt><dd id="resident">—</dd><dt id="submitted-label">Доступно лучам</dt><dd id="submitted">—</dd><dt id="draws-label">Вызовы отрисовки</dt><dd id="draws">—</dd><dt>Геометрия</dt><dd id="geometry-memory">—</dd><dt>BVH</dt><dd id="bvh-memory">—</dd><dt>Текстуры и материалы</dt><dd id="texture-memory">—</dd><dt>Подготовка сцены</dt><dd id="build-time">—</dd><dt>Создание GPU-буферов¹</dt><dd id="upload-time">—</dd><dt>Тень при обновлении</dt><dd id="shadow-time">—</dd></dl>
+          <p class="small-note">¹ Время CPU. Геометрия: вершины и индексы. Эти числа не включают всю память браузера.</p>
+        </section>
+      </fieldset>
+      <button id="benchmark" class="benchmark">Сравнить 6 вариантов</button><button id="stop-benchmark" class="reset" hidden>Остановить сравнение</button>
+      <p id="benchmark-note" class="small-note">1 / 5 / 17 млн × 1 / 200 материалов. Камера фиксируется; отсечение отключается.</p>
+      <div id="benchmark-results" hidden><table><thead><tr><th>Млн</th><th>Мат.</th><th>GPU, мс</th><th>Кадр, мс</th></tr></thead><tbody id="results-body"></tbody></table><p class="small-note">Медиана 48 кадров после прогрева. GPU — основной проход; статическая карта теней считается отдельно.</p></div>
+      <details><summary>Что проверяет эксперимент</summary><p id="city-summary">Москва-Сити: участок 5 × 5 км из исходного Blender-проекта 2GIS. Геометрия не упрощена. Деревья и городские объекты используют общие сетки.</p><p>Цвета исходных атласов сохранены и переведены из sRGB в линейный свет. PBR-параметры покрытий назначены отдельно. Атласы 2GIS местами содержат запечённое освещение: это приближение материалов, не измеренные сканы. Фасады башен не содержат интерьеров и отдельных объёмов окон, поэтому используют непрозрачный PBR с отражением, без фиктивного преломления через целую башню.</p><p>Два режима: растеризация и наш WebGPU path tracer с программным BVH. Точное число индексированных треугольников; кирпич и кровля имеют геометрический рельеф. Все дома доступны вторичным лучам, включая дома за камерой.</p><p>11 семейств: кирпич, бетон, камень, стекло, медь, сталь, алюминий, черепица, дерево, асфальт и штукатурка. 15 и 200 — варианты их параметров и текстур.</p><p>Три карты 128 × 128 на материал. Трассировщик использует цвет, шероховатость и геометрическую нормаль; искусственный AO не добавляется. Текстуры сканированных материалов большого разрешения здесь не проверяются.</p><p>В трассировщике стёкла — замкнутые объёмы: Френель, Snell, внутреннее отражение и поглощение. Окна имеют проёмы. Отражения и преломления пересекают реальную геометрию. Каустики сходятся медленно; денойзера нет. В растеризации остаётся приближённое стекло с отражением окружения.</p><p>Освещение трассировщика: небо и солнечный диск, MIS, до 4 / 8 / 12 взаимодействий. Radiance Cascades для сеток пока не подключены. Лимит накопления 256 spp не гарантирует отсутствие шума.</p><p id="timer-note">GPU-таймер проверяется…</p></details>
+    </aside>
+  </main>
+  <footer><span>Треугольники <strong id="footer-triangles">—</strong></span><span>GPU <strong id="gpu-time">—</strong></span><span>FPS <strong id="fps">—</strong></span><span>Материалы <strong id="footer-materials">15</strong></span><span id="resolution">—</span></footer>
+  <script type="module" src="./src/district/app.js?v=nuray-cloud-1"></script>
+</body></html>

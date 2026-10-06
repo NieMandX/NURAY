@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#151819">
+  <title>Light study — WebGPU</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header><h1>Light study</h1><a href="./district.html" style="margin-left:24px;margin-right:auto;color:var(--accent);font-size:12px;text-decoration:none">Квартал →</a><span id="device-status">WebGPU</span></header>
+  <main>
+    <section class="viewport" aria-label="Интерактивная 3D-сцена">
+      <canvas id="scene" aria-label="Стеклянная, каменная и металлическая сферы. Перетаскивайте для вращения камеры, Shift и перетаскивание для движения света." tabindex="0"></canvas>
+      <p class="scene-caption">Стекло, камень, металл</p>
+      <p class="hint">Перетаскивание — камера <span>·</span> Shift — свет <span>·</span> Колесо — масштаб</p>
+      <div id="loading" role="status"><span class="loader"></span><p>Подготавливаем свет…</p></div>
+      <div id="error" role="alert" hidden></div>
+    </section>
+    <aside aria-label="Настройки сцены">
+      <section class="controls-section">
+        <h2>Освещение</h2>
+        <div class="segmented" aria-label="Метод рендеринга">
+          <button id="path-mode" aria-pressed="true">Path tracing</button><button id="cascade-mode" aria-pressed="false">Каскады</button>
+        </div>
+        <p class="mode-note" id="mode-note">Многократные отражения и преломления.</p>
+        <p class="cache-note" id="cache-status" hidden></p>
+        <label class="toggle-row" for="indirect">Непрямой свет<input id="indirect" type="checkbox" checked role="switch"><span class="switch"></span></label>
+        <label class="toggle-row" for="animate">Движение света<input id="animate" type="checkbox" role="switch"><span class="switch"></span></label>
+        <div class="range-control"><label for="light-x">Положение <output id="light-x-value">0.00</output></label><input id="light-x" type="range" min="-1.7" max="1.7" step="0.01" value="0"></div>
+        <div class="range-control"><label for="light-y">Высота <output id="light-y-value">3.85</output></label><input id="light-y" type="range" min="2.7" max="4.05" step="0.01" value="3.85"></div>
+        <div class="range-control"><label for="power">Мощность <output id="power-value">18.0</output></label><input id="power" type="range" min="0" max="36" step="0.1" value="18"></div>
+      </section>
+      <section class="controls-section materials">
+        <h2>Материалы</h2>
+        <div class="range-control"><label for="ior">Стекло <span>· IOR</span><output id="ior-value">1.50</output></label><input id="ior" type="range" min="1.01" max="2.4" step="0.01" value="1.5"></div>
+        <div class="range-control"><label for="metal">Металл <span>· шероховатость</span><output id="metal-value">0.18</output></label><input id="metal" type="range" min="0.04" max="0.85" step="0.01" value="0.18"></div>
+        <div class="range-control"><label for="stone">Камень <span>· шероховатость</span><output id="stone-value">0.75</output></label><input id="stone" type="range" min="0.08" max="1" step="0.01" value="0.75"></div>
+        <div class="material-legend"><span><i class="glass-dot"></i>Стекло</span><span><i class="stone-dot"></i>Гранит</span><span><i class="metal-dot"></i>Медь</span></div>
+      </section>
+      <button id="reset" class="reset">Сбросить сцену</button>
+      <details id="performance-details"><summary>Производительность</summary>
+        <label class="batch-control" for="batch">Сэмплы за кадр<select id="batch"><option value="0">Авто</option><option value="1">1</option><option value="2">2</option><option value="4">4</option><option value="8">8</option></select></label>
+        <p id="gpu-note">Подготавливаем GPU-таймер…</p>
+        <p>Точность таймера зависит от браузера. Ноль также может означать время меньше его точности.</p>
+        <dl class="metrics"><dt>Трассировка</dt><dd id="gpu-path">—</dd><dt>Каскады</dt><dd id="gpu-cascade">—</dd><dt>Свёртка света</dt><dd id="gpu-irradiance">—</dd><dt>Вывод</dt><dd id="gpu-display">—</dd><dt>Интервал кадров</dt><dd id="present-time">—</dd><dt>Сэмплы кэша</dt><dd id="cache-count">—</dd><dt>Версия освещения</dt><dd id="cache-revision">—</dd><dt>Обновления кэша</dt><dd id="cache-updates">—</dd></dl>
+      </details>
+      <details><summary>Как это считается</summary><p>Path tracing: GGX, уравнения Френеля, закон Снеллиуса, поглощение в стекле, MIS и до 20 взаимодействий луча.</p><p>Каскады: четыре уровня пространственных проб. Приближение первого диффузного отскока. Стекло и металл продолжают трассироваться.</p><p>Свет усредняется за 256 обновлений и сохраняется при движении камеры. Изменение света или материалов запускает накопление заново. При готовности кэша история изображения сбрасывается один раз. Фиксированный бюджет не гарантирует исчезновения всего шума.</p><p>RGB-модель без спектральной дисперсии. Каустики требуют накопления сэмплов. Камень — процедурный материал.</p></details>
+    </aside>
+  </main>
+  <footer><span>Сэмплы <strong id="samples">—</strong></span><span title="Сумма времени вычислительных проходов и вывода на GPU">GPU <strong id="frame-time">—</strong></span><span>За кадр <strong id="batch-size">—</strong></span><span>Режим <strong id="mode-label">Path tracing</strong></span><span id="resolution">—</span></footer>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
