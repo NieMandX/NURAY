@@ -1,4 +1,4 @@
-import {DistrictRenderer} from './renderer.js?v=nuray-cloud-1';
+import {DistrictRenderer} from './renderer.js?v=mesh-cascades-1';
 const $=id=>document.getElementById(id);const number=n=>n.toLocaleString('ru-RU');
 const mib=n=>`${(n/1048576).toFixed(1)} МиБ`;const milliseconds=n=>n===null||n===undefined?'—':`${n.toFixed(2)} мс`;
 let busy=false,benchmarking=false,stopRequested=false;let triangles=1000000,scene='moscow';
@@ -7,27 +7,39 @@ const renderer=new DistrictRenderer($('district-scene'),s=>{
   $('resident').textContent=number(s.triangles);$('submitted').textContent=number(s.submitted);$('draws').textContent=s.draws;
   $('geometry-memory').textContent=mib(s.geometryBytes);$('texture-memory').textContent=mib(s.textureBytes);
   $('bvh-memory').textContent=mib(s.bvhBytes??0);$('trace-samples').textContent=`${s.samples} / ${s.sampleLimit} spp`;
-  $('device-status').textContent=s.engine==='trace'?'WebGPU · наш трассировщик':'WebGPU · растеризация';
+  $('device-status').textContent=s.engine==='cascade'?'WebGPU · каскады':s.engine==='trace'?'WebGPU · наш трассировщик':'WebGPU · растеризация';
+  $('cache-progress').textContent=renderer.state.indirect?`${s.cacheSamples} / ${s.cacheLimit}`:'выключен';
+  $('cache-version').textContent=s.cacheVersion;
+  $('cache-updates').textContent=s.cacheUpdates;
+  $('cache-area').textContent=s.cacheSpan?`${s.cacheSpan} м`:'—';
+  $('cache-time').textContent=s.timer?milliseconds(s.cacheMs):'недоступно';
+  $('cache-memory').textContent=mib(s.cacheBytes??0);
+  $('path-time').textContent=s.timer?milliseconds(s.pathMs||null):'недоступно';
+  $('trace-batch').textContent=s.batch;
+  $('cache-state').textContent=!renderer.state.indirect?'Непрямой свет выключен':s.cacheSamples>=s.cacheLimit?'Кэш готов · вращение камеры сохраняет его':'Прогрев кэша освещения…';
   $('build-time').textContent=`${(s.buildMs/1000).toFixed(2)} с`;$('upload-time').textContent=milliseconds(s.uploadMs);$('shadow-time').textContent=milliseconds(s.shadowMs);
   $('footer-triangles').textContent=number(s.triangles);$('footer-materials').textContent=s.materials;$('gpu-time').textContent=s.timer?milliseconds(s.gpu):'недоступно';
-  $('fps').textContent=s.engine==='trace'&&s.samples>=s.sampleLimit?'готово':s.ready?(1000/s.frameMs).toFixed(0):'—';$('resolution').textContent=`${s.width} × ${s.height}${s.resolutionLimited?' · лимит GPU':''}`;
-  $('draws').textContent=s.engine==='trace'?'compute':s.draws;$('shadow-time').textContent=s.engine==='trace'?'лучевые':milliseconds(s.shadowMs);
+  $('fps').textContent=s.engine!=='raster'&&s.samples>=s.sampleLimit?'готово':s.ready?(1000/s.frameMs).toFixed(0):'—';$('resolution').textContent=`${s.width} × ${s.height}${s.resolutionLimited?' · лимит GPU':''}`;
+  $('draws').textContent=s.engine!=='raster'?'compute':s.draws;$('shadow-time').textContent=s.engine!=='raster'?'лучевые':milliseconds(s.shadowMs);
   $('timer-note').textContent=s.timer?'Время GPU измерено timestamp-query; короткие проходы могут округляться браузером. FPS учитывает интервал кадров и ограничивается частотой экрана.':'GPU-таймер недоступен: сравнение покажет только интервалы кадров. Числа GPU не подменяются временем CPU.';
   if(s.loading){$('loading').hidden=false;$('load-label').textContent=`${s.phase??'Собираем'} · ${number(s.targetTriangles)} треугольников · ${Math.round(s.progress*100)}%`;$('load-progress').value=s.progress;$('cancel-load').hidden=false;}
   else if(s.ready){$('loading').hidden=true;$('cancel-load').hidden=true;}
 },error);
-function lock(value){busy=value;$('settings').disabled=value;$('benchmark').disabled=value||renderer.state.engine==='trace'||scene==='moscow';}
+function lock(value){busy=value;$('settings').disabled=value;$('benchmark').disabled=value||renderer.state.engine!=='raster'||scene==='moscow';}
 function syncEngine(){
-  const trace=renderer.state.engine==='trace';$('engine').value=renderer.state.engine;
+  const trace=renderer.state.engine!=='raster',cascade=renderer.state.engine==='cascade';$('cascade-status').hidden=!cascade;$('engine').value=renderer.state.engine;
   $('trace-controls').hidden=!trace;$('culling').disabled=trace;$('shadows').disabled=trace;
   document.querySelector('label[for="culling"]').hidden=trace;document.querySelector('label[for="shadows"]').hidden=trace;
   $('submitted-label').textContent=trace?'Доступно лучам':'Отправлено в кадре';
-  $('engine-note').textContent=trace?'Наш путь света: отражения, преломление и непрямой свет. Изображение уточняется до 256 spp.':'Растеризация с PBR и картой теней. Быстрое сравнение геометрической нагрузки.';
-  $('benchmark').disabled=busy||trace||scene==='moscow';$('benchmark-note').textContent=scene==='moscow'?'Счётчик памяти показывает уникальные сетки; доступные лучам треугольники учитывают все экземпляры.':trace?'Сравнение 6 вариантов доступно в режиме растеризации. Здесь GPU показывает время одного нового сэмпла на пиксель и вывода.':'1 / 5 / 17 млн × 1 / 200 материалов. Камера фиксируется; отсечение отключается.';
+  $('engine-note').textContent=cascade?'Непрямой рассеянный свет из каскадов. Отражения и стекло — лучами. Экспериментальный режим.':trace?'Наш путь света: отражения, преломление и непрямой свет. Изображение уточняется до 256 spp.':'Растеризация с PBR и картой теней. Быстрое сравнение геометрической нагрузки.';
+  $('benchmark').disabled=busy||trace||scene==='moscow';$('benchmark-note').textContent=scene==='moscow'?'Счётчик памяти показывает уникальные сетки; доступные лучам треугольники учитывают все экземпляры.':trace?'Сравнение 6 вариантов доступно в режиме растеризации. Время одного сэмпла показано отдельно от обновления кэша и вывода.':'1 / 5 / 17 млн × 1 / 200 материалов. Камера фиксируется; отсечение отключается.';
   $('benchmark-results').hidden=trace||!$('results-body').children.length;
 }
 $('engine').onchange=async e=>{
-  if(busy)return;lock(true);renderer.ready=false;renderer.state.engine=e.target.value;renderer.resize();syncEngine();
+  if(busy)return;
+  const old=renderer.state.engine,next=e.target.value;renderer.state.engine=next;
+  if(old!=='raster'&&next!=='raster'){renderer.tracer.reset();syncEngine();renderer.publish(true);return;}
+  lock(true);renderer.ready=false;renderer.resize();syncEngine();
   try{await load(triangles);}catch(e){if(!stopRequested)error(e.message);}finally{lock(false);stopRequested=false;}
 };
 $('trace-quality').onchange=e=>{renderer.state.pixels=Number(e.target.value);renderer.resize();};
@@ -35,6 +47,7 @@ $('trace-bounces').onchange=e=>{renderer.state.bounces=Number(e.target.value);};
 $('glass-ior').onchange=e=>{renderer.state.ior=Number(e.target.value);};
 $('indirect').onchange=e=>{renderer.state.indirect=e.target.checked;};
 $('trace-restart').onclick=()=>renderer.tracer.reset();
+$('cache-restart').onclick=()=>{renderer.tracer.cache.invalidate();renderer.tracer.reset();};
 $('exposure').onchange=e=>{renderer.state.exposure=Number(e.target.value);};
 $('scene-choice').onchange=async e=>{
   if(busy)return;scene=e.target.value;lock(true);syncScene();

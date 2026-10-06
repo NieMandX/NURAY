@@ -2,3 +2,4 @@
 #settings>.controls-section:nth-child(2){margin-top:26px;padding-top:23px;border-top:1px solid var(--line)}
 
 .district .batch-control select{min-width:0;max-width:190px;flex:1}.district .batch-control{gap:12px}.district #scene-choice{max-width:185px}
+.district label[for="engine"]{display:block}.district #engine{display:block;width:100%;max-width:none;margin-top:8px}
