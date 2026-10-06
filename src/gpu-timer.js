@@ -5,9 +5,9 @@ export class GpuTimer {
     this.enabled=device.features.has('timestamp-query');this.disposed=false;
     this.slots=this.enabled?Array.from({length:3},()=>({
       busy:false,
-      queries:device.createQuerySet({type:'timestamp',count:14}),
-      resolve:device.createBuffer({size:112,usage:GPUBufferUsage.QUERY_RESOLVE|GPUBufferUsage.COPY_SRC}),
-      read:device.createBuffer({size:112,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ}),
+      queries:device.createQuerySet({type:'timestamp',count:32}),
+      resolve:device.createBuffer({size:256,usage:GPUBufferUsage.QUERY_RESOLVE|GPUBufferUsage.COPY_SRC}),
+      read:device.createBuffer({size:256,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ}),
     })):[];
   }
   begin(meta) {
