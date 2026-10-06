@@ -6,11 +6,19 @@ Choose **Каскады · эксперимент** in the renderer selector. Sw
 
 The mesh cascade mode uses four spatial/angular levels (16×8×16 probes / 16 directions at the finest level), bounded ray intervals, six directional irradiance lobes, and a 16-update warm-up. Its roughly 1.1 MiB cache survives camera orbit, exposure and image-resolution changes. Changing the region, geometry, textures, materials or lighting rebuilds it. Cached queries use a bounded visibility ray; unsupported points fall back to path tracing. Direct sky/sun, metal reflections and glass paths still use actual rays. Both ray modes use adaptive batches of up to eight samples within the GPU time budget.
 
-This is a biased approximation of the first diffuse bounce, not a converged full-light-transport solution: coarse probes may miss small features and leak light during interval interpolation. The speedup depends on the view, geometry and fallback rate; warm-up has an additional cost. No denoiser or temporal image reprojection is implemented. The UI reports GPU time per sample separately from cache-update time; footer GPU time includes all passes in the submitted frame.
+This is a biased approximation of the first diffuse bounce, not a converged full-light-transport solution: coarse probes may miss small features and leak light during interval interpolation. The speedup depends on the view, geometry and fallback rate; warm-up has an additional cost. Optional temporal reprojection and edge-aware denoising are enabled by default in both ray modes; turn off **Стабилизация и шумоподавление** to inspect the original progressive estimator. The UI reports GPU time per sample separately from cache-update time; footer GPU time includes all passes in the submitted frame.
 
 - Viewer: https://niemandx.github.io/NURAY/
 - Code: https://github.com/NieMandX/NURAY
 - Scene: https://storage.yandexcloud.net/nuray-assets-niemandx/moscow-city-5km-v1/scene.json
+
+## Image reconstruction
+
+Reconstruction carries unfiltered, scene-linear radiance between nearby camera poses using deterministic primary-hit guides. A bilinear gather rejects incompatible depth/plane, normal, material and albedo samples. Reprojected diffuse history is neighbourhood-clamped and capped at 16 prior samples. Camera cuts, scene/material/light changes, resizing, restarts and cascade warm-up invalidate history. Exposure changes preserve scene-linear history. Static frames accumulate fresh samples only; the original raw Monte Carlo buffer remains separate.
+
+A three-pass edge-aware à-trous filter uses surface planes, normals and albedo to preserve silhouettes and facade detail. Filtering fades out as the history reaches 128 samples. Glass and sharp/metallic reflections bypass the spatial filter and reject temporal reuse during camera movement because primary-surface guides cannot track reflected/refracted objects. Expect remaining noise on those paths and on newly revealed surfaces. This is a conservative first reconstruction stage, not ReSTIR, full SVGF, or a guarantee of artifact-free output.
+
+The reconstruction buffers use 160 bytes per pixel (about 27.5 MiB at 180k pixels), in addition to 32 bytes per pixel for raw/fresh path samples. Buffers are released when reconstruction is disabled; native resolution is bounded by the largest storage buffer. UI timings separate reconstruction, primary-surface updates on camera changes, path samples and lighting-cache work; footer GPU time includes every pass. The benefit is time to usable image quality, not cheaper individual ray traversal.
 
 ## Architecture
 
