@@ -1,6 +1,12 @@
 # NURAY
 
-WebGPU viewer for Moscow City, 5 × 5 km. PBR rasterization and a progressive path tracer with instanced mesh BVHs.
+WebGPU viewer for Moscow City, 5 × 5 km. PBR rasterization, a progressive path tracer with instanced mesh BVHs, and a separate experimental radiance-cascade mode.
+
+Choose **Каскады · эксперимент** in the renderer selector. Switching between the two ray modes reuses the loaded scene and GPU geometry. The reference path tracer remains the default.
+
+The mesh cascade mode uses four spatial/angular levels (16×8×16 probes / 16 directions at the finest level), bounded ray intervals, six directional irradiance lobes, and a 16-update warm-up. Its roughly 1.1 MiB cache survives camera orbit, exposure and image-resolution changes. Changing the region, geometry, textures, materials or lighting rebuilds it. Cached queries use a bounded visibility ray; unsupported points fall back to path tracing. Direct sky/sun, metal reflections and glass paths still use actual rays. Both ray modes use adaptive batches of up to eight samples within the GPU time budget.
+
+This is a biased approximation of the first diffuse bounce, not a converged full-light-transport solution: coarse probes may miss small features and leak light during interval interpolation. The speedup depends on the view, geometry and fallback rate; warm-up has an additional cost. No denoiser or temporal image reprojection is implemented. The UI reports GPU time per sample separately from cache-update time; footer GPU time includes all passes in the submitted frame.
 
 - Viewer: https://niemandx.github.io/NURAY/
 - Code: https://github.com/NieMandX/NURAY
