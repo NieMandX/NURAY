@@ -2,9 +2,9 @@ import {GpuTimer} from '../gpu-timer.js?v=temporal-1';
 import {makeMaterials,TEXTURE_SIZE,textureBytes} from './materials.js';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from './math.js?v=city-2';
 import {MeshTracer} from './tracer.js?v=spp-5000-1';
-import {loadCityMaterials} from './city-materials.js?v=nuray-cloud-1';
+import {loadCityMaterials} from './city-materials.js?v=fidelity-2';
 import {identityTransform} from './bvh.js';
-import {cityManifest} from './city-config.js?v=nuray-cloud-1';
+import {cityManifest} from './city-config.js?v=fidelity-2';
 import {renderSize} from './resolution.js?v=temporal-1';
 export const cameraDefaults=()=>({yaw:.64,pitch:.78,distance:160,target:[0,3,0]});
 const vertexLayout={arrayStride:32,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'snorm16x2'},{shaderLocation:2,offset:16,format:'float32x2'},{shaderLocation:3,offset:24,format:'uint32'}]};
@@ -111,7 +111,7 @@ export class DistrictRenderer {
     this.shadowMatrix=multiply(orthographic(extent,.1,dist*2),lookAt(this.sun.map(x=>x*dist),[0,0,0]));
     this.stats.geometryBytes=0;this.stats.uploadMs=0;this.stats.buildMs=0;this.stats.bvhBuildMs=0;this.shadowMs=0;this.stats.submitted=0;this.stats.draws=0;this.stats.triangles=0;this.stats.vertices=0;this.progress=0;this.plannedTriangles=triangles;
     return new Promise((resolve,reject)=>{
-      this.buildReject=reject;const worker=new Worker(new URL(city?'./city-worker.js?v=sah-1':'./worker.js?v=sah-1',import.meta.url),{type:'module'});this.worker=worker;
+      this.buildReject=reject;const worker=new Worker(new URL(city?'./city-worker.js?v=fidelity-2':'./worker.js?v=sah-1',import.meta.url),{type:'module'});this.worker=worker;
       const abort=error=>{
         worker.terminate();this.worker=null;this.buildReject=null;this.loading=false;this.ready=false;
         for(const c of this.chunks){c.vertex?.destroy();c.index?.destroy();}this.chunks=[];this.tracer.release();
@@ -214,7 +214,13 @@ export class DistrictRenderer {
   resetCamera(){this.camera=this.sceneName==='moscow'?{yaw:.45,pitch:.95,distance:this.city.extentMetres*11/6,target:[0,20,0]}:cameraDefaults();}
   focus(id,material){
     if(this.sceneName==='moscow'){
-      const views=[{yaw:.72,pitch:.28,distance:1100,target:[0,155,0]}, {yaw:1.5,pitch:.48,distance:1800,target:[100,55,380]}, {yaw:0,pitch:1.44,distance:this.city.extentMetres*1.4,target:[0,0,0]}];
+      const views=[
+        {yaw:.72,pitch:.28,distance:1100,target:[0,155,0]},
+        {yaw:1.5,pitch:.48,distance:1800,target:[100,55,380]},
+        {yaw:0,pitch:1.44,distance:this.city.extentMetres*1.4,target:[0,0,0]},
+        {yaw:-.528,pitch:.642,distance:1000,target:[-1740,40,1706]},
+        {yaw:-.68,pitch:.536,distance:580,target:[-340,135,556]},
+      ];
       this.camera=views[id]??views[0];return;
     }
     const roof=['Медь','Сталь','Алюминий'].includes(material);

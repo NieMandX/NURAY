@@ -1,4 +1,4 @@
-import {DistrictRenderer} from './renderer.js?v=spp-5000-1';
+import {DistrictRenderer} from './renderer.js?v=fidelity-2';
 const $=id=>document.getElementById(id);const number=n=>n.toLocaleString('ru-RU');
 const mib=n=>`${(n/1048576).toFixed(1)} МиБ`;const milliseconds=n=>n===null||n===undefined?'—':`${n.toFixed(2)} мс`;
 let busy=false,benchmarking=false,stopRequested=false;let triangles=1000000,scene='moscow';

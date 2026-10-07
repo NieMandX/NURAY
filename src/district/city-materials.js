@@ -1,4 +1,4 @@
-import {cityBase} from './city-config.js?v=nuray-cloud-1';
+import {cityBase} from './city-config.js?v=fidelity-2';
 export async function loadCityMaterials(owner,scene){
   const d=owner.device,count=scene.materials.length,size=512,levels=10;
   if(count>d.limits.maxTextureArrayLayers)throw new Error('Недостаточно слоёв текстур для материалов сцены.');
