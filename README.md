@@ -12,6 +12,22 @@ This is a biased approximation of the first diffuse bounce, not a converged full
 - Code: https://github.com/NieMandX/NURAY
 - Scene: https://storage.yandexcloud.net/nuray-assets-niemandx/moscow-city-5km-v1/scene.json
 
+## Acceleration structures
+
+Ray modes default to a 16-bin surface-area-heuristic (SAH) builder for both mesh BVHs and the top-level instance hierarchy. It retains the existing 32-byte stackless binary node format, a maximum of eight triangles per mesh leaf, the full geometry and material data, and the same ray/intersection shaders. The **Поиск пересечений** selector keeps the original midpoint builder available for comparison. Changing it rebuilds the scene acceleration structures while retaining the camera.
+
+SAH trades longer preparation for faster traversal. On the tested device, preparing the complete city BVH took about 18.5 seconds versus 4.8–6.1 seconds for midpoint; the UI reports this CPU work separately from total loading. The serialized GPU BVH data decreased from 83.8 to 79.8 MiB. Actual timings depend on the device and view. Different triangle orders can select a different material when source surfaces overlap at exactly the same depth; no triangles are removed or approximated.
+
+Measured on the full Moscow scene in the WebGPU browser, at 537 × 334 pixels and eight bounces, with cascades and reconstruction disabled:
+
+| Camera | Midpoint GPU/sample | SAH GPU/sample | GPU time reduction |
+| --- | ---: | ---: | ---: |
+| Overview | 37.72 ms | 29.92 ms | 20.7% |
+| City towers | 77.40 ms | 59.87 ms | 22.7% |
+| Embankment | 68.16 ms | 56.39 ms | 17.3% |
+
+The comparison used midpoint/SAH/SAH/midpoint build order, eight warm-up samples and 32 timed samples per view and build; each table entry is the mean of two run medians. GPU timestamps measured the unmodified path shader. Separate diagnostic runs found 13.8–16.7% fewer node tests and 9.8–13.8% fewer triangle tests per complete path. Primary hit/miss masks and depths matched at every pixel; only 0–2 of 179,358 pixels per view selected a different albedo at coincident source surfaces. These are traversal measurements, not end-to-end frame-rate guarantees.
+
 ## Image reconstruction
 
 Reconstruction carries unfiltered, scene-linear radiance between nearby camera poses using deterministic primary-hit guides. A bilinear gather rejects incompatible depth/plane, normal, material and albedo samples. Reprojected diffuse history is neighbourhood-clamped and capped at 16 prior samples. Camera cuts, scene/material/light changes, resizing, restarts and cascade warm-up invalidate history. Exposure changes preserve scene-linear history. Static frames accumulate fresh samples only; the original raw Monte Carlo buffer remains separate.
