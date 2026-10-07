@@ -4,7 +4,7 @@ import {MeshReconstruction} from './reconstruction.js?v=temporal-1';
 import {normalize} from './math.js';
 const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
 export class MeshTracer {
-  constructor(owner){this.owner=owner;this.pages=[];this.samples=0;this.seed=0;this.key='';this.limit=256;this.cache=new MeshCascadeCache(this);this.reconstruction=new MeshReconstruction(this);this.batch=1;this.pathMs=0;this.displayMs=0;}
+  constructor(owner){this.owner=owner;this.pages=[];this.samples=0;this.seed=0;this.key='';this.limit=5000;this.cache=new MeshCascadeCache(this);this.reconstruction=new MeshReconstruction(this);this.batch=1;this.pathMs=0;this.displayMs=0;}
   async init(){
     const d=this.owner.device;
     const read=async path=>{const r=await fetch(new URL(path,import.meta.url),{cache:'no-store'});if(!r.ok)throw new Error(`Не найден ${path}`);return r.text();};

@@ -64,6 +64,6 @@ fn temporalMain(@builtin(global_invocation_id) gid:vec3u){
     if count>=3 {old=vec4f(clamp(old.rgb,max(vec3f(0),mean-3*sigma-.02),mean+3*sigma+.02),old.a);}
     old.a=min(old.a,16.0);
   }
-  let n=min(old.a,256.0);let batch=p.sampling.x;
-  result[i]=vec4f((old.rgb*n+fresh*batch)/(n+batch),min(256.0,n+batch));
+  let n=old.a;let batch=p.sampling.x;
+  result[i]=vec4f((old.rgb*n+fresh*batch)/(n+batch),n+batch);
 }
