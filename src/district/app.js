@@ -1,4 +1,4 @@
-import {DistrictRenderer} from './renderer.js?v=sah-1';
+import {DistrictRenderer} from './renderer.js?v=spp-5000-1';
 const $=id=>document.getElementById(id);const number=n=>n.toLocaleString('ru-RU');
 const mib=n=>`${(n/1048576).toFixed(1)} МиБ`;const milliseconds=n=>n===null||n===undefined?'—':`${n.toFixed(2)} мс`;
 let busy=false,benchmarking=false,stopRequested=false;let triangles=1000000,scene='moscow';
@@ -36,7 +36,7 @@ function syncEngine(){
   $('trace-controls').hidden=!trace;$('culling').disabled=trace;$('shadows').disabled=trace;
   document.querySelector('label[for="culling"]').hidden=trace;document.querySelector('label[for="shadows"]').hidden=trace;
   $('submitted-label').textContent=trace?'Доступно лучам':'Отправлено в кадре';
-  $('engine-note').textContent=cascade?'Непрямой рассеянный свет из каскадов. Отражения и стекло — лучами. Экспериментальный режим.':trace?'Наш путь света: отражения, преломление и непрямой свет. Изображение уточняется до 256 spp.':'Растеризация с PBR и картой теней. Быстрое сравнение геометрической нагрузки.';
+  $('engine-note').textContent=cascade?'Непрямой рассеянный свет из каскадов. Отражения и стекло — лучами. Экспериментальный режим.':trace?`Наш путь света: отражения, преломление и непрямой свет. Изображение уточняется до ${renderer.tracer.limit} spp.`:'Растеризация с PBR и картой теней. Быстрое сравнение геометрической нагрузки.';
   $('benchmark').disabled=busy||trace||scene==='moscow';$('benchmark-note').textContent=scene==='moscow'?'Счётчик памяти показывает уникальные сетки; доступные лучам треугольники учитывают все экземпляры.':trace?'Сравнение 6 вариантов доступно в режиме растеризации. Время одного сэмпла показано отдельно от обновления кэша и вывода.':'1 / 5 / 17 млн × 1 / 200 материалов. Камера фиксируется; отсечение отключается.';
   $('benchmark-results').hidden=trace||!$('results-body').children.length;
 }
@@ -53,6 +53,11 @@ $('bvh-strategy').onchange=async e=>{
 };
 $('reconstruction').onchange=e=>{renderer.state.reconstruction=e.target.checked;renderer.tracer.reset();renderer.resize();renderer.publish(true);};
 $('trace-quality').onchange=e=>{renderer.state.pixels=Number(e.target.value);renderer.resize();};
+$('trace-limit').onchange=e=>{
+  renderer.tracer.limit=Number(e.target.value);
+  if(renderer.tracer.samples>renderer.tracer.limit)renderer.tracer.reset();
+  syncEngine();renderer.publish(true);
+};
 $('trace-bounces').onchange=e=>{renderer.state.bounces=Number(e.target.value);};
 $('glass-ior').onchange=e=>{renderer.state.ior=Number(e.target.value);};
 $('indirect').onchange=e=>{renderer.state.indirect=e.target.checked;};
