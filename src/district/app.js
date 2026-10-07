@@ -1,4 +1,4 @@
-import {DistrictRenderer} from './renderer.js?v=temporal-1';
+import {DistrictRenderer} from './renderer.js?v=sah-1';
 const $=id=>document.getElementById(id);const number=n=>n.toLocaleString('ru-RU');
 const mib=n=>`${(n/1048576).toFixed(1)} МиБ`;const milliseconds=n=>n===null||n===undefined?'—':`${n.toFixed(2)} мс`;
 let busy=false,benchmarking=false,stopRequested=false;let triangles=1000000,scene='moscow';
@@ -6,7 +6,7 @@ function error(message){$('error').hidden=false;$('error').textContent=message;$
 const renderer=new DistrictRenderer($('district-scene'),s=>{
   $('resident').textContent=number(s.triangles);$('submitted').textContent=number(s.submitted);$('draws').textContent=s.draws;
   $('geometry-memory').textContent=mib(s.geometryBytes);$('texture-memory').textContent=mib(s.textureBytes);
-  $('bvh-memory').textContent=mib(s.bvhBytes??0);$('trace-samples').textContent=`${s.samples} / ${s.sampleLimit} spp`;
+  $('bvh-memory').textContent=mib(s.bvhBytes??0);$('bvh-build-time').textContent=s.engine==='raster'?'—':`${((s.bvhBuildMs??0)/1000).toFixed(2)} с`; $('trace-samples').textContent=`${s.samples} / ${s.sampleLimit} spp`;
   $('device-status').textContent=s.engine==='cascade'?'WebGPU · каскады':s.engine==='trace'?'WebGPU · наш трассировщик':'WebGPU · растеризация';
   $('cache-progress').textContent=renderer.state.indirect?`${s.cacheSamples} / ${s.cacheLimit}`:'выключен';
   $('cache-version').textContent=s.cacheVersion;
@@ -45,6 +45,10 @@ $('engine').onchange=async e=>{
   const old=renderer.state.engine,next=e.target.value;renderer.state.engine=next;
   if(old!=='raster'&&next!=='raster'){renderer.tracer.reset();syncEngine();renderer.publish(true);return;}
   lock(true);renderer.ready=false;renderer.resize();syncEngine();
+  try{await load(triangles);}catch(e){if(!stopRequested)error(e.message);}finally{lock(false);stopRequested=false;}
+};
+$('bvh-strategy').onchange=async e=>{
+  if(busy)return;renderer.state.bvhStrategy=e.target.value;lock(true);
   try{await load(triangles);}catch(e){if(!stopRequested)error(e.message);}finally{lock(false);stopRequested=false;}
 };
 $('reconstruction').onchange=e=>{renderer.state.reconstruction=e.target.checked;renderer.tracer.reset();renderer.resize();renderer.publish(true);};

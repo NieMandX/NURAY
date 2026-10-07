@@ -1,10 +1,11 @@
 import {cityBase} from './city-config.js?v=nuray-cloud-1';
-import {buildMeshBvh,planTracePages,transformBounds} from './bvh.js';
+import {buildMeshBvh,planTracePages,transformBounds} from './bvh.js?v=sah-1';
 let resume;
 self.onmessage=async({data})=>{
   if(data.type==='ack'){resume?.();return;}
   if(data.type!=='build')return;
   try{
+    let bvhMs=0;const strategy=data.bvhStrategy??'sah';
     const start=performance.now(),scene=data.scene,base=cityBase;
     const perMesh=scene.chunks.map(()=>[]);for(const i of scene.instances)perMesh[i.mesh].push(i.matrix);
     const transforms=new Float32Array(scene.instances.length*12);let offset=0;
@@ -29,19 +30,19 @@ self.onmessage=async({data})=>{
       const c=info[i],result=await pending.get(i);pending.delete(i);schedule(i+6);
       if(result.error)throw result.error;const bytes=result.bytes;
       const mesh={vertices:bytes.slice(0,c.vertexBytes),indices:bytes.slice(c.vertexBytes)};
-      if(data.trace){chunks.push({...c,...buildMeshBvh(mesh)});self.postMessage({type:'progress',completed:i+1});}
+      if(data.trace){const begin=performance.now();chunks.push({...c,...buildMeshBvh(mesh,strategy)});bvhMs+=performance.now()-begin;self.postMessage({type:'progress',completed:i+1});}
       else{
         const ack=new Promise(resolve=>{resume=resolve;});self.postMessage({type:'chunk',...c,...mesh,completed:i+1},[mesh.vertices,mesh.indices]);await ack;resume=null;
       }
     }
     if(data.trace){
-      const plan=planTracePages(chunks,data.limit,scene.instances);
+      const begin=performance.now(),plan=planTracePages(chunks,data.limit,scene.instances,strategy);bvhMs+=performance.now()-begin;
       self.postMessage({type:'trace-plan',sizes:plan.sizes,scene:plan.scene},[plan.scene]);
       for(let i=0;i<chunks.length;i++){
         const c=chunks[i],ack=new Promise(resolve=>{resume=resolve;});
         self.postMessage({type:'trace-chunk',...c,descriptor:plan.descriptors[i],completed:i+1},[c.vertices,c.indices,c.nodes]);chunks[i]=null;await ack;resume=null;
       }
     }
-    self.postMessage({type:'done',elapsed:performance.now()-start});
+    self.postMessage({type:'done',bvhMs,bvhStrategy:strategy,elapsed:performance.now()-start});
   }catch(error){self.postMessage({type:'error',message:error.message});}
 };
