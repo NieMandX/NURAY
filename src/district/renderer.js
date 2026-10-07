@@ -12,7 +12,7 @@ const median=values=>{const a=[...values].sort((x,y)=>x-y);return a[Math.floor(a
 export class DistrictRenderer {
   constructor(canvas,onStatus,onError){
     this.canvas=canvas;this.onStatus=onStatus;this.onError=onError;
-    this.camera=cameraDefaults();this.state={materials:15,textures:true,culling:true,shadows:true,engine:'trace',reconstruction:true,indirect:true,bounces:8,ior:1.5,pixels:180000,exposure:1.03};this.sceneName='district';
+    this.camera=cameraDefaults();this.state={materials:15,textures:true,culling:true,shadows:true,engine:'trace',bvhStrategy:'sah',reconstruction:true,indirect:true,bounces:8,ior:1.5,pixels:180000,exposure:1.03};this.sceneName='district';
     this.tracer=new MeshTracer(this);
     this.chunks=[];this.revision=0;this.inFlight=0;this.running=false;this.ready=false;this.loading=false;
     this.lastTime=0;this.frameMs=16.7;this.lastStatus=0;this.stats={triangles:0,vertices:0,geometryBytes:0,textureBytes:0,buildMs:0,uploadMs:0,submitted:0,draws:0};
@@ -109,9 +109,9 @@ export class DistrictRenderer {
     this.setInstances(new Float32Array(identityTransform()).buffer);
     const extent=city?this.city.extentMetres*.75:77,dist=city?this.city.extentMetres*1.5:165;
     this.shadowMatrix=multiply(orthographic(extent,.1,dist*2),lookAt(this.sun.map(x=>x*dist),[0,0,0]));
-    this.stats.geometryBytes=0;this.stats.uploadMs=0;this.stats.buildMs=0;this.shadowMs=0;this.stats.submitted=0;this.stats.draws=0;this.stats.triangles=0;this.stats.vertices=0;this.progress=0;this.plannedTriangles=triangles;
+    this.stats.geometryBytes=0;this.stats.uploadMs=0;this.stats.buildMs=0;this.stats.bvhBuildMs=0;this.shadowMs=0;this.stats.submitted=0;this.stats.draws=0;this.stats.triangles=0;this.stats.vertices=0;this.progress=0;this.plannedTriangles=triangles;
     return new Promise((resolve,reject)=>{
-      this.buildReject=reject;const worker=new Worker(new URL(city?'./city-worker.js?v=nuray-cloud-1':'./worker.js',import.meta.url),{type:'module'});this.worker=worker;
+      this.buildReject=reject;const worker=new Worker(new URL(city?'./city-worker.js?v=sah-1':'./worker.js?v=sah-1',import.meta.url),{type:'module'});this.worker=worker;
       const abort=error=>{
         worker.terminate();this.worker=null;this.buildReject=null;this.loading=false;this.ready=false;
         for(const c of this.chunks){c.vertex?.destroy();c.index?.destroy();}this.chunks=[];this.tracer.release();
@@ -147,12 +147,12 @@ export class DistrictRenderer {
         if(data.type==='done'){
           worker.terminate();this.worker=null;this.buildReject=null;this.loading=false;this.ready=true;this.shadowDirty=true;
           if(this.state.engine!=='raster')this.tracer.bind();
-          this.stats.buildMs=data.elapsed;this.lastTime=0;this.publish(true);resolve();
+          this.stats.buildMs=data.elapsed;this.stats.bvhBuildMs=data.bvhMs??0;this.stats.bvhStrategy=data.bvhStrategy;this.lastTime=0;this.publish(true);resolve();
         }
         if(data.type==='error')abort(new Error(data.message));
         }catch(error){abort(error);}
       };
-      this.phase=city?'Читаем Москва-Сити':'Собираем геометрию';worker.postMessage({type:'build',triangles,trace:this.state.engine!=='raster',limit:this.pageLimit,scene:city?this.city:undefined});
+      this.phase=city?'Читаем Москва-Сити':'Собираем геометрию';worker.postMessage({type:'build',triangles,bvhStrategy:this.state.bvhStrategy,trace:this.state.engine!=='raster',limit:this.pageLimit,scene:city?this.city:undefined});
     });
   }
   cancelBuild(){

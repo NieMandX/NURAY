@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#151819"><title>NURAY · Москва-Сити — WebGPU</title><link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./district.css?v=temporal-1"></head>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#151819"><title>NURAY · Москва-Сити — WebGPU</title><link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./district.css?v=sah-1"></head>
 <body class="district">
   <header><h1>NURAY</h1><nav><a href="./materials.html">Сферы</a><span aria-current="page">Квартал</span></nav><span id="device-status">WebGPU</span></header>
   <main>
@@ -17,6 +17,8 @@
           <p id="engine-note" class="small-note">Лучевые отражения, преломление и непрямой свет. Изображение уточняется до 256 spp.</p>
           <label class="batch-control" for="trace-quality">Разрешение<select id="trace-quality"><option value="90000">Быстро · 90 тыс.</option><option value="180000" selected>180 тыс. пикселей</option><option value="360000">Чётко · 360 тыс.</option><option value="720000">720 тыс. пикселей</option><option value="0">Максимум · размер окна</option></select></label>
           <div id="trace-controls">
+            <label class="batch-control" for="bvh-strategy">Поиск пересечений<select id="bvh-strategy"><option value="sah" selected>Оптимизированный · SAH</option><option value="midpoint">Исходный · midpoint</option></select></label>
+            <p class="small-note">Смена варианта заново подготавливает BVH. Можно сравнить скорость на том же ракурсе.</p>
             <label class="batch-control" for="trace-bounces">Глубина луча<select id="trace-bounces"><option value="4">4</option><option value="8" selected>8</option><option value="12">12</option></select></label>
             <label class="toggle-row" for="indirect">Непрямой свет<input id="indirect" type="checkbox" checked role="switch"><span class="switch"></span></label>
             <label class="batch-control" for="glass-ior">IOR стекла<select id="glass-ior"><option value="1">1.0 · без преломления</option><option value="1.5" selected>1.5</option><option value="1.8">1.8</option></select></label>
@@ -61,7 +63,7 @@
           </div><button id="overview" class="reset">Вся сцена</button>
         </section>
         <section class="controls-section metrics-section">
-          <h2>Нагрузка</h2><dl class="metrics"><dt>Уникальные треугольники</dt><dd id="resident">—</dd><dt id="submitted-label">Доступно лучам</dt><dd id="submitted">—</dd><dt id="draws-label">Вызовы отрисовки</dt><dd id="draws">—</dd><dt>Геометрия</dt><dd id="geometry-memory">—</dd><dt>BVH</dt><dd id="bvh-memory">—</dd><dt>Текстуры и материалы</dt><dd id="texture-memory">—</dd><dt>Подготовка сцены</dt><dd id="build-time">—</dd><dt>Создание GPU-буферов¹</dt><dd id="upload-time">—</dd><dt>Тень при обновлении</dt><dd id="shadow-time">—</dd></dl>
+          <h2>Нагрузка</h2><dl class="metrics"><dt>Уникальные треугольники</dt><dd id="resident">—</dd><dt id="submitted-label">Доступно лучам</dt><dd id="submitted">—</dd><dt id="draws-label">Вызовы отрисовки</dt><dd id="draws">—</dd><dt>Геометрия</dt><dd id="geometry-memory">—</dd><dt>BVH</dt><dd id="bvh-memory">—</dd><dt>Текстуры и материалы</dt><dd id="texture-memory">—</dd><dt>Построение BVH · CPU</dt><dd id="bvh-build-time">—</dd><dt>Подготовка сцены</dt><dd id="build-time">—</dd><dt>Создание GPU-буферов¹</dt><dd id="upload-time">—</dd><dt>Тень при обновлении</dt><dd id="shadow-time">—</dd></dl>
           <p class="small-note">¹ Время CPU. Геометрия: вершины и индексы. Эти числа не включают всю память браузера.</p>
         </section>
       </fieldset>
@@ -72,5 +74,5 @@
     </aside>
   </main>
   <footer><span>Треугольники <strong id="footer-triangles">—</strong></span><span>GPU <strong id="gpu-time">—</strong></span><span>FPS <strong id="fps">—</strong></span><span>Материалы <strong id="footer-materials">15</strong></span><span id="resolution">—</span></footer>
-  <script type="module" src="./src/district/app.js?v=temporal-1"></script>
+  <script type="module" src="./src/district/app.js?v=sah-1"></script>
 </body></html>
