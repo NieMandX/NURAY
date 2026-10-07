@@ -1,4 +1,4 @@
-import {cityBase} from './city-config.js?v=nuray-cloud-1';
+import {cityBase} from './city-config.js?v=fidelity-2';
 import {buildMeshBvh,planTracePages,transformBounds} from './bvh.js?v=sah-1';
 let resume;
 self.onmessage=async({data})=>{
