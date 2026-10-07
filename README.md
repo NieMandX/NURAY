@@ -10,7 +10,7 @@ This is a biased approximation of the first diffuse bounce, not a converged full
 
 - Viewer: https://niemandx.github.io/NURAY/
 - Code: https://github.com/NieMandX/NURAY
-- Scene: https://storage.yandexcloud.net/nuray-assets-niemandx/moscow-city-5km-v1/scene.json
+- Scene: https://storage.yandexcloud.net/nuray-assets-niemandx/moscow-city-5km-v2/scene.json
 
 ## Acceleration structures
 
@@ -18,7 +18,7 @@ Ray modes default to a 16-bin surface-area-heuristic (SAH) builder for both mesh
 
 SAH trades longer preparation for faster traversal. On the tested device, preparing the complete city BVH took about 18.5 seconds versus 4.8–6.1 seconds for midpoint; the UI reports this CPU work separately from total loading. The serialized GPU BVH data decreased from 83.8 to 79.8 MiB. Actual timings depend on the device and view. Different triangle orders can select a different material when source surfaces overlap at exactly the same depth; no triangles are removed or approximated.
 
-Measured on the full Moscow scene in the WebGPU browser, at 537 × 334 pixels and eight bounces, with cascades and reconstruction disabled:
+Measured on the original v1 Moscow scene in the WebGPU browser, at 537 × 334 pixels and eight bounces, with cascades and reconstruction disabled:
 
 | Camera | Midpoint GPU/sample | SAH GPU/sample | GPU time reduction |
 | --- | ---: | ---: | ---: |
@@ -61,10 +61,19 @@ Geometry `.bin.gz` objects should have `Content-Type: application/gzip` or `appl
 
 ## Model
 
-- Initial model download: 166.54 MB (geometry 144.79 MB, textures 9.91 MB, manifest 11.84 MB).
-- 6,676,167 unique triangles, 28,410,874 including instances.
-- 169 materials; 58,906 street-object placements.
-- Geometry/BVH/materials occupy about 857 MiB on the GPU; frame buffers, staging and browser overhead are additional.
+- Initial model download: 183.72 MB (geometry 162.00 MB, textures 9.91 MB, manifest 11.81 MB).
+- 6,903,492 unique triangles, 28,638,199 including instances.
+- 167 materials; 58,906 street-object placements.
+- GPU memory for geometry, BVH and materials is reported in the viewer; frame buffers, staging and browser overhead are additional.
 - Native resolution follows the canvas size × device pixel ratio, bounded by GPU texture/buffer limits. It converges more slowly than the default 180k pixel preset.
 
 Original 2GIS geometry was exported through Blender without decimation. Atlas colors can include baked lighting; assigned PBR parameters are approximations. Towers use coated opaque facades because the source contains no separate interior glazing volumes. Static meshes are clipped to a 5 km square; tree origins are inside the square but crowns may cross the edge.
+
+
+## Scene fidelity update (v2)
+
+The v2 asset restores source-colored white/yellow road paint, Park Pobedy paving and pedestrian paths, static landmark transforms, and open tunnel descents. Foreground surfaces explicitly cut the overlapping ground and lawn layers. The shoreline gradient helper and redundant coarse terrain are hidden; detailed ground still follows the retained 2GIS DEM. Non-immersive entrance boxes are removed from building batches while preserving source-object identities. Covered tunnel footprints remain covered.
+
+White paint uses scene-linear RGB `(0.96, 0.96, 0.96)` and yellow `(1.0, 0.93, 0.045)`, with no emission. Other base-color channels are limited to 0.65, including texture multipliers. Mixed crossings retain their per-feature source color and road tier. Sunlight, shadows and specular highlights still affect pixel brightness.
+
+Use **Парк Победы** and **Башни Сбера** to inspect the corrected areas. Geometry is derived from the retained September 2026 source data and checked against the supplied reference screenshots. This does not establish survey accuracy or completeness against later map updates. The model manifest records the applied fidelity stages; v1 remains available for older open tabs.
