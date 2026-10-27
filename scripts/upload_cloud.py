@@ -70,8 +70,8 @@ def main():
     p.add_argument('--content-type', default='application/octet-stream')
     p.add_argument('--sha256', help='Expected local checksum, if already recorded')
     args = p.parse_args()
-    if not 5 <= args.part_mib <= 64 or not 1 <= args.workers <= 8:
-        p.error('Use parts of 5–64 MiB and 1–8 workers')
+    if not 5 <= args.part_mib <= 64 or not 1 <= args.workers <= 64:
+        p.error('Use parts of 5–64 MiB and 1–64 workers')
     path = args.file.resolve()
     size = path.stat().st_size
     if size <= 0:
@@ -90,7 +90,7 @@ def main():
         credentials = {'aws_access_key_id': key_id, 'aws_secret_access_key': secret['secretAccessKey']}
     client = boto3.client('s3', endpoint_url=args.endpoint, region_name=args.region,
         config=Config(signature_version='s3v4', s3={'addressing_style': 'path'},
-                      connect_timeout=20, read_timeout=120,
+                      connect_timeout=20, read_timeout=120, max_pool_connections=args.workers + 2,
                       retries={'mode': 'standard', 'max_attempts': 5},
                       request_checksum_calculation='when_required',
                       response_checksum_validation='when_required'), **credentials)
