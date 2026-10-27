@@ -165,10 +165,18 @@ def main():
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as pool:
         futures = [pool.submit(send, number) for number in pending]
+        failures = []
         for future in concurrent.futures.as_completed(futures):
-            part = future.result()
+            try:
+                part = future.result()
+            except Exception as error:
+                failures.append(error)
+                print(f'A part exhausted retries ({type(error).__name__}); continuing other parts', flush=True)
+                continue
             completed[part['PartNumber']] = part
             print(f'{len(completed)}/{count} parts verified', flush=True)
+    if failures:
+        raise RuntimeError(f'{len(failures)} parts still missing; rerun the same command to resume') from failures[0]
     client.complete_multipart_upload(Bucket=args.bucket, Key=args.key, UploadId=upload_id,
         MultipartUpload={'Parts': [{'PartNumber': n, 'ETag': completed[n]['ETag']} for n in range(1, count + 1)]})
     verify(client, path, args.bucket, args.key, size, digest)
