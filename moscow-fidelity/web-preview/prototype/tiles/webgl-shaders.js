@@ -1,4 +1,4 @@
-import {surfaceFunctions} from './water-shaders.js?v=moscow-defaults-1';
+import {surfaceFunctions} from './water-shaders.js?v=shore-water-1';
 import {PLANAR_GLSL,GROUND_GLSL,GROUND_COAT_GLSL} from '../../src/district/ocean/planar-shader.js?v=ground-reflections-1';
 export const vertex=`#version 300 es
 precision highp float;
@@ -103,7 +103,7 @@ void main(){
   if(int(physical.z)==12){
     vec3 wave=waterShape(world.xz,waterTime,footprint);n=normalize(geometricNormal+vec3(wave.x,0.,wave.y));
     float foam=clamp(waterFoam(world.xz,surfaceDistance(world,false),waterTime,footprint)*waterP[2].y+smoothstep(.2,.5,length(wave.xy))*waterP[2].x*.25,0.,1.);
-    color=waterBody(surfaceDistance(world,false),dot(n,normalize(camera-world)));
+    color=waterBody(dot(n,normalize(camera-world)));
     color=mix(color,vec3(.50,.54,.51),foam);rough=mix(mix(.09,.22,clamp(length(wave.xy)*3.,0.,1.)),.65,foam);
   }else if(info.z>.5){color*=1.-roadWear(world);}
   vec3 wo=normalize(camera-world),wi=sun,h=normalize(wo+wi);

@@ -1,4 +1,4 @@
-import {traceEnvironmentGroup} from './trace-environment.js?v=moscow-defaults-1';
+import {traceEnvironmentGroup} from './trace-environment.js?v=shore-water-1';
 import {CASCADE_LEVELS,CACHE_LIMIT,cacheField,cascadeBytes} from './cascade-config.js?v=moscow-defaults-1';
 export class MeshCascadeCache {
   constructor(tracer){this.tracer=tracer;this.samples=0;this.limit=CACHE_LIMIT;this.version=0;this.updates=0;this.key='';this.ms=null;}

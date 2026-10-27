@@ -1,4 +1,4 @@
-import {surfaceFunctions} from './water-shaders.js?v=moscow-defaults-1';
+import {surfaceFunctions} from './water-shaders.js?v=shore-water-1';
 export const waterSkyVertex=`#version 300 es
 precision highp float;
 out vec2 ndc;

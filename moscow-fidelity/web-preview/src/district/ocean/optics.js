@@ -5,6 +5,11 @@ export function absorptionCoefficients(p){return linearColor(p.absorptionColor).
 export function waterTransmission(p,distance){return absorptionCoefficients(p).map(s=>Math.exp(-s*Math.max(0,distance)));}
 // Raster-only body approximation. The ray tracer uses water-transport.wgsl:
 // refracted BVH rays and absorption along actual segments, never this proxy.
+// Preserve the former open-water column (1 + 100 * .25) everywhere. The
+// shoreline index only covers the narrow foam strip; its 100 m sentinel is
+// not a depth measurement and caused 8 m grid steps in the water's colour.
+// This uniform visual reference is not bathymetry.
+export const RASTER_WATER_COLUMN_METRES=26;
 export const WATER_OPTICS_WGSL=`
 fn waterIOR()->f32 {return F.viewProj[3].w;}
 fn waterFresnel(cosine:f32)->f32 {
@@ -12,9 +17,9 @@ fn waterFresnel(cosine:f32)->f32 {
  let c=clamp(abs(cosine),.00001,1.0);let ct=sqrt(max(0.0,1-(1-c*c)/(eta*eta)));
  let a=(c-eta*ct)/(c+eta*ct);let b=(eta*c-ct)/(eta*c+ct);return .5*(a*a+b*b);
 }
-fn waterBody(shore:f32,cosine:f32)->vec3f {
+fn waterBody(cosine:f32)->vec3f {
  let c=clamp(abs(cosine),0.0,1.0);let ct=sqrt(max(.001,1-(1-c*c)/(waterIOR()*waterIOR())));
- let path=clamp(1+shore*.25,1.0,30.0)/max(ct,.1);
+ let path=${RASTER_WATER_COLUMN_METRES.toFixed(1)}/max(ct,.1);
  let scattering=max(0.0,F.viewProj[1].z)*.12;
  let extinction=F.viewProj[3].xyz+vec3f(scattering);
  return F.sssCol.rgb*scattering/max(extinction,vec3f(.00001))*(1-exp(-extinction*path));
@@ -27,9 +32,9 @@ float waterFresnel(float cosine){
  float c=clamp(abs(cosine),.00001,1.),ct=sqrt(max(0.,1.-(1.-c*c)/(eta*eta)));
  float a=(c-eta*ct)/(c+eta*ct),b=(eta*c-ct)/(eta*c+ct);return .5*(a*a+b*b);
 }
-vec3 waterBody(float shore,float cosine){
+vec3 waterBody(float cosine){
  float c=clamp(abs(cosine),0.,1.),ct=sqrt(max(.001,1.-(1.-c*c)/(waterIOR()*waterIOR())));
- float path=clamp(1.+shore*.25,1.,30.)/max(ct,.1),scattering=max(0.,waterP[1].w)*.12;
+ float path=${RASTER_WATER_COLUMN_METRES.toFixed(1)}/max(ct,.1),scattering=max(0.,waterP[1].w)*.12;
  vec3 extinction=waterP[6].xyz+vec3(scattering);
  return waterP[7].rgb*scattering/max(extinction,vec3(.00001))*(1.-exp(-extinction*path));
 }

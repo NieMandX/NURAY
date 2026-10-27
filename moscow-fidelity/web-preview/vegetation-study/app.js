@@ -1,4 +1,4 @@
-import {DistrictRenderer} from '../src/district/renderer.js?v=moscow-preset-2';
+import {DistrictRenderer} from '../src/district/renderer.js?v=shore-water-1';
 import {loadCityMaterials} from '../src/district/city-materials.js?v=ground-reflections-1';
 import {orthographic,lookAt,multiply} from '../src/district/math.js';
 import {DEFAULT_SETTINGS,normalizeSettings,buildGeometry,buildSurfaceGeometry,exportGLB} from './foliage-editor.js';

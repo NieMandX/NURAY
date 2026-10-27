@@ -1,17 +1,17 @@
 import {isStandardGround} from '../../src/district/ground-surfaces.js?v=ground-reflections-1';
-import {absorptionCoefficients,linearColor} from '../../src/district/ocean/optics.js?v=moscow-defaults-1';
+import {absorptionCoefficients,linearColor} from '../../src/district/ocean/optics.js?v=shore-water-1';
 import {HosekCache} from '../../src/district/hosek/model.js?v=moscow-defaults-1';
-import {waterSkyVertex,waterSkyFragment} from './water-webgl-sky.js?v=moscow-defaults-1';
+import {waterSkyVertex,waterSkyFragment} from './water-webgl-sky.js?v=shore-water-1';
 import {installSurfaceField,isRoad} from '../../src/district/surface-effects.js?v=moscow-defaults-1';
 import {sunCascades,shadowUniform,inverseMatrix} from '../../src/district/sun-shadows.js?v=moscow-defaults-1';
 import {isFacade,facadePixels} from '../../src/district/facade-relief.js?v=moscow-defaults-1';
 import {contactVertex,contactFragment,contactComposite} from './webgl-contact-ao.js?v=moscow-defaults-1';
-import {TileRenderer} from './tile-renderer.js?v=moscow-preset-2';
+import {TileRenderer} from './tile-renderer.js?v=shore-water-1';
 import {activeChunkIds,sceneInstances,rasterLayout} from './tile-scene.js?v=moscow-defaults-1';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from '../../src/district/math.js?v=moscow-defaults-1';
 import {budgetTiles,overviewDistance} from './webgl-budget.js?v=moscow-defaults-1';
 import {WebGLReflection} from './planar-webgl.js?v=ground-reflections-1';
-import {vertex,fragment,shadowFragment,captureFragment} from './webgl-shaders.js?v=ground-reflections-1';
+import {vertex,fragment,shadowFragment,captureFragment} from './webgl-shaders.js?v=shore-water-1';
 
 function program(gl,vs,fs){
   const shaders=[];const p=gl.createProgram();

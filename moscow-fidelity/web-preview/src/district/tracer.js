@@ -1,7 +1,7 @@
-import {TRACE_ENVIRONMENT,traceEnvironmentGroup} from './trace-environment.js?v=moscow-defaults-1';
+import {TRACE_ENVIRONMENT,traceEnvironmentGroup} from './trace-environment.js?v=shore-water-1';
 import {chooseBatch} from '../sampling.js?v=moscow-defaults-1';
-import {MeshCascadeCache} from './cascade-cache.js?v=moscow-defaults-1';
-import {MeshReconstruction} from './reconstruction.js?v=moscow-defaults-1';
+import {MeshCascadeCache} from './cascade-cache.js?v=shore-water-1';
+import {MeshReconstruction} from './reconstruction.js?v=shore-water-1';
 import {normalize} from './math.js?v=moscow-defaults-1';
 const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
 export class MeshTracer {

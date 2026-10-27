@@ -1,4 +1,4 @@
-import {traceEnvironmentGroup} from './trace-environment.js?v=moscow-defaults-1';
+import {traceEnvironmentGroup} from './trace-environment.js?v=shore-water-1';
 // Temporal history contains fresh path samples only, never the spatially filtered
 // display image. This avoids feeding blur back into later frames.
 export class MeshReconstruction {

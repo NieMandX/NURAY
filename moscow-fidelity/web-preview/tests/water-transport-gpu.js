@@ -1,5 +1,5 @@
 // GPU tests exercise the production WGSL, production BVH traversal and transport.
-import {absorptionCoefficients} from '../src/district/ocean/optics.js';
+import {absorptionCoefficients} from '../src/district/ocean/optics.js?v=shore-water-1';
 const $=id=>document.getElementById(id),status=$('status'),results=$('results');
 try{
  const adapter=await navigator.gpu.requestAdapter();if(!adapter)throw Error('WebGPU unavailable');

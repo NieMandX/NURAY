@@ -42,7 +42,7 @@ vec3 seascapeShade(vec3 world,vec3 eye,float shore,float shadow){
  vec3 reflected=waterSky(reflect(eye,n),.08),waterColor=waterP[7].rgb;
  vec3 sunColor=waterSunColor()*sunPower*.4;
  float diffuse=pow(max(dot(n,sun)*.4+.6,0.),80.);
- vec3 base=waterBody(shore,dot(n,-eye));
+ vec3 base=waterBody(dot(n,-eye));
  vec3 refracted=base*(waterAmbient(n)*2.)+diffuse*waterColor*.12*sunColor*shadow;
  vec3 color=mix(refracted,reflected,fr);
  float atten=max(1.-dist*dist*.00001,0.);

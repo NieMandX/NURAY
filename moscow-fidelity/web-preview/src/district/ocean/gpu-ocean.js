@@ -1,12 +1,12 @@
 import {HosekCache} from '../hosek/model.js?v=moscow-defaults-1';
 import {hosekWGSL} from '../hosek/shaders.js?v=moscow-defaults-1';
-import {SEASCAPE_SKY_WGSL} from '../seascape/seascape-wgsl.js?v=moscow-defaults-1';
+import {SEASCAPE_SKY_WGSL} from '../seascape/seascape-wgsl.js?v=shore-water-1';
 import * as SIM from './vendor/sim.js?v=moscow-defaults-1';
 import * as SKY from './vendor/sky.js?v=moscow-defaults-1';
 import {SKY_BG} from './vendor/ocean.js?v=moscow-defaults-1';
 import {BLOOM_DOWN,BLOOM_UP,COMPOSITE} from './vendor/post.js?v=moscow-defaults-1';
 import {normalize,cross} from '../math.js?v=moscow-defaults-1';
-import {absorptionCoefficients,linearColor} from './optics.js?v=moscow-defaults-1';
+import {absorptionCoefficients,linearColor} from './optics.js?v=shore-water-1';
 // Classic city fragments already contain the original ACES/sRGB result.
 // Copy them after contact AO without applying the Ocean grade a second time.
 const LIGHTING_COMPOSITE=COMPOSITE.replace('var c = textureLoad(hdr, pc, 0).rgb;',

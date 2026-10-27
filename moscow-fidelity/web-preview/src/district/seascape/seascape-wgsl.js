@@ -43,7 +43,7 @@ fn seascapeShade(world:vec3f,shore:f32,shadow:f32)->vec4f {
  let waterColor=F.sssCol.rgb;
  let sunColor=waterSun()*.4;
  let diffuse=pow(max(dot(n,sun)*.4+.6,0.0),80.0);
- let base=waterBody(shore,dot(n,-eye));
+ let base=waterBody(dot(n,-eye));
  let refracted=base*(oceanAmbient(n)*2.0)+diffuse*waterColor*.12*sunColor*shadow;
  var color=mix(refracted,reflected,fr);
  let atten=max(1.0-dist*dist*.00001,0.0);

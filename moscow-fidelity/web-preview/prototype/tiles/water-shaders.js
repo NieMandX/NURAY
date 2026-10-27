@@ -1,6 +1,6 @@
 import {HOSEK_GLSL} from '../../src/district/hosek/shaders.js?v=moscow-defaults-1';
-import {SEASCAPE_GLSL,SEASCAPE_SHADE_GLSL} from '../../src/district/seascape/seascape-glsl.js?v=moscow-defaults-1';
-import {WATER_OPTICS_GLSL} from '../../src/district/ocean/optics.js?v=moscow-defaults-1';
+import {SEASCAPE_GLSL,SEASCAPE_SHADE_GLSL} from '../../src/district/seascape/seascape-glsl.js?v=shore-water-1';
+import {WATER_OPTICS_GLSL} from '../../src/district/ocean/optics.js?v=shore-water-1';
 export const surfaceFunctions=`
 uniform sampler2D surfaceField;
 uniform float waterTime;

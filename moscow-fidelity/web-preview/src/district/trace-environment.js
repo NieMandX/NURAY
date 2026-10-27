@@ -1,8 +1,8 @@
 import {FRAME_WGSL,ATMO_CORE_WGSL} from './ocean/vendor/common.js?v=moscow-defaults-1';
 import {SKY_RENDER_FUNCS,SKY_CLOUD_FUNCS} from './ocean/vendor/sky.js?v=moscow-defaults-1';
-import {SEASCAPE_WGSL} from './seascape/seascape-wgsl.js?v=moscow-defaults-1';
+import {SEASCAPE_WGSL} from './seascape/seascape-wgsl.js?v=shore-water-1';
 import {hosekWGSL} from './hosek/shaders.js?v=moscow-defaults-1';
-import {WATER_OPTICS_WGSL} from './ocean/optics.js?v=moscow-defaults-1';
+import {WATER_OPTICS_WGSL} from './ocean/optics.js?v=shore-water-1';
 // The ray integrator samples the same physical sky and wave fields as raster.
 // Explicit ray-cone LOD replaces fragment derivatives. Water stays on the baked
 // finite surface: its BSDF normal changes, not the city geometry or BVH.

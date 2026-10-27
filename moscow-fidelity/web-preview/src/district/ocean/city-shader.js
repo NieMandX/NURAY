@@ -1,7 +1,7 @@
 import {hosekWGSL} from '../hosek/shaders.js?v=moscow-defaults-1';
-import {SEASCAPE_WGSL} from '../seascape/seascape-wgsl.js?v=moscow-defaults-1';
+import {SEASCAPE_WGSL} from '../seascape/seascape-wgsl.js?v=shore-water-1';
 import {OCEAN} from './vendor/ocean.js?v=moscow-defaults-1';
-import {WATER_OPTICS_WGSL} from './optics.js?v=moscow-defaults-1';
+import {WATER_OPTICS_WGSL} from './optics.js?v=shore-water-1';
 import {PLANAR_WGSL,GROUND_WGSL,GROUND_COAT_WGSL} from './planar-shader.js?v=ground-reflections-1';
 // Keep the upstream spectral BRDF; use our finite water footprints instead of
 // the demonstration's infinite CDLOD ocean. All coordinates remain metres.
@@ -14,7 +14,7 @@ export function cityOceanShader(){
   for(var c=0u;c<6u;c++){height+=textureSampleLevel(dispTex,sampR,world.xz*F.cascInvL[c>>2u][c&3u],c,0.0).y;}`);
  s=s.replaceAll('in.xz','world.xz').replaceAll('in.rel','rel').replaceAll('in.height','height');
  s=s.replace(/fn fresnelWater\([\s\S]*?\n}/,'fn fresnelWater(c:f32)->f32 {return waterFresnel(c);}')
-   .replace('F.waterCol.rgb * (skyHemi','waterBody(shore,dot(nV,V)) * (skyHemi');
+   .replace('F.waterCol.rgb * (skyHemi','waterBody(dot(nV,V)) * (skyHemi');
  s=s.replace('sunIlluminance() * sunVis[0]','waterSun() * shadow');
  // The wave spectrum is independent of the lighting model. Reflections and
  // foam use the same environment as the city in either mode.

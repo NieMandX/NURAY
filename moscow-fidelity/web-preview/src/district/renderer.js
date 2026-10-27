@@ -1,5 +1,5 @@
-import {GpuOcean} from './ocean/gpu-ocean.js?v=moscow-defaults-1';
-import {withCityOcean} from './ocean/city-shader.js?v=ground-reflections-1';
+import {GpuOcean} from './ocean/gpu-ocean.js?v=shore-water-1';
+import {withCityOcean} from './ocean/city-shader.js?v=shore-water-1';
 import {WaterClock,WATER_DEFAULTS,waterFrameKey} from './ocean/settings.js?v=moscow-preset-2';
 import {installSurfaceField,loadSurfaceField} from './surface-effects.js?v=moscow-defaults-1';
 import {sunCascades,shadowUniform,inverseMatrix} from './sun-shadows.js?v=moscow-defaults-1';
@@ -7,7 +7,7 @@ import {ContactAO} from './contact-ao.js?v=moscow-defaults-1';
 import {GpuTimer} from '../gpu-timer.js?v=moscow-defaults-1';
 import {makeMaterials,TEXTURE_SIZE,textureBytes} from './materials.js?v=moscow-defaults-1';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from './math.js?v=moscow-defaults-1';
-import {MeshTracer} from './tracer.js?v=moscow-defaults-1';
+import {MeshTracer} from './tracer.js?v=shore-water-1';
 import {loadCityMaterials} from './city-materials.js?v=ground-reflections-1';
 import {identityTransform} from './bvh.js?v=moscow-defaults-1';
 import {cityManifest} from './city-config.js?v=moscow-defaults-1';
