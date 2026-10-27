@@ -1,0 +1,25 @@
+{
+  "checkedAt": "2026-10-27T12:19:16.354290+00:00",
+  "backup": {
+    "key": "backups/nuray-moscow-build-20261027.tar.gz",
+    "bytes": 1896346877,
+    "sha256": "2e444c6a911f16f191b46a56083c09a8b70460096ddeeebb67d31a2be84b6e52",
+    "verifiedMultipartParts": 227,
+    "multipartEtagMatches": true,
+    "verifiedByteRanges": 3
+  },
+  "manifestBytesVerified": true,
+  "anonymousHead": {
+    "backups/nuray-moscow-build-20261027.tar.gz": 403,
+    "backups/build-snapshot-manifest.json": 403
+  },
+  "temporaryObjectsRemaining": [],
+  "unfinishedUploads": [],
+  "temporaryAccess": {
+    "revokedAt": "2026-10-27T12:20:33.223463+00:00",
+    "signedRequestAfterRevocation": 403,
+    "errorCode": "403",
+    "localCredentialDeleted": true,
+    "serviceAccountDisabled": true
+  }
+}
