@@ -12,6 +12,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import time
 
 
 def sha256(path):
@@ -50,6 +51,21 @@ def verify(client, path, bucket, key, size, digest):
             source.seek(offset)
             if data != source.read(length):
                 raise ValueError('Remote verification range differs from local file')
+
+
+def upload_part_with_retry(client, *, sleep=time.sleep, **parameters):
+    for attempt in range(6):
+        try:
+            return client.upload_part(**parameters)
+        except Exception as error:
+            # Cloud.ru's nonstandard 499 is not retried by the SDK. Reusing a
+            # part number replaces only that part, with the same checked bytes.
+            status = getattr(error, 'response', {}).get('ResponseMetadata', {}).get('HTTPStatusCode')
+            if status != 499 or attempt == 5:
+                raise
+            number = parameters['PartNumber']
+            print(f'Part {number}: server closed request; retry {attempt + 1}/5', flush=True)
+            sleep(min(20, 2 ** attempt) + number % 3)
 
 
 def main():
@@ -140,7 +156,7 @@ def main():
             source.seek((number - 1) * part_size)
             data = source.read(part_size)
         md5 = hashlib.md5(data).digest()
-        result = client.upload_part(Bucket=args.bucket, Key=args.key, UploadId=upload_id,
+        result = upload_part_with_retry(client, Bucket=args.bucket, Key=args.key, UploadId=upload_id,
             PartNumber=number, Body=data, ContentLength=len(data), ContentMD5=base64.b64encode(md5).decode())
         if result['ETag'].strip('"') != md5.hex():
             raise ValueError(f'Part {number} checksum mismatch')

@@ -5,7 +5,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from upload_cloud import verify
+from upload_cloud import verify, upload_part_with_retry
+from unittest.mock import Mock
 
 
 class RemoteObject:
@@ -30,6 +31,26 @@ class RemoteObject:
 
 
 class UploadIntegrity(unittest.TestCase):
+    def test_retries_closed_request_without_changing_part_and_stops_on_forbidden(self):
+        class ServiceError(Exception):
+            def __init__(self, status):
+                self.response = {'ResponseMetadata': {'HTTPStatusCode': status}}
+        client = Mock()
+        client.upload_part.side_effect = [ServiceError(499), {'ETag': 'checked'}]
+        parameters = {'PartNumber': 7, 'Body': b'unchanged', 'ContentMD5': 'digest'}
+        self.assertEqual(upload_part_with_retry(client, sleep=lambda _: None, **parameters), {'ETag': 'checked'})
+        self.assertEqual(client.upload_part.call_args_list[0], client.upload_part.call_args_list[1])
+        client.reset_mock()
+        client.upload_part.side_effect = ServiceError(403)
+        with self.assertRaises(ServiceError):
+            upload_part_with_retry(client, sleep=lambda _: None, **parameters)
+        self.assertEqual(client.upload_part.call_count, 1)
+        client.reset_mock()
+        client.upload_part.side_effect = ServiceError(499)
+        with self.assertRaises(ServiceError):
+            upload_part_with_retry(client, sleep=lambda _: None, **parameters)
+        self.assertEqual(client.upload_part.call_count, 6)
+
     def test_checks_actual_bytes_and_rejects_wrong_metadata_or_range(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'source.pack'
