@@ -27,9 +27,10 @@ fn octDecode(e:vec2f)->vec3f {
   let kind=input.face&15u;let seed=input.face>>4u;let count=u32(frame.settings.x);
   var material=0u;if (input.face&0x80000000u)>0u {material=input.face&0x7fffffffu;}else if count>1u {material=kind+11u*(seed%((count+10u-kind)/11u));}
   let world=position(input.position,instance);
-  return VertexOut(frame.view*vec4f(world,1),world,instanceNormal(octDecode(input.normal),instance),input.uv,material,select(1.0,input.tint,input.tint>0));
+  let clip=select(frame.view*vec4f(world,1),vec4f(2,2,2,1),input.tint<0);
+  return VertexOut(clip,world,instanceNormal(octDecode(input.normal),instance),input.uv,material,select(1.0,input.tint,input.tint>0));
 }
-@vertex fn shadowVertex(@location(0) p:vec3f,@builtin(instance_index) instance:u32)->@builtin(position) vec4f {return frame.shadow*vec4f(position(p,instance),1);}
+@vertex fn shadowVertex(@location(0) p:vec3f,@location(4) tint:f32,@builtin(instance_index) instance:u32)->@builtin(position) vec4f {return select(frame.shadow*vec4f(position(p,instance),1),vec4f(2,2,2,1),tint<0);}
 @group(0) @binding(10) var<storage,read> surfaceField:array<vec4f>;
 fn waterHash(p:vec2f)->f32 {return fract(sin(dot(p,vec2f(127.1,311.7)))*43758.5453);}
 fn waterNoise(p:vec2f)->f32 {

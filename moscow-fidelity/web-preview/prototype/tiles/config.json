@@ -239,5 +239,8 @@
   "fenceLibraryPreview": "fence-library/preview.png",
   "meshPacks": {
     "assets-moscow-style-20261024-r14/tileset.json": "moscow-mesh-pack.json"
+  },
+  "visibilityMetadata": {
+    "assets-moscow-style-20261024-r14/tileset.json": "moscow-visibility.json"
   }
 }

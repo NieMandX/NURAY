@@ -5,7 +5,7 @@ import {installSurfaceField,isRoad} from '../../src/district/surface-effects.js?
 import {sunCascades,shadowUniform,inverseMatrix} from '../../src/district/sun-shadows.js?v=moscow-defaults-1';
 import {isFacade,facadePixels} from '../../src/district/facade-relief.js?v=moscow-defaults-1';
 import {contactVertex,contactFragment,contactComposite} from './webgl-contact-ao.js?v=moscow-defaults-1';
-import {TileRenderer} from './tile-renderer.js?v=moscow-defaults-1';
+import {TileRenderer} from './tile-renderer.js?v=scene-layers-1';
 import {activeChunkIds,sceneInstances,rasterLayout} from './tile-scene.js?v=moscow-defaults-1';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from '../../src/district/math.js?v=moscow-defaults-1';
 import {budgetTiles,overviewDistance} from './webgl-budget.js?v=moscow-defaults-1';
@@ -225,7 +225,7 @@ export class WebGLTileRenderer extends TileRenderer {
     const eye=[Math.sin(c.yaw)*Math.cos(c.pitch)*c.distance+c.target[0],Math.sin(c.pitch)*c.distance+c.target[1],Math.cos(c.yaw)*Math.cos(c.pitch)*c.distance+c.target[2]];
     const fov=2*Math.atan(Math.tan(44*Math.PI/360)*Math.max(1,1.1/aspect));
     const matrix=multiply(perspective(fov,aspect,1,this.tileset.extentMetres*6),lookAt(eye,c.target));
-    const chunks=this.chunks.filter(c=>visible(c.bounds,matrix));
+    const chunks=this.chunks.filter(c=>this.isChunkVisible(c)&&visible(c.bounds,matrix));
     this.pollTimer();let query;
     if(this.timerExtension&&this.queries.length<3){query=gl.createQuery();gl.beginQuery(this.timerExtension.TIME_ELAPSED_EXT,query);}
     let shadowDraws=0;const cascades=sunCascades(this,this.shadowSize),shadowData=shadowUniform(cascades,this.shadowSize);
@@ -234,7 +234,7 @@ export class WebGLTileRenderer extends TileRenderer {
       for(let i=0;i<cascades.length;i++){
         const c=cascades[i];if(!this.shadowDirty&&this.shadowKeys[i]===c.key)continue;
         gl.uniformMatrix4fv(u.view,false,c.matrix);gl.framebufferTextureLayer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,this.shadowTexture,0,i);gl.clearDepth(1);gl.clear(gl.DEPTH_BUFFER_BIT);
-        gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1,1);const casters=this.chunks.filter(mesh=>visible(mesh.bounds,c.matrix));shadowDraws+=casters.length;this.draw(casters);gl.disable(gl.POLYGON_OFFSET_FILL);this.shadowKeys[i]=c.key;
+        gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(1,1);const casters=this.chunks.filter(mesh=>this.isChunkVisible(mesh)&&visible(mesh.bounds,c.matrix));shadowDraws+=casters.length;this.draw(casters);gl.disable(gl.POLYGON_OFFSET_FILL);this.shadowKeys[i]=c.key;
       }
       this.shadowDirty=false;
     }

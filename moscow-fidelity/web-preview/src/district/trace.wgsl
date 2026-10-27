@@ -31,6 +31,7 @@ fn hitUV(page:u32,a:u32,b:u32,c:u32,bary:vec2f)->vec2f {
   return x*(1-bary.x-bary.y)+y*bary.x+z*bary.y;
 }
 fn opaqueHit(page:u32,a:u32,b:u32,c:u32,bary:vec2f)->bool {
+  if bitcast<f32>(word(page,a+7u))<0{return false;}
   let packed=word(page,a+6u);if (packed&0x80000000u)==0u{return true;}
   let id=packed&0x7fffffffu;let cutoff=meshMaterials[id].physical.w;
   if cutoff<=0{return true;}

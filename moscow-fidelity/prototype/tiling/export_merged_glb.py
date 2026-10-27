@@ -121,5 +121,7 @@ def main():
     if not a.skip_trace:
         from build_merged_trace import build
         build((out/'model.glb').resolve())
+        from build_merged_visibility import build as build_visibility
+        build_visibility(root,out/'visibility.json',merged=out)
 
 if __name__=='__main__':main()

@@ -1,4 +1,5 @@
-import {TileRenderer} from './tile-renderer.js?v=moscow-defaults-1';
+import {MergedFenceVisibility,validateVisibility} from './merged-visibility.js?v=scene-layers-1';
+import {TileRenderer} from './tile-renderer.js?v=scene-layers-1';
 import {loadCityMaterials} from '../../src/district/city-materials.js?v=moscow-defaults-1';
 import {orthographic,lookAt,multiply} from '../../src/district/math.js?v=moscow-defaults-1';
 import {planMergedTrace,mergedInstances,sha256} from './merged-trace.js?v=moscow-defaults-1';
@@ -33,6 +34,12 @@ export class MergedGlbRenderer extends TileRenderer {
       length=head.getUint32(8,true);const header=await reader.take(head.getUint32(12,true)),doc=JSON.parse(new TextDecoder().decode(header));
       const binHead=new DataView((await reader.take(8)).buffer);if(binHead.getUint32(4,true)!==0x004e4942)throw Error('В GLB отсутствует BIN');
       const data=doc.extras?.nuray;if(data?.format!=='nuray-merged-glb-v1')throw Error('Этот GLB не содержит данных объединённой сцены NURAY');
+      {
+        const response=await fetch(this.visibilityURL??new URL('merged/visibility.json',catalogURL));
+        if(!response.ok&&(this.visibilityURL||response.status!==404))throw Error('Не найдена карта категорий GLB');
+        if(response.ok){this.visibilityMetadata=validateVisibility(await response.json(),await sha256(header),data.draws);
+        for(const draw of data.draws){const entry=this.visibilityMetadata.get(draw.id);draw.layer=entry.layer??null;draw.fenceTriangles=entry.fenceTriangles??0;}}
+      }
       const manifestResponse=await fetch(new URL('trace/manifest.json',this.modelURL),{cache:'no-cache'});
       if(manifestResponse.ok){
         const manifest=await manifestResponse.json();
@@ -66,7 +73,7 @@ export class MergedGlbRenderer extends TileRenderer {
           const begun=performance.now(),kind=action.type,usage=kind==='vertex'?GPUBufferUsage.VERTEX:GPUBufferUsage.INDEX;
           const descriptor=this.mergedPlan?.descriptors.get(action.draw.id),offset=descriptor?descriptor[kind]*4:0;
           if(this.mergedPlan&&await sha256(bytes)!==this.mergedPlan.records.get(action.draw.id)[kind+'Sha256'])throw Error('GLB не совпадает с ускорителем: '+action.draw.name);
-          const buffer=descriptor?this.mergedArenas[descriptor.page]:this.device.createBuffer({label:`Merged ${kind} ${action.draw.id}`,size:bytes.byteLength,usage:usage|GPUBufferUsage.COPY_DST});
+          const buffer=descriptor?this.mergedArenas[descriptor.page]:this.device.createBuffer({label:`Merged ${kind} ${action.draw.id}`,size:bytes.byteLength,usage:usage|GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_DST});
           this.device.queue.writeBuffer(buffer,offset,bytes);uploadMs+=performance.now()-begun;
           let mesh=this.rasterMeshes.get(action.draw.id);if(!mesh){mesh={...action.draw};this.rasterMeshes.set(mesh.id,mesh);}mesh[kind]=buffer;mesh[kind+'Offset']=offset;
           this.streamStats.residentBytes+=bytes.byteLength;
@@ -77,7 +84,9 @@ export class MergedGlbRenderer extends TileRenderer {
       await reader.take(binHead.getUint32(0,true)-position,false);
       if(reader.bytes!==length)throw Error('Размер GLB не совпадает с заголовком');
       await this.device.queue.onSubmittedWorkDone();
-      this.chunks=[...this.rasterMeshes.values()];this.stats.geometryBytes=this.streamStats.residentBytes+this.rasterInstanceBytes;this.stats.bvhBytes=this.mergedPlan?[...this.mergedPlan.records.values()].reduce((n,d)=>n+d.nodeBytes,0):0;
+      this.chunks=[...this.rasterMeshes.values()];
+      if(this.visibilityMetadata){this.fenceVisibility=new MergedFenceVisibility(this);await this.fenceVisibility.init(this.visibilityMetadata);}
+      this.stats.geometryBytes=this.streamStats.residentBytes+this.rasterInstanceBytes+(this.fenceVisibility?.buffers.reduce((n,b)=>n+b.size,0)??0);this.stats.bvhBytes=this.mergedPlan?[...this.mergedPlan.records.values()].reduce((n,d)=>n+d.nodeBytes,0):0;
       this.streamStats.residentBytes=this.stats.geometryBytes+this.stats.bvhBytes;this.streamStats.peakResidentBytes=this.streamStats.residentBytes;this.streamStats.cpuCacheBytes=this.mergedTransforms.byteLength;
       this.stats.uploadMs=uploadMs;this.stats.buildMs=performance.now()-start;this.stats.bvhBuildMs=0;this.updateCounts();
       if(this.stats.triangles!==data.stats.expandedTriangles||this.stats.uniqueTriangles!==data.stats.uniqueTriangles)throw Error('Число треугольников GLB не совпало с проверенной сборкой');
@@ -102,14 +111,17 @@ export class MergedGlbRenderer extends TileRenderer {
       await this.device.queue.onSubmittedWorkDone();this.progress=(i+1)/this.chunks.length;this.publish(true);
     }
     this.phase='Иерархия всех объектов и инстансов';this.publish(true);
+    this.tracer.pages=this.mergedArenas;this.rebuildMergedScene();
+    this.stats.bvhBuildMs=performance.now()-start;this.mergedTraceReady=true;
+  }
+  rebuildMergedScene(){
     const assets=new Map([...this.mergedPlan.records.values()].map(c=>[c.id,c]));
-    const scene=traceScene(mergedInstances(this.chunks,this.mergedTransforms),assets,this.mergedPlan.descriptors);
-    this.tracer.pages=this.mergedArenas;
-    this.tracer.scene=this.device.createBuffer({label:'Whole GLB · all instances TLAS',size:scene.byteLength,usage:GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_DST});
+    const scene=traceScene(mergedInstances(this.chunks.filter(c=>this.isChunkVisible(c)),this.mergedTransforms),assets,this.mergedPlan.descriptors);
+    const previous=this.traceSceneBytes??0;this.tracer.scene?.destroy();
+    this.tracer.scene=this.device.createBuffer({label:'Whole GLB · visible instances TLAS',size:scene.byteLength,usage:GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_DST});
     this.device.queue.writeBuffer(this.tracer.scene,0,scene);this.traceSceneBytes=scene.byteLength;
-    this.stats.bvhBytes+=scene.byteLength;this.streamStats.residentBytes+=scene.byteLength;
-    this.streamStats.peakResidentBytes=Math.max(this.streamStats.peakResidentBytes,this.streamStats.residentBytes);
-    this.stats.bvhBuildMs=performance.now()-start;this.tracer.bind();this.mergedTraceReady=true;
+    this.stats.bvhBytes+=scene.byteLength-previous;this.streamStats.residentBytes+=scene.byteLength-previous;
+    this.streamStats.peakResidentBytes=Math.max(this.streamStats.peakResidentBytes,this.streamStats.residentBytes);this.tracer.bind();
   }
   async updateTiles(){
     if(this.state.engine!=='raster')await this.prepareTrace();
@@ -117,9 +129,10 @@ export class MergedGlbRenderer extends TileRenderer {
     this.ready=true;this.loading=false;this.progress=1;this.publish(true);
   }
   releaseRaster(){
+    this.fenceVisibility?.destroy();
     if(!this.mergedArenas)return super.releaseRaster();
     this.mergedArenas.forEach(b=>b.destroy());this.mergedArenas=[];this.rasterMeshes.clear();this.chunks=[];
     if(this.rasterInstanceBytes){this.instanceBuffer.destroy();this.rasterInstanceBytes=0;}
   }
-  releaseTrace(){this.tracer.pages=[];this.tracer.scene?.destroy();this.tracer.scene=null;this.tracer.group=null;this.mergedTraceReady=false;}
+  releaseTrace(){this.tracer.pages=[];this.tracer.scene?.destroy();this.tracer.scene=null;this.tracer.group=null;this.mergedTraceReady=false;this.traceSceneBytes=0;}
 }

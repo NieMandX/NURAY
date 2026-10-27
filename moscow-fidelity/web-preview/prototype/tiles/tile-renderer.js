@@ -1,5 +1,6 @@
+import {layerDefaults,normalizeLayers,layerVisible} from './scene-layers.js?v=scene-layers-1';
 import {meshBytes} from './packed-mesh.js?v=moscow-defaults-1';
-import {DistrictRenderer} from '../../src/district/renderer.js?v=moscow-defaults-1';
+import {DistrictRenderer} from '../../src/district/renderer.js?v=scene-layers-1';
 import {REGION_GPU_PAGE_BYTES} from '../../src/district/gpu-limits.js?v=moscow-defaults-1';
 import {orthographic,lookAt,perspective,multiply,visible} from '../../src/district/math.js?v=moscow-defaults-1';
 import {loadCityMaterials} from '../../src/district/city-materials.js?v=moscow-defaults-1';
@@ -8,11 +9,24 @@ import {activeChunkIds,pageChunkIds,sceneInstances,rasterLayout,traceScene} from
 
 export class TileRenderer extends DistrictRenderer {
   constructor(canvas,onStatus,onError){
-    super(canvas,onStatus,onError);this.waterEnabled=true;
+    super(canvas,onStatus,onError);this.waterEnabled=true;this.sceneLayers=layerDefaults();
     this.preferredPageLimit=REGION_GPU_PAGE_BYTES;
     this.meshCache=new Map();this.rasterMeshes=new Map();this.tilePages=new Map();
     this.tileModes=new Map();this.streamStats={downloadBytes:0,requests:0,cacheHits:0,evictions:0,releasedGpuBytes:0,residentBytes:0,peakResidentBytes:0};
     this.cacheBudget=24*1048576;
+  }
+  isChunkVisible(mesh){return layerVisible(mesh,this.sceneLayers);}
+  async setSceneLayers(value){
+    const wasReady=this.ready;this.ready=false;
+    try{
+      if(this.device)await this.device.queue.onSubmittedWorkDone();
+      this.sceneLayers=normalizeLayers(value);
+      if(this.merged){
+        this.fenceVisibility?.set(this.sceneLayers.fences);
+        if(this.mergedTraceReady)this.rebuildMergedScene();
+      }else if(this.state.engine!=='raster'&&wasReady)await this.updateTiles(this.tileModes,{force:true});
+      this.updateCounts();this.revision++;this.gpu=null;this.shadowDirty=true;this.tracer.cache.invalidate();this.tracer.reset();
+    }finally{this.ready=wasReady;this.publish(true);}
   }
   async open(url){
     // A mutable catalog may publish new content hashes at the same URL. Always
@@ -98,7 +112,7 @@ export class TileRenderer extends DistrictRenderer {
     this.stats.buildMs=null;this.stats.uploadMs=null;this.stats.bvhBuildMs=null;
     this.loading=true;this.phase='Подгружаем участки';this.progress=0;this.publish(true);
     const active=activeChunkIds(this.tileset,modes);
-    const instances=sceneInstances(this.tileset,modes);
+    const instances=sceneInstances(this.tileset,modes).filter(i=>this.state.engine==='raster'||this.isChunkVisible(this.assets.get(i.mesh)));
     if(this.tileset.extentMetres>1500&&this.state.engine!=='raster'){
       // Large regions reserve only the requested detail, not every off-screen
       // full-detail tile. Re-plan before allocating or destroying any GPU data.
@@ -192,11 +206,13 @@ export class TileRenderer extends DistrictRenderer {
     this.streamStats.residentBytes=geometry+nodes+scene.byteLength;this.updateCounts();this.tracer.bind();
   }
   updateCounts(){
-    this.stats.triangles=this.chunks.reduce((n,c)=>n+c.triangles*c.instanceCount,0);
-    this.stats.uniqueTriangles=this.chunks.reduce((n,c)=>n+c.triangles,0);
-    this.stats.vertices=this.chunks.reduce((n,c)=>n+c.vertexCount,0);
-    this.stats.meshCount=this.chunks.length;
-    this.stats.sharedInstances=this.chunks.reduce((n,c)=>n+(c.instanced?c.instanceCount:0),0);
+    const chunks=this.chunks.filter(c=>this.isChunkVisible(c));
+    const triangles=c=>c.triangles-(this.sceneLayers.fences?0:c.fenceTriangles??0);
+    this.stats.triangles=chunks.reduce((n,c)=>n+triangles(c)*c.instanceCount,0);
+    this.stats.uniqueTriangles=chunks.reduce((n,c)=>n+triangles(c),0);
+    this.stats.vertices=chunks.reduce((n,c)=>n+c.vertexCount,0);
+    this.stats.meshCount=chunks.length;
+    this.stats.sharedInstances=chunks.reduce((n,c)=>n+(c.instanced?c.instanceCount:0),0);
     this.stats.submitted=0;this.stats.draws=0;
   }
   timing(times,meta){

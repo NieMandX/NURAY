@@ -35,6 +35,7 @@ header{flex-wrap:wrap}#water-toggle{white-space:nowrap}#water-panel p{margin:7px
 <label>Движок<select id="engine" aria-label="Движок"><option value="raster">PBR · растеризация</option><option value="trace">NURAY · рейтрейс</option><option value="cascade">NURAY · каскады</option></select></label>
 <label>Разрешение<select id="quality" aria-label="Разрешение"><option value="180000">180 тыс. пикселей</option><option value="700000">700 тыс. пикселей</option><option value="0" selected>По размеру страницы</option></select></label>
 <label>Сэмплы<select id="samples" aria-label="Сэмплы"><option>4</option><option>8</option><option>16</option><option>32</option><option selected>64</option><option>256</option><option>2048</option><option>5000</option></select></label>
+<fieldset id="scene-layers" disabled><legend>Объекты сцены</legend></fieldset>
 <label style="display:flex"><input id="contact-shadows" type="checkbox" checked>Контактные тени</label>
 <label style="display:flex"><input id="sun-shadows" type="checkbox" checked>Солнечные тени</label>
 <label>Загрузка<select id="streaming" aria-label="Загрузка"><option value="auto">По положению камеры</option><option value="full" selected>Все тайлы подробно</option></select></label></fieldset>
@@ -101,7 +102,7 @@ header{flex-wrap:wrap}#water-toggle{white-space:nowrap}#water-panel p{margin:7px
     document.getElementById('activity').textContent = 'Ожидаем открытия через HTTP';
     return;
   }
-  import('./app.js?v=moscow-defaults-1').catch(error => {
+  import('./app.js?v=scene-layers-1').catch(error => {
     const notice = document.getElementById('error');
     notice.hidden = false; notice.textContent = error.message;
     document.getElementById('loading').hidden = true;

@@ -26,6 +26,7 @@ export class DistrictRenderer {
     this.lastTime=0;this.frameMs=16.7;this.lastStatus=0;this.stats={triangles:0,vertices:0,geometryBytes:0,textureBytes:0,buildMs:0,uploadMs:0,submitted:0,draws:0};
     this.waterClock=new WaterClock();this.waterSettings={...WATER_DEFAULTS};this.shadowDirty=true;this.shadowMs=0;this.gpu=null;this.measurement=null;
   }
+  isChunkVisible(mesh){return true;}
   async init(){
     if(!navigator.gpu)throw new Error('Этот браузер не предоставляет WebGPU.');
     const adapter=await withDeadline(navigator.gpu.requestAdapter({powerPreference:'high-performance'}),10000,'WebGPU-адаптер не ответил.');
@@ -49,7 +50,7 @@ export class DistrictRenderer {
     }));
     this.pipeline=await this.device.createRenderPipelineAsync({label:'District PBR raster',layout:'auto',vertex:{module:shaders[0],entryPoint:'vertex',buffers:[vertexLayout]},fragment:{module:shaders[0],entryPoint:'fragment',targets:[{format:this.sceneFormat}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'greater'}});
     this.ocean?.bindCity(this.pipeline);
-    this.shadowPipeline=await this.device.createRenderPipelineAsync({label:'Static sunlight shadow map',layout:'auto',vertex:{module:shaders[0],entryPoint:'shadowVertex',buffers:[{arrayStride:32,attributes:[vertexLayout.attributes[0]]}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'less',depthBias:1,depthBiasSlopeScale:1}});
+    this.shadowPipeline=await this.device.createRenderPipelineAsync({label:'Static sunlight shadow map',layout:'auto',vertex:{module:shaders[0],entryPoint:'shadowVertex',buffers:[{arrayStride:32,attributes:[vertexLayout.attributes[0],vertexLayout.attributes[4]]}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'less',depthBias:1,depthBiasSlopeScale:1}});
     this.texturePipeline=await this.device.createComputePipelineAsync({label:'Material texture arrays',layout:'auto',compute:{module:shaders[1],entryPoint:'main'}});
     this.shadowTexture=this.device.createTexture({size:[2048,2048,3],format:'depth32float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
     this.shadowUniform=this.device.createBuffer({size:256,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
@@ -199,7 +200,7 @@ export class DistrictRenderer {
     if(this.state.engine!=='raster'){this.tracer.frame(time);return;}
     if(!this.waterFrame(time))return;
     const dt=this.lastTime?time-this.lastTime:16.7;this.lastTime=time;this.frameMs=this.frameMs*.92+dt*.08;
-    const matrix=this.matrices();const chunks=this.state.culling?this.chunks.filter(c=>(this.sceneName!=='moscow'&&c.id===48)||visible(c.bounds,matrix)):this.chunks;
+    const matrix=this.matrices();const chunks=this.state.culling?this.chunks.filter(c=>this.isChunkVisible(c)&&((this.sceneName!=='moscow'&&c.id===48)||visible(c.bounds,matrix))):this.chunks.filter(c=>this.isChunkVisible(c));
     this.stats.submitted=chunks.reduce((n,c)=>n+c.triangles*c.instanceCount,0);this.stats.draws=chunks.length+(this.state.contactAO?2:0);
     const encoder=this.device.createCommandEncoder();const slot=this.timer.begin({revision:this.revision,dt,submitted:this.stats.submitted});
     this.ocean?.prepare(encoder,slot,this.waterDt);
@@ -210,7 +211,7 @@ export class DistrictRenderer {
         const frame=new Float32Array(48);frame.set(c.matrix,16);this.device.queue.writeBuffer(this.shadowFrames[layer],0,frame);
         const pass=encoder.beginRenderPass({...this.timer.pass(slot,'shadow'),colorAttachments:[],depthStencilAttachment:{view:this.shadowTexture.createView({dimension:'2d',baseArrayLayer:layer,arrayLayerCount:1}),depthLoadOp:'clear',depthStoreOp:'store',depthClearValue:1}});
         pass.setPipeline(this.shadowPipeline);pass.setBindGroup(0,this.shadowGroups[layer]);
-        for(const mesh of this.chunks){if(!visible(mesh.bounds,c.matrix))continue;this.stats.draws++;pass.setVertexBuffer(0,mesh.vertex,mesh.vertexOffset??0,mesh.vertexBytes);pass.setIndexBuffer(mesh.index,'uint32',mesh.indexOffset??0,mesh.indexBytes);pass.drawIndexed(mesh.triangles*3,mesh.instanceCount,0,0,mesh.instanceFirst);}
+        for(const mesh of this.chunks){if(!this.isChunkVisible(mesh)||!visible(mesh.bounds,c.matrix))continue;this.stats.draws++;pass.setVertexBuffer(0,mesh.vertex,mesh.vertexOffset??0,mesh.vertexBytes);pass.setIndexBuffer(mesh.index,'uint32',mesh.indexOffset??0,mesh.indexBytes);pass.drawIndexed(mesh.triangles*3,mesh.instanceCount,0,0,mesh.instanceFirst);}
         pass.end();this.shadowKeys[layer]=c.key;
       }
       this.shadowDirty=false;

@@ -1,19 +1,21 @@
+import {installSceneLayers} from './scene-layers.js?v=scene-layers-1';
 import {installWaterPanel} from './water-panel.js?v=moscow-defaults-1';
 import {installHeliodon,sceneGeography} from './heliodon.js?v=moscow-defaults-1';
-import {MergedGlbRenderer} from './merged-glb-renderer.js?v=moscow-defaults-1';
-import {TileRenderer} from './tile-renderer.js?v=moscow-defaults-1';
-import {WebGLTileRenderer} from './webgl-renderer.js?v=moscow-defaults-1';
+import {MergedGlbRenderer} from './merged-glb-renderer.js?v=scene-layers-1';
+import {TileRenderer} from './tile-renderer.js?v=scene-layers-1';
+import {WebGLTileRenderer} from './webgl-renderer.js?v=scene-layers-1';
 import {bindCameraInput} from './camera-input.js?v=moscow-defaults-1';
 import {createStatsPanel} from './viewer-stats.js?v=moscow-defaults-1';
 import {viewerDefaults,catalogKey,defaultSunPreset} from '../../src/district/viewer-defaults.js?v=moscow-defaults-1';
 const $=id=>document.getElementById(id),showStats=createStatsPanel();
 const mergedMode=new URLSearchParams(location.search).get('layout')==='merged';
 let canvas=$('scene'),renderer;
-let initialized=false,pending=false,draining=false,debounce;
+let initialized=false,pending=false,draining=false,layerChanging=false,debounce,currentDrain=Promise.resolve();
 function fail(message){$('error').hidden=false;$('error').textContent=message;$('loading').hidden=true;$('retry').hidden=false;console.error(message);}
 function report(s){
   const st=renderer.streamStats;canvas.dataset.camera=JSON.stringify(renderer.camera);
-  if(mergedMode)$('stats-scope').textContent='Счётчики относятся ко всей карте из GLB. В рейтрейсе все треугольники и инстансы доступны лучам, включая объекты вне кадра.';
+  if(mergedMode)$('stats-scope').textContent='Счётчики относятся к включённым объектам всей карты. Рейтрейс учитывает их и вне кадра; отключённые объекты не видны лучам.';
+  canvas.dataset.sceneLayers=JSON.stringify(renderer.sceneLayers);
   canvas.dataset.residency=JSON.stringify({modes:[...renderer.tileModes],bytes:st.residentBytes,released:st.releasedGpuBytes,revision:renderer.revision,gpuPages:renderer.mergedArenas?.length??renderer.tilePages.size,gpuPageLimit:renderer.pageLimit,wholeSceneTrace:!!renderer.mergedTraceReady});
   showStats(s,st);
   $('residency').textContent=mergedMode?`Единый GLB · ${renderer.tileset?.nodes??'—'} объекта · вся карта`:`250 × 250 м · подробно: ${st.fullTiles??0} · обзор: ${st.coarseTiles??0}${st.budgetLimited?' · лимит нагрузки':''}`;
@@ -60,15 +62,21 @@ function schedule({immediate=false}={}){
   if(!initialized)return;clearTimeout(debounce);
   if(immediate){pending=true;void drain();}else debounce=setTimeout(()=>{pending=true;void drain();},140);
 }
-async function drain(){
-  if(draining)return;draining=true;$('engine').disabled=true;
+function drain(){if(draining||layerChanging)return currentDrain;currentDrain=drainTiles();return currentDrain;}
+async function drainTiles(){
+  draining=true;$('engine').disabled=true;
   try{
-    while(pending){pending=false;
+    while(pending&&!layerChanging){pending=false;
       const modes=renderer.chooseTiles({full:$('streaming').value==='full'});
       await renderer.updateTiles(modes);
     }
   }catch(e){renderer.loading=false;fail(e.message);$('activity').textContent='Ошибка загрузки';}
   finally{draining=false;$('engine').disabled=false;renderer.publish(true);}
+}
+async function applySceneLayers(value){
+  layerChanging=true;$('settings').disabled=true;
+  try{await currentDrain;await renderer.setSceneLayers(value);}
+  finally{layerChanging=false;$('settings').disabled=false;if(pending)void drain();}
 }
 $('engine').onchange=()=>{
   const engine=$('engine').value;
@@ -170,6 +178,7 @@ try{
     if(!p.ok)throw Error('Не найден индекс контейнера тайлов');
     renderer.meshPack=await p.json();
   }
+  if(mergedMode&&config.visibilityMetadata?.[config.catalog])renderer.visibilityURL=new URL(config.visibilityMetadata[config.catalog],configURL);
   await renderer.open(catalogURL);
   if(config.surfaceEffects?.[config.catalog])await renderer.loadSurfaceEffects(new URL(config.surfaceEffects[config.catalog],assetBase));
   const sourceGeo=sceneGeography(renderer.tileset,config.geography?.[config.catalog]);
@@ -184,7 +193,7 @@ try{
   document.title=title;$('region-title').textContent=title;
   const regionName=data.regionName||'Кутузовская',isMoscow=regionName==='Кутузовская';
   $('region-subtitle').textContent=mergedMode?`${regionName} · единый GLB · ${data.nodes} объекта`:`${regionName} · ${data.tiles.length} тайлов по ${data.tileSizeM} м`;
-  if(mergedMode){$('streaming').disabled=true;$('streaming').value='full';$('streaming').selectedOptions[0].textContent='Вся карта · единый GLB';$('streaming-note').textContent='Вся карта загружается из одного файла. Деревья и городские предметы сохраняют общие модели и инстансы.';$('backend-note').textContent='WebGPU · вся карта из GLB. Растр, рейтрейс и каскады используют всю геометрию, без отсечения по тайлам и камере.';$('objects-summary').textContent=`Статическая геометрия: 1 объект · общие модели: ${data.nodes-1} · инстансов: ${data.stats.sharedInstances.toLocaleString('ru-RU')}`;}
+  if(mergedMode){$('streaming').disabled=true;$('streaming').value='full';$('streaming').selectedOptions[0].textContent='Вся карта · единый GLB';$('streaming-note').textContent='Вся карта загружается из одного файла. Деревья и городские предметы сохраняют общие модели и инстансы.';$('backend-note').textContent='WebGPU · вся карта из GLB. Растр, рейтрейс и каскады используют включённые объекты всей карты, включая объекты вне кадра.';$('objects-summary').textContent=`Статическая геометрия: 1 объект · общие модели: ${data.nodes-1} · инстансов: ${data.stats.sharedInstances.toLocaleString('ru-RU')}`;}
   canvas.setAttribute('aria-label',`Трёхмерная модель · ${regionName}`);
   if(!isMoscow){
     // Source-specific witnesses belong to their own region. Global navigation
@@ -270,7 +279,7 @@ try{
     if(selected)$('view-name').textContent=button.firstChild.textContent;
   });
   if(approvedCamera)$('view-name').textContent='Сохранённый вид';
-  await renderer.updateTiles(renderer.chooseTiles({full:$('streaming').value==='full'}));initialized=true;$('measure-scene').disabled=false;$('settings').disabled=false;$('views').disabled=false;$('loading').hidden=true;renderer.publish(true);
+  await renderer.updateTiles(renderer.chooseTiles({full:$('streaming').value==='full'}));await installSceneLayers(renderer,config.catalog,applySceneLayers);initialized=true;$('measure-scene').disabled=false;$('settings').disabled=false;$('views').disabled=false;$('loading').hidden=true;renderer.publish(true);
 }catch(e){fail(e.message);}
 window.addEventListener('pagehide',()=>renderer?.dispose(),{once:true});
 document.addEventListener('visibilitychange',()=>renderer?.publish(true));

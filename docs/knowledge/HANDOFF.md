@@ -17,7 +17,7 @@ WebGPU + raster — московский default. Полный GLB требуе�
 Нужен современный Node.js. Из `moscow-fidelity/web-preview`:
 
 ```sh
-node --test tests/regional-defaults.test.mjs tests/water-settings.test.mjs tests/water-optics.test.mjs tests/packed-mesh.test.mjs
+node --test tests/regional-defaults.test.mjs tests/water-settings.test.mjs tests/water-optics.test.mjs tests/packed-mesh.test.mjs tests/scene-layers.test.mjs
 ```
 
 Перед публикацией проверить свежий профиль/URL без старых параметров камеры и солнца; URL имеет приоритет над default. Визуально проверить WebGPU raster, trace и WebGL2 tiles. Убедиться, что нет 404, CORS и несовпадающего trace-кэша.
@@ -33,6 +33,16 @@ Python-скрипты находятся в `prototype/tiling`, часть оп�
 ## Перед началом новой задачи
 
 Прочитать `README.md`, `DECISIONS.md`, `DEPLOYMENT.md`, затем проверить `git status`, `config.json`, manifest выпуска и пользовательские настройки в открытом viewer. Сначала сохранить пользовательские регуляторы, только потом перезагружать страницу. Не перепутать старые корневые прототипы с актуальной папкой `moscow-fidelity/`.
+
+## Видимость объектов
+
+В «Отображение → Объекты сцены» доступны деревья и кустарники, заборы, оборудование детских площадок и фонари. Все четыре категории изначально включены; выбор сохраняется в localStorage отдельно для каталога. Газоны не относятся к переключателю растительности, конструктивные стенки и парапеты не относятся к заборам. Скрытые объекты исключаются также из теней и лучевых пересечений.
+
+Переключатели работают в WebGPU (единый GLB и тайлы, raster/trace/cascades) и WebGL2 (тайлы). Геометрия остаётся в памяти для быстрого возврата; это уменьшает работу рендера, но не является выгрузкой моделей из VRAM. В смешанном статическом блоке скрытые треугольники ещё проходят вершинный этап и проверку BVH, но отбрасываются до видимого результата.
+
+Для опубликованного московского r14 небольшой `prototype/tiles/moscow-visibility.json` описывает категории исходного GLB; `config.json → visibilityMetadata` связывает его с каталогом. Тяжёлый GLB и Cloud.ru выпуск не изменены. Новые сборки `export_merged_glb.py` создают `merged/visibility.json` после trace manifest автоматически. Исторический GLB без карты категорий показывает недоступный переключатель заборов; остальные категории определяются по именам общих моделей.
+
+Для восстановления карты старого GLB: `python3 prototype/tiling/build_merged_visibility.py --source <release> --output <release>/merged/visibility.json`. Требуется NumPy, каноническая геометрия и существующие merged metadata/trace manifest. Скрипт повторяет порядок объединения и проверяет SHA-256 вершин и индексов всех помечаемых статических групп. Не переносить карту между различными GLB: viewer проверяет hash заголовка и границы диапазонов.
 
 ## Известные границы восстановления
 
