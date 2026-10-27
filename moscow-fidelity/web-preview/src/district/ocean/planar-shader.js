@@ -41,3 +41,24 @@ vec3 sceneReflection(vec3 world,vec3 n,float rough,vec3 sky){
  return mix(sky,c.rgb*8./max(c.a,.001),clamp(c.a*edge*level*reflectionParams.y,0.,1.));
 }
 `;
+// Ground has its own elevation, target and controls. No wave distortion.
+// Keep the same sampling/fade rules in both raster backends.
+export const GROUND_WGSL=PLANAR_WGSL.replaceAll('@group(2)','@group(3)')
+ .replaceAll('Reflection','GroundReflection').replaceAll('reflection','groundReflection')
+ .replace('smoothstep(1.0,5.0','smoothstep(.5,3.0');
+export const GROUND_GLSL=PLANAR_GLSL.replaceAll('Reflection','GroundReflection').replaceAll('reflection','groundReflection')
+ .replace('smoothstep(1.,5.','smoothstep(.5,3.');
+// Thin reflective finish on the existing beige material, stronger at grazing
+// angles. Missing/invalid capture returns the original light exactly.
+export const GROUND_COAT_WGSL=`
+  if m.scale.z<-.5 && geometricNormal.y>.96 && groundReflection.size.z>.5 {
+   let reflected=sceneGroundReflection(v.world,geometricNormal,.25,light);
+   light=mix(light,reflected,.25+.5*pow(1-clamp(nv,0,1),5.0));
+  }
+`;
+export const GROUND_COAT_GLSL=`
+  if(info.y<-.5&&geometricNormal.y>.96&&groundReflectionSize.z>.5){
+   vec3 reflected=sceneGroundReflection(world,geometricNormal,.25,light);
+   light=mix(light,reflected,.25+.5*pow(1.-clamp(nv,0.,1.),5.));
+  }
+`;

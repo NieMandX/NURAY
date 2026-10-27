@@ -1,6 +1,6 @@
-import {reflectionState,reflectionChunks} from '../../src/district/ocean/planar-math.js?v=water-reflections-1';
+import {reflectionState,reflectionChunks,reflectionParameters} from '../../src/district/ocean/planar-math.js?v=ground-reflections-1';
 export class WebGLReflection {
- constructor(owner,program){this.o=owner;this.gl=owner.gl;this.program=program;this.updates=0;this.resize([1,1]);}
+ constructor(owner,program,ground=false){this.ground=ground;this.name=ground?'groundReflection':'reflection';this.o=owner;this.gl=owner.gl;this.program=program;this.updates=0;this.resize([1,1]);}
  resize(size){
   if(String(size)===String(this.size))return;
   const g=this.gl;this.disposeTargets();this.size=size;this.key=null;
@@ -12,24 +12,24 @@ export class WebGLReflection {
   g.bindFramebuffer(g.FRAMEBUFFER,null);
  }
  draw(matrix,eye,bind){
-  const o=this.o,g=this.gl,state=reflectionState(o,matrix,eye);this.state=state;let draws=0;
+  const o=this.o,g=this.gl,state=reflectionState(o,matrix,eye,this.ground);this.state=state;let draws=0;
   if(state){
    this.resize(state.size);
    if(this.key!==state.key||this.chunks!==o.chunks){
     g.bindFramebuffer(g.FRAMEBUFFER,this.framebuffer);g.viewport(0,0,...state.size);g.clearColor(0,0,0,0);g.clearDepth(1);g.clear(g.COLOR_BUFFER_BIT|g.DEPTH_BUFFER_BIT);g.frontFace(g.CW);
     bind(this.program,state.matrix,state.eye);g.uniform1f(this.program.uniforms.captureHeight,state.height);
-    const meshes=reflectionChunks(o,state.matrix,state.height);o.draw(meshes);draws=meshes.length;this.triangles=meshes.reduce((n,c)=>n+c.triangles*c.instanceCount,0);
+    const meshes=reflectionChunks(o,state.matrix,state.height,this.ground);o.draw(meshes);draws=meshes.length;this.triangles=meshes.reduce((n,c)=>n+c.triangles*c.instanceCount,0);
     g.frontFace(g.CCW);this.updates++;this.key=state.key;this.chunks=o.chunks;
    }
   }
-  o.canvas.dataset.reflection=JSON.stringify({enabled:!!state,height:state?.height,size:this.size,updates:this.updates,triangles:this.triangles??0,bytes:this.size[0]*this.size[1]*8});o.syncReflectionStatus?.();return draws;
+  o.canvas.dataset[this.name]=JSON.stringify({enabled:!!state,height:state?.height,size:this.size,updates:this.updates,triangles:this.triangles??0,bytes:this.size[0]*this.size[1]*8});o.syncReflectionStatus?.();return draws;
  }
  bind(uniforms){
-  const g=this.gl,p=this.o.waterSettings,s=this.state;
-  g.activeTexture(g.TEXTURE5);g.bindTexture(g.TEXTURE_2D,this.color);g.uniform1i(uniforms.reflectionMap,5);
-  g.uniform3f(uniforms.reflectionSize,...this.size,s?1:0);
-  if(s){g.uniformMatrix4fv(uniforms.reflectionView,false,s.matrix);g.uniform4f(uniforms.reflectionParams,s.height,p.reflectionStrength/100,p.reflectionBlur,p.reflectionDistortion);}
+  const g=this.gl,p=reflectionParameters(this.o.waterSettings,this.ground),s=this.state,unit=this.ground?6:5,k=this.name;
+  g.activeTexture(g.TEXTURE0+unit);g.bindTexture(g.TEXTURE_2D,this.color);g.uniform1i(uniforms[k+'Map'],unit);
+  g.uniform3f(uniforms[k+'Size'],...this.size,s?1:0);
+  if(s){g.uniformMatrix4fv(uniforms[k+'View'],false,s.matrix);g.uniform4f(uniforms[k+'Params'],s.height,p.strength,p.blur,p.distortion);}
  }
  disposeTargets(){const g=this.gl;g.deleteTexture(this.color);g.deleteRenderbuffer(this.depth);g.deleteFramebuffer(this.framebuffer);}
- dispose(){this.disposeTargets();this.gl.deleteProgram(this.program.program);}
+ dispose(){this.disposeTargets();if(!this.ground)this.gl.deleteProgram(this.program.program);}
 }

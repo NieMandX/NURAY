@@ -1,5 +1,5 @@
-import {DistrictRenderer} from '../src/district/renderer.js?v=water-reflections-1';
-import {loadCityMaterials} from '../src/district/city-materials.js';
+import {DistrictRenderer} from '../src/district/renderer.js?v=ground-reflections-1';
+import {loadCityMaterials} from '../src/district/city-materials.js?v=ground-reflections-1';
 import {orthographic,lookAt,multiply} from '../src/district/math.js';
 import {DEFAULT_SETTINGS,normalizeSettings,buildGeometry,buildSurfaceGeometry,exportGLB} from './foliage-editor.js';
 import {decodePackedGeometry,normalizeAngle,smoothFoliage} from './foliage-smoothing.js?v=exact-base-1';

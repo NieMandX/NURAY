@@ -1,5 +1,5 @@
-import {WATER_CONTROLS,WATER_COLORS,cleanWaterSettings} from '../../src/district/ocean/settings.js?v=water-reflections-1';
-import {viewerDefaults,catalogKey} from '../../src/district/viewer-defaults.js?v=water-reflections-1';
+import {WATER_CONTROLS,WATER_COLORS,cleanWaterSettings} from '../../src/district/ocean/settings.js?v=ground-reflections-1';
+import {viewerDefaults,catalogKey} from '../../src/district/viewer-defaults.js?v=ground-reflections-1';
 export function installWaterPanel(renderer,catalog,onChange){
  // A new approved baseline must not be masked by old experimental browser settings.
  // Later edits are still remembered; earlier keys are retained, not deleted.
@@ -8,6 +8,7 @@ export function installWaterPanel(renderer,catalog,onChange){
  let saved={};try{saved=JSON.parse(localStorage.getItem(key)||'{}');}catch{}
  renderer.waterSettings=cleanWaterSettings(saved,defaults.water);
  if(new URLSearchParams(location.search).get('reflection')==='1')renderer.waterSettings.reflectionEnabled=true;
+ if(new URLSearchParams(location.search).get('groundReflection')==='1')renderer.waterSettings.groundReflectionEnabled=true;
  renderer.waterClock.time=defaults.waterTime;renderer.waterClock.last=null;renderer.waterClock.playing=false;
  if(Number.isFinite(saved?.waterTime)&&saved.waterTime>=0&&saved.waterTime<1e8)renderer.waterClock.time=saved.waterTime;
  const panel=$('water-panel'),toggle=$('water-toggle'),fields=$('water-fields'),lighting=$('lighting-model');
@@ -31,6 +32,19 @@ export function installWaterPanel(renderer,catalog,onChange){
  renderer.syncReflectionStatus=()=>{
   const r=JSON.parse(renderer.canvas.dataset.reflection||'{}');
   reflectionStatus.textContent=renderer.state.engine!=='raster'?'':!r.enabled?'Отражение геометрии выключено или вода вне кадра.':`${r.size.join(' × ')} · ${(r.bytes/1048576).toFixed(1)} МиБ · обновлений: ${r.updates}`+(Number.isFinite(renderer.reflectionMs)?` · последнее обновление GPU: ${renderer.reflectionMs.toFixed(2)} мс`:'');
+ };
+ const ground=[...fields.children].find(f=>f.querySelector('legend').textContent==='Отражения покрытий');
+ for(const [name,label] of [['groundReflectionDetail','Мелкие объекты в отражении покрытий'],['groundReflectionEnabled','Отражения на бежевых покрытиях']]){
+  const row=document.createElement('label'),input=document.createElement('input');row.style.display='flex';input.type='checkbox';input.id='water-'+name;
+  const update=()=>{input.checked=renderer.waterSettings[name];};update();controls[name]={input,row,update};
+  input.onchange=()=>{renderer.waterSettings[name]=input.checked;changed();};row.append(input,document.createTextNode(label));ground.insertBefore(row,ground.children[1]);
+ }
+ const groundNote=document.createElement('small');groundNote.textContent='Стандартная территория и пешеходное покрытие: только горизонтальные грани. Локальное плоское отражение плавно исчезает при перепадах высоты. Отдельно от воды.';ground.append(groundNote);
+ const groundStatus=document.createElement('small');groundStatus.id='ground-reflection-status';ground.append(groundStatus);
+ const syncWaterReflection=renderer.syncReflectionStatus;
+ renderer.syncReflectionStatus=()=>{
+  syncWaterReflection();const r=JSON.parse(renderer.canvas.dataset.groundReflection||'{}');
+  groundStatus.textContent=renderer.state.engine!=='raster'?'Доступно в растеризации.':!r.enabled?'Выключено или подходящее покрытие вне кадра.':`${r.size.join(' × ')} · ${(r.bytes/1048576).toFixed(1)} МиБ · обновлений: ${r.updates}`;
  };
  const optics=[...fields.children].find(f=>f.querySelector('legend').textContent==='Оптика воды');
  for(const [name,label] of WATER_COLORS){
@@ -57,7 +71,7 @@ export function installWaterPanel(renderer,catalog,onChange){
   lighting.value=p.lighting;
   for(const [name,c] of Object.entries(controls)){
    c.row.hidden=name.startsWith('hw')&&p.lighting!=='hosek';
-   c.input.disabled=c.row.hidden||(name.startsWith('reflection')&&(trace||(!p.reflectionEnabled&&name!=='reflectionEnabled')))||(name==='bloom'&&(!!renderer.gl||trace))||(name==='shadowStrength'&&trace);c.input.title=name==='shadowStrength'&&trace?'В рейтрейсе тени рассчитываются лучами без искусственного затемнения':name==='bloom'&&(renderer.gl||trace)?'Свечение доступно в растеризации WebGPU':'';
+   c.input.disabled=c.row.hidden||(name.startsWith('groundReflection')&&(trace||(!p.groundReflectionEnabled&&name!=='groundReflectionEnabled')))||(name.startsWith('reflection')&&(trace||(!p.reflectionEnabled&&name!=='reflectionEnabled')))||(name==='bloom'&&(!!renderer.gl||trace))||(name==='shadowStrength'&&trace);c.input.title=name==='shadowStrength'&&trace?'В рейтрейсе тени рассчитываются лучами без искусственного затемнения':name==='bloom'&&(renderer.gl||trace)?'Свечение доступно в растеризации WebGPU':'';
   }
   for(const f of fields.children)f.hidden=![...f.querySelectorAll('label')].some(row=>!row.hidden);
   $('water-mode').textContent=renderer.gl?'Ocean · облегчённые волны WebGL':'Ocean · спектральные волны WebGPU';

@@ -1,3 +1,4 @@
+import {isStandardGround} from './ground-surfaces.js?v=ground-reflections-1';
 import {isRoad} from './surface-effects.js?v=moscow-defaults-1';
 import {isFacade,facadePixels} from './facade-relief.js?v=moscow-defaults-1';
 import {cityBase} from './city-config.js?v=moscow-defaults-1';
@@ -7,7 +8,7 @@ export async function loadCityMaterials(owner,scene,assetBase=cityBase){
   owner.changing=true;await d.queue.onSubmittedWorkDone();
   owner.materialBuffer?.destroy();owner.textures?.forEach(t=>t.destroy());
   const data=new Float32Array(count*12);
-  scene.materials.forEach((m,i)=>data.set([...m.color,m.roughness,m.metallic,m.ior,m.kind,m.alphaCutoff,1,1,isFacade(m)?1:0,isRoad(m)?1:0],i*12));
+  scene.materials.forEach((m,i)=>data.set([...m.color,m.roughness,m.metallic,m.ior,m.kind,m.alphaCutoff,1,1,isFacade(m)?1:isStandardGround(m)?-1:0,isRoad(m)?1:0],i*12));
   owner.materialBuffer=d.createBuffer({size:data.byteLength,usage:GPUBufferUsage.STORAGE,mappedAtCreation:true});
   new Float32Array(owner.materialBuffer.getMappedRange()).set(data);owner.materialBuffer.unmap();
   owner.textures=[d.createTexture({size:[size,size,count],mipLevelCount:levels,format:'rgba8unorm',usage:GPUTextureUsage.STORAGE_BINDING|GPUTextureUsage.TEXTURE_BINDING}),

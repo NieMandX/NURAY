@@ -12,6 +12,7 @@ export const VIEWER_DEFAULTS=Object.freeze({
     animated:false,lighting:'hosek',lightingMix:50,
     hwTurbidity:3,hwAlbedo:.2,hwExposure:2.55,hwSkyIntensity:180,
     sunIntensity:15,shadowStrength:100,waterModel:'ocean',
+    groundReflectionEnabled:false,groundReflectionQuality:50,groundReflectionStrength:75,groundReflectionBlur:2,groundReflectionDetail:true,
     reflectionEnabled:false,reflectionQuality:50,reflectionStrength:100,reflectionBlur:1,reflectionDistortion:1,reflectionDetail:true,
     seaHeight:.6,seaFrequency:.16,seaChoppy:4,seaSpeed:.8,seaExposure:1,
   }),

@@ -1,9 +1,9 @@
 import {layerDefaults,normalizeLayers,layerVisible} from './scene-layers.js?v=scene-layers-1';
 import {meshBytes} from './packed-mesh.js?v=moscow-defaults-1';
-import {DistrictRenderer} from '../../src/district/renderer.js?v=water-reflections-1';
+import {DistrictRenderer} from '../../src/district/renderer.js?v=ground-reflections-1';
 import {REGION_GPU_PAGE_BYTES} from '../../src/district/gpu-limits.js?v=moscow-defaults-1';
 import {orthographic,lookAt,perspective,multiply,visible} from '../../src/district/math.js?v=moscow-defaults-1';
-import {loadCityMaterials} from '../../src/district/city-materials.js?v=moscow-defaults-1';
+import {loadCityMaterials} from '../../src/district/city-materials.js?v=ground-reflections-1';
 import {planGpuPages} from './gpu-pages.js?v=moscow-defaults-1';
 import {activeChunkIds,pageChunkIds,sceneInstances,rasterLayout,traceScene} from './tile-scene.js?v=moscow-defaults-1';
 
@@ -94,6 +94,7 @@ export class TileRenderer extends DistrictRenderer {
     const mesh={...c,vertices:raw.slice(0,c.vertexBytes),indices:raw.slice(c.vertexBytes,c.vertexBytes+c.indexBytes),
       nodes:raw.slice(c.vertexBytes+c.indexBytes,c.vertexBytes+c.indexBytes+c.nodeBytes)};
     this.waterHeights.add(id,mesh.vertices,this.tileset.materials,c.instanced);
+    this.groundHeights.add(id,mesh.vertices,this.tileset.materials,c.instanced);
     this.meshCache.set(id,{mesh,bytes:c.vertexBytes+c.indexBytes+c.nodeBytes,used:performance.now()});return mesh;
   }
   trimCache(active){

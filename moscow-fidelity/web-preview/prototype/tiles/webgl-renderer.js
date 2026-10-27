@@ -1,3 +1,4 @@
+import {isStandardGround} from '../../src/district/ground-surfaces.js?v=ground-reflections-1';
 import {absorptionCoefficients,linearColor} from '../../src/district/ocean/optics.js?v=moscow-defaults-1';
 import {HosekCache} from '../../src/district/hosek/model.js?v=moscow-defaults-1';
 import {waterSkyVertex,waterSkyFragment} from './water-webgl-sky.js?v=moscow-defaults-1';
@@ -5,12 +6,12 @@ import {installSurfaceField,isRoad} from '../../src/district/surface-effects.js?
 import {sunCascades,shadowUniform,inverseMatrix} from '../../src/district/sun-shadows.js?v=moscow-defaults-1';
 import {isFacade,facadePixels} from '../../src/district/facade-relief.js?v=moscow-defaults-1';
 import {contactVertex,contactFragment,contactComposite} from './webgl-contact-ao.js?v=moscow-defaults-1';
-import {TileRenderer} from './tile-renderer.js?v=water-reflections-1';
+import {TileRenderer} from './tile-renderer.js?v=ground-reflections-1';
 import {activeChunkIds,sceneInstances,rasterLayout} from './tile-scene.js?v=moscow-defaults-1';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from '../../src/district/math.js?v=moscow-defaults-1';
 import {budgetTiles,overviewDistance} from './webgl-budget.js?v=moscow-defaults-1';
-import {WebGLReflection} from './planar-webgl.js?v=water-reflections-1';
-import {vertex,fragment,shadowFragment,captureFragment} from './webgl-shaders.js?v=water-reflections-1';
+import {WebGLReflection} from './planar-webgl.js?v=ground-reflections-1';
+import {vertex,fragment,shadowFragment,captureFragment} from './webgl-shaders.js?v=ground-reflections-1';
 
 function program(gl,vs,fs){
   const shaders=[];const p=gl.createProgram();
@@ -60,6 +61,7 @@ export class WebGLTileRenderer extends TileRenderer {
     this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(this.canvas);this.resize();
     this.waterSkyProgram=program(this.gl,waterSkyVertex,waterSkyFragment);
     this.reflection=new WebGLReflection(this,program(gl,vertex,captureFragment));
+    this.groundReflection=new WebGLReflection(this,this.reflection.program,true);
     this.running=true;this.raf=requestAnimationFrame(t=>this.frame(t));
   }
   async open(url){
@@ -99,7 +101,7 @@ export class WebGLTileRenderer extends TileRenderer {
     }
     gl.generateMipmap(gl.TEXTURE_2D_ARRAY);
     const data=new Float32Array(materials.length*12);
-    materials.forEach((m,i)=>data.set([...m.color,m.roughness,m.metallic,m.ior,m.kind,m.alphaCutoff,layers.get(m.texture)||0,isFacade(m)?1:0,isRoad(m)?1:0,0],i*12));
+    materials.forEach((m,i)=>data.set([...m.color,m.roughness,m.metallic,m.ior,m.kind,m.alphaCutoff,layers.get(m.texture)||0,isFacade(m)?1:isStandardGround(m)?-1:0,isRoad(m)?1:0,0],i*12));
     this.materialTexture=gl.createTexture();gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,this.materialTexture);
     gl.texStorage2D(gl.TEXTURE_2D,1,gl.RGBA32F,3,materials.length);gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,3,materials.length,gl.RGBA,gl.FLOAT,data);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
@@ -257,9 +259,10 @@ export class WebGLTileRenderer extends TileRenderer {
     gl.bindFramebuffer(gl.FRAMEBUFFER,this.state.contactAO?this.contactFramebuffer:null);gl.viewport(0,0,this.canvas.width,this.canvas.height);
     gl.clearColor(.70,.735,.745,1);gl.clearDepth(1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
     const P=this.waterSettings;const waterData=new Float32Array([P.windSpeed,P.windDir*Math.PI/180,P.fetchKm,P.choppy,P.swellHs,P.swellLength,P.swellDir*Math.PI/180,P.turbidity,P.foam,P.shoreFoam,P.haze,P.clouds,P.veil,P.lighting==='classic'?1:P.lighting==='seascape'?2:P.lighting==='blend'?3:P.lighting==='hosek'?4:0,P.waterModel==='seascape'?1:0,P.lightingMix/100,P.seaHeight,P.seaFrequency,P.seaChoppy,P.seaSpeed,P.seaExposure,P.sunIntensity/100,P.shadowStrength/100,0,...absorptionCoefficients(P),P.waterIOR,...linearColor(P.scatteringColor),0]);
-    const reflectionDraws=this.reflection.draw(matrix,eye,(target,m,e)=>this.bindCityProgram(target,m,e,shadowData,cascades,waterData));
+    const bindCapture=(target,m,e)=>this.bindCityProgram(target,m,e,shadowData,cascades,waterData);
+    const reflectionDraws=this.reflection.draw(matrix,eye,bindCapture)+this.groundReflection.draw(matrix,eye,bindCapture);
     gl.bindFramebuffer(gl.FRAMEBUFFER,this.state.contactAO?this.contactFramebuffer:null);gl.viewport(0,0,this.canvas.width,this.canvas.height);
-    this.bindCityProgram(this.mainProgram,matrix,eye,shadowData,cascades,waterData);this.reflection.bind(this.mainProgram.uniforms);
+    this.bindCityProgram(this.mainProgram,matrix,eye,shadowData,cascades,waterData);this.reflection.bind(this.mainProgram.uniforms);this.groundReflection.bind(this.mainProgram.uniforms);
     this.draw(chunks);
     if(P.lighting!=='classic'){
     const sky=this.waterSkyProgram;gl.useProgram(sky.program);gl.disable(gl.CULL_FACE);gl.depthFunc(gl.LEQUAL);gl.depthMask(false);gl.bindVertexArray(null);
@@ -277,7 +280,7 @@ export class WebGLTileRenderer extends TileRenderer {
   }
   dispose(){
     this.running=false;cancelAnimationFrame(this.raf);this.resizeObserver?.disconnect();this.canvas.removeEventListener('webglcontextlost',this.onContextLost);
-    const gl=this.gl;if(!gl)return;this.reflection?.dispose();
+    const gl=this.gl;if(!gl)return;this.groundReflection?.dispose();this.reflection?.dispose();
     for(const c of this.rasterMeshes.values())this.releaseMesh(c);this.rasterMeshes.clear();this.meshCache.clear();
     gl.deleteBuffer(this.instanceBuffer);gl.deleteTexture(this.albedo);gl.deleteTexture(this.materialTexture);gl.deleteTexture(this.shadowTexture);
     for(const texture of [this.surfaceField,this.facadeNormal,this.contactColor,this.contactDepth,this.contactResult])gl.deleteTexture(texture);gl.deleteFramebuffer(this.contactFramebuffer);gl.deleteFramebuffer(this.contactResultFramebuffer);gl.deleteProgram(this.waterSkyProgram?.program);gl.deleteProgram(this.contactProgram?.program);gl.deleteProgram(this.contactComposite?.program);

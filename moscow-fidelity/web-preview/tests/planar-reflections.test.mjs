@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {lookAt,perspective,multiply} from '../src/district/math.js';
-import {WaterHeights,reflectedView,reflectedEye,reflectionSize,reflectionKey,reflectionChunks} from '../src/district/ocean/planar-math.js';
+import {WaterHeights,reflectedView,reflectedEye,reflectionSize,reflectionKey,reflectionChunks,reflectionState,reflectionParameters} from '../src/district/ocean/planar-math.js';
+import {isStandardGround} from '../src/district/ground-surfaces.js';
 import {cleanWaterSettings} from '../src/district/ocean/settings.js';
 import {withCityOcean} from '../src/district/ocean/city-shader.js';
 import {captureFragment} from '../prototype/tiles/webgl-shaders.js';
@@ -39,6 +40,33 @@ test('capture shaders exclude water and return linear radiance without recursive
  assert.ok(!plain.includes('@group(2)'));assert.match(s,/let refl = sceneReflection/);
  assert.match(capture,/v.world.y<frame.display.w/);assert.match(capture,/return vec4f\(light,1\)/);assert.ok(!/oceanShade|sceneReflection|lightingOutput/.test(capture));
  assert.ok(!/reflectionMap|sceneReflection/.test(captureFragment));assert.match(captureFragment,/if\(int\(physical.z\)==12\)discard/);assert.match(captureFragment,/return vec4\(light\/8.,1\)/);
+ assert.ok(!/groundReflection|sceneGroundReflection/.test(capture+captureFragment));
+ assert.match(s,/m.scale.z<-.5 && geometricNormal.y>.96/);
+});
+test('ground classification and height sampling reject same-coloured walls, roofs, grass, asphalt and water',()=>{
+ const materials=[{kind:1,family:'Пешеходное покрытие'},{kind:1,family:'Buildings'},
+  {kind:1,family:'recessed-flat-roof'},{kind:1,family:'Газон'},{kind:1,family:'Асфальт'},{kind:12,family:'Вода'},
+  {kind:1,family:'Территория / покрытие'}];
+ assert.deepEqual(materials.map(isStandardGround),[true,false,false,false,false,false,true]);
+ const bytes=new ArrayBuffer(32*8),f=new Float32Array(bytes),u=new Uint32Array(bytes);
+ for(let i=0;i<8;i++){f.set([0,i===0?.6:20,0],i*8);u[i*8+3]=i===7?0x00007fff:0x7fff0000;u[i*8+6]=0x80000000|(i===7?0:i%7);}
+ const index=new WaterHeights(true);index.add('ground',bytes,materials);
+ assert.equal([...index.cells.values()].reduce((n,p)=>n+p[3],0),2);
+ const identity=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
+ assert.ok(Math.abs(index.height([0,0,0],identity)-.6)<1e-6);
+});
+test('ground reflection is independent of water height, enable and sampling settings',()=>{
+ const p=cleanWaterSettings({groundReflectionEnabled:true,groundReflectionQuality:25,groundReflectionStrength:42,groundReflectionBlur:5,reflectionEnabled:false});
+ const o={waterSettings:p,groundHeights:{height:()=>4,version:1},waterHeights:{height:()=>-8,version:2},camera:{target:[0,0,0]},state:{},stats:{},chunks:[],canvas:{width:1280,height:720}};
+ const identity=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);
+ assert.equal(reflectionState(o,identity,[0,8,0]),null);
+ const s=reflectionState(o,identity,[0,8,0],true);assert.equal(s.height,4);assert.deepEqual(s.size,[320,180]);
+ assert.deepEqual(reflectionParameters(p,true),{enabled:true,quality:25,strength:.42,blur:5,distortion:0});
+ p.reflectionEnabled=true;p.reflectionDetail=false;p.reflectionBlur=8;
+ assert.equal(reflectionState(o,identity,[0,8,0],true).key,s.key);
+ p.groundReflectionDetail=false;assert.notEqual(reflectionState(o,identity,[0,8,0],true).key,s.key);
+ p.groundReflectionEnabled=false;assert.equal(reflectionState(o,identity,[0,8,0],true),null);
+ assert.equal(reflectionState(o,identity,[0,8,0]).height,-8);
 });
 test('hidden scene layers and optional small instances are omitted from the mirrored pass',()=>{
  const bounds={min:[-.5,.2,.1],max:[.5,.8,.5]},a={bounds,id:'building',instanceCount:1},b={...a,id:'tree',instanceCount:20},c={...a,id:'hidden'};
