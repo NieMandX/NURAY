@@ -1,5 +1,5 @@
-import {WATER_CONTROLS,WATER_COLORS,cleanWaterSettings} from '../../src/district/ocean/settings.js?v=moscow-defaults-1';
-import {viewerDefaults,catalogKey} from '../../src/district/viewer-defaults.js?v=moscow-defaults-1';
+import {WATER_CONTROLS,WATER_COLORS,cleanWaterSettings} from '../../src/district/ocean/settings.js?v=water-reflections-1';
+import {viewerDefaults,catalogKey} from '../../src/district/viewer-defaults.js?v=water-reflections-1';
 export function installWaterPanel(renderer,catalog,onChange){
  // A new approved baseline must not be masked by old experimental browser settings.
  // Later edits are still remembered; earlier keys are retained, not deleted.
@@ -7,6 +7,7 @@ export function installWaterPanel(renderer,catalog,onChange){
  const $=id=>document.getElementById(id),key=`nuray-water:${defaults.id}:${catalogKey(catalog)}`;
  let saved={};try{saved=JSON.parse(localStorage.getItem(key)||'{}');}catch{}
  renderer.waterSettings=cleanWaterSettings(saved,defaults.water);
+ if(new URLSearchParams(location.search).get('reflection')==='1')renderer.waterSettings.reflectionEnabled=true;
  renderer.waterClock.time=defaults.waterTime;renderer.waterClock.last=null;renderer.waterClock.playing=false;
  if(Number.isFinite(saved?.waterTime)&&saved.waterTime>=0&&saved.waterTime<1e8)renderer.waterClock.time=saved.waterTime;
  const panel=$('water-panel'),toggle=$('water-toggle'),fields=$('water-fields'),lighting=$('lighting-model');
@@ -19,6 +20,18 @@ export function installWaterPanel(renderer,catalog,onChange){
   const update=()=>{input.value=renderer.waterSettings[name];out.textContent=Number(input.value).toLocaleString('ru-RU',{maximumFractionDigits:3})+(unit?' '+unit:'');};update();
   controls[name]={input,row,update};input.addEventListener('input',()=>{renderer.waterSettings[name]=Number(input.value);update();changed();});row.append(head,input);fieldset.append(row);
  }
+ const reflections=[...fields.children].find(f=>f.querySelector('legend').textContent==='Отражения геометрии');
+ for(const [name,label] of [['reflectionDetail','Деревья и мелкие объекты в отражении'],['reflectionEnabled','Отражать город в воде']]){
+  const row=document.createElement('label'),input=document.createElement('input');row.style.display='flex';input.type='checkbox';input.id='water-'+name;
+  const update=()=>{input.checked=renderer.waterSettings[name];};update();controls[name]={input,row,update};
+  input.onchange=()=>{renderer.waterSettings[name]=input.checked;changed();};row.append(input,document.createTextNode(label));reflections.insertBefore(row,reflections.children[1]);
+ }
+ const reflectionNote=document.createElement('small');reflections.append(reflectionNote);
+ const reflectionStatus=document.createElement('small');reflectionStatus.id='reflection-status';reflections.append(reflectionStatus);
+ renderer.syncReflectionStatus=()=>{
+  const r=JSON.parse(renderer.canvas.dataset.reflection||'{}');
+  reflectionStatus.textContent=renderer.state.engine!=='raster'?'':!r.enabled?'Отражение геометрии выключено или вода вне кадра.':`${r.size.join(' × ')} · ${(r.bytes/1048576).toFixed(1)} МиБ · обновлений: ${r.updates}`+(Number.isFinite(renderer.reflectionMs)?` · последнее обновление GPU: ${renderer.reflectionMs.toFixed(2)} мс`:'');
+ };
  const optics=[...fields.children].find(f=>f.querySelector('legend').textContent==='Оптика воды');
  for(const [name,label] of WATER_COLORS){
   const row=document.createElement('label'),title=document.createElement('span'),line=document.createElement('span'),input=document.createElement('input'),hex=document.createElement('input');
@@ -35,14 +48,16 @@ export function installWaterPanel(renderer,catalog,onChange){
  const play=$('water-play'),freeze=$('water-freeze');
  function sync(){
   const trace=renderer.state.engine!=='raster';
+  renderer.syncReflectionStatus();
   opticsNote.textContent='Цвет поглощения — оттенок прошедшего света на заданной дистанции. Меньше метров — сильнее затухание. '+(trace?'Рейтрейс: преломление и затухание по длине луча в воде. Где в модели нет дна, глубина не подставляется.':'Растеризация: глубина оценивается по расстоянию до берега.');
   const p=renderer.waterSettings;
+  reflectionNote.textContent=trace?'В рейтрейсе отражения уже рассчитываются лучами. Эти настройки относятся к растеризации.':'Локальное плоское отражение. При перепадах высоты воды плавно заменяется небом. Неподвижный вид переиспользуется. Меньшее разрешение снижает память; отключение мелких объектов уменьшает число треугольников.';
   play.setAttribute('aria-pressed',String(p.animated));freeze.setAttribute('aria-pressed',String(!p.animated));
   $('water-state').textContent=p.animated?'Вода анимируется':'Вода заморожена · ползунки работают';panel.dataset.settings=JSON.stringify(p);
   lighting.value=p.lighting;
   for(const [name,c] of Object.entries(controls)){
    c.row.hidden=name.startsWith('hw')&&p.lighting!=='hosek';
-   c.input.disabled=c.row.hidden||(name==='bloom'&&(!!renderer.gl||trace))||(name==='shadowStrength'&&trace);c.input.title=name==='shadowStrength'&&trace?'В рейтрейсе тени рассчитываются лучами без искусственного затемнения':name==='bloom'&&(renderer.gl||trace)?'Свечение доступно в растеризации WebGPU':'';
+   c.input.disabled=c.row.hidden||(name.startsWith('reflection')&&(trace||(!p.reflectionEnabled&&name!=='reflectionEnabled')))||(name==='bloom'&&(!!renderer.gl||trace))||(name==='shadowStrength'&&trace);c.input.title=name==='shadowStrength'&&trace?'В рейтрейсе тени рассчитываются лучами без искусственного затемнения':name==='bloom'&&(renderer.gl||trace)?'Свечение доступно в растеризации WebGPU':'';
   }
   for(const f of fields.children)f.hidden=![...f.querySelectorAll('label')].some(row=>!row.hidden);
   $('water-mode').textContent=renderer.gl?'Ocean · облегчённые волны WebGL':'Ocean · спектральные волны WebGPU';

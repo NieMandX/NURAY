@@ -1,4 +1,4 @@
-import {DistrictRenderer} from '../src/district/renderer.js?v=vertex-tint-1';
+import {DistrictRenderer} from '../src/district/renderer.js?v=water-reflections-1';
 import {loadCityMaterials} from '../src/district/city-materials.js';
 import {orthographic,lookAt,multiply} from '../src/district/math.js';
 import {DEFAULT_SETTINGS,normalizeSettings,buildGeometry,buildSurfaceGeometry,exportGLB} from './foliage-editor.js';

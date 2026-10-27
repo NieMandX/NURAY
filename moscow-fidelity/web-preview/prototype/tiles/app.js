@@ -1,12 +1,12 @@
 import {installSceneLayers} from './scene-layers.js?v=scene-layers-1';
-import {installWaterPanel} from './water-panel.js?v=moscow-defaults-1';
+import {installWaterPanel} from './water-panel.js?v=water-reflections-1';
 import {installHeliodon,sceneGeography} from './heliodon.js?v=moscow-defaults-1';
-import {MergedGlbRenderer} from './merged-glb-renderer.js?v=scene-layers-1';
-import {TileRenderer} from './tile-renderer.js?v=scene-layers-1';
-import {WebGLTileRenderer} from './webgl-renderer.js?v=scene-layers-1';
+import {MergedGlbRenderer} from './merged-glb-renderer.js?v=water-reflections-1';
+import {TileRenderer} from './tile-renderer.js?v=water-reflections-1';
+import {WebGLTileRenderer} from './webgl-renderer.js?v=water-reflections-1';
 import {bindCameraInput} from './camera-input.js?v=moscow-defaults-1';
 import {createStatsPanel} from './viewer-stats.js?v=moscow-defaults-1';
-import {viewerDefaults,catalogKey,defaultSunPreset} from '../../src/district/viewer-defaults.js?v=moscow-defaults-1';
+import {viewerDefaults,catalogKey,defaultSunPreset} from '../../src/district/viewer-defaults.js?v=water-reflections-1';
 const $=id=>document.getElementById(id),showStats=createStatsPanel();
 const mergedMode=new URLSearchParams(location.search).get('layout')==='merged';
 let canvas=$('scene'),renderer;

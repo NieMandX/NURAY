@@ -1,4 +1,4 @@
-import {VIEWER_DEFAULTS} from '../viewer-defaults.js?v=moscow-defaults-1';
+import {VIEWER_DEFAULTS} from '../viewer-defaults.js?v=water-reflections-1';
 // Time is independent of wall-clock time: pausing never jumps the waves.
 export class WaterClock {
   constructor(){this.time=VIEWER_DEFAULTS.waterTime;this.last=null;this.playing=false;}
@@ -28,12 +28,17 @@ export const WATER_CONTROLS=[
  ['Оптика воды','waterIOR','IOR воды',1,2.5,.001,''],
  ['Вода и пена','foam','Пена на волнах',0,3,.01,''],
  ['Вода и пена','shoreFoam','Пена у берега',0,2,.01,''],
+ ['Отражения геометрии','reflectionQuality','Разрешение отражения',25,100,25,'%'],
+ ['Отражения геометрии','reflectionStrength','Сила отражения',0,100,1,'%'],
+ ['Отражения геометрии','reflectionBlur','Размытие отражения',0,8,.1,''],
+ ['Отражения геометрии','reflectionDistortion','Искажение волнами',0,3,.05,''],
 ];
 export function cleanWaterSettings(raw={},defaults=WATER_DEFAULTS){
  if(!raw||typeof raw!=="object")raw={};
  const p={...defaults};for(const [,key,,min,max] of WATER_CONTROLS)if(typeof raw[key]==='number'&&Number.isFinite(raw[key]))p[key]=Math.min(max,Math.max(min,raw[key]));
  for(const [key] of WATER_COLORS)if(typeof raw[key]==='string'&&/^#[0-9a-f]{6}$/i.test(raw[key]))p[key]=raw[key].toLowerCase();
  if(typeof raw.animated==='boolean')p.animated=raw.animated;
+ for(const key of ['reflectionEnabled','reflectionDetail'])if(typeof raw[key]==='boolean')p[key]=raw[key];
  if(['classic','hosek'].includes(raw.lighting))p.lighting=raw.lighting;
  p.waterModel='ocean'; // The sole supported water model.
  return p;

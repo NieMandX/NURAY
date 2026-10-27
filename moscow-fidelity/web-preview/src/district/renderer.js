@@ -1,6 +1,6 @@
 import {GpuOcean} from './ocean/gpu-ocean.js?v=moscow-defaults-1';
-import {withCityOcean} from './ocean/city-shader.js?v=moscow-defaults-1';
-import {WaterClock,WATER_DEFAULTS,waterFrameKey} from './ocean/settings.js?v=moscow-defaults-1';
+import {withCityOcean} from './ocean/city-shader.js?v=water-reflections-1';
+import {WaterClock,WATER_DEFAULTS,waterFrameKey} from './ocean/settings.js?v=water-reflections-1';
 import {installSurfaceField,loadSurfaceField} from './surface-effects.js?v=moscow-defaults-1';
 import {sunCascades,shadowUniform,inverseMatrix} from './sun-shadows.js?v=moscow-defaults-1';
 import {ContactAO} from './contact-ao.js?v=moscow-defaults-1';
@@ -14,6 +14,8 @@ import {cityManifest} from './city-config.js?v=moscow-defaults-1';
 import {renderSize} from './resolution.js?v=moscow-defaults-1';
 import {gpuPageLimit} from './gpu-limits.js?v=moscow-defaults-1';
 import {withDeadline} from './deadline.js?v=moscow-defaults-1';
+import {WaterHeights} from './ocean/planar-math.js?v=water-reflections-1';
+import {PlanarReflection,cityReflectionLayouts} from './ocean/planar-reflection.js?v=water-reflections-1';
 export const cameraDefaults=()=>({yaw:.64,pitch:.78,distance:160,target:[0,3,0]});
 const vertexLayout={arrayStride:32,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'snorm16x2'},{shaderLocation:2,offset:16,format:'float32x2'},{shaderLocation:3,offset:24,format:'uint32'},{shaderLocation:4,offset:28,format:'float32'}]};
 const median=values=>{const a=[...values].sort((x,y)=>x-y);return a[Math.floor(a.length/2)];};
@@ -25,6 +27,7 @@ export class DistrictRenderer {
     this.chunks=[];this.revision=0;this.inFlight=0;this.running=false;this.ready=false;this.loading=false;
     this.lastTime=0;this.frameMs=16.7;this.lastStatus=0;this.stats={triangles:0,vertices:0,geometryBytes:0,textureBytes:0,buildMs:0,uploadMs:0,submitted:0,draws:0};
     this.waterClock=new WaterClock();this.waterSettings={...WATER_DEFAULTS};this.shadowDirty=true;this.shadowMs=0;this.gpu=null;this.measurement=null;
+    this.waterHeights=new WaterHeights();
   }
   isChunkVisible(mesh){return true;}
   async init(){
@@ -44,12 +47,14 @@ export class DistrictRenderer {
     const shaders=await Promise.all(['district','textures'].map(async name=>{
       const response=await fetch(new URL(`${name}.wgsl`,import.meta.url),{cache:'no-store'});
       if(!response.ok)throw new Error(`Не найден ${name}.wgsl`);
-      const module=this.device.createShaderModule({label:name,code:name==='district'&&this.ocean?withCityOcean(await response.text()):await response.text()});
+      const module=this.device.createShaderModule({label:name,code:name==='district'&&this.ocean?withCityOcean(await response.text(),{planar:true}):await response.text()});
       const errors=(await module.getCompilationInfo()).messages.filter(m=>m.type==='error');
       if(errors.length)throw new Error(`${name}: `+errors.map(e=>`${e.lineNum}: ${e.message}`).join('\n'));return module;
     }));
-    this.pipeline=await this.device.createRenderPipelineAsync({label:'District PBR raster',layout:'auto',vertex:{module:shaders[0],entryPoint:'vertex',buffers:[vertexLayout]},fragment:{module:shaders[0],entryPoint:'fragment',targets:[{format:this.sceneFormat}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'greater'}});
+    if(this.ocean)this.cityLayouts=cityReflectionLayouts(this.device);
+    this.pipeline=await this.device.createRenderPipelineAsync({label:'District PBR raster',layout:this.ocean?this.device.createPipelineLayout({bindGroupLayouts:this.cityLayouts}):'auto',vertex:{module:shaders[0],entryPoint:'vertex',buffers:[vertexLayout]},fragment:{module:shaders[0],entryPoint:'fragment',targets:[{format:this.sceneFormat}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'greater'}});
     this.ocean?.bindCity(this.pipeline);
+    if(this.ocean){this.reflection=new PlanarReflection(this);await this.reflection.init(shaders[0],vertexLayout);}
     this.shadowPipeline=await this.device.createRenderPipelineAsync({label:'Static sunlight shadow map',layout:'auto',vertex:{module:shaders[0],entryPoint:'shadowVertex',buffers:[{arrayStride:32,attributes:[vertexLayout.attributes[0],vertexLayout.attributes[4]]}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'less',depthBias:1,depthBiasSlopeScale:1}});
     this.texturePipeline=await this.device.createComputePipelineAsync({label:'Material texture arrays',layout:'auto',compute:{module:shaders[1],entryPoint:'main'}});
     this.shadowTexture=this.device.createTexture({size:[2048,2048,3],format:'depth32float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
@@ -103,12 +108,15 @@ export class DistrictRenderer {
     if(this.textures)this.bindRaster();
   }
   bindRaster(){
-    this.mainGroup=this.device.createBindGroup({layout:this.pipeline.getBindGroupLayout(0),entries:[
-      {binding:0,resource:{buffer:this.uniform}},{binding:1,resource:{buffer:this.materialBuffer}},
+    this.mainGroup=this.device.createBindGroup({layout:this.pipeline.getBindGroupLayout(0),entries:this.rasterEntries(this.uniform)});
+    this.reflection?.bind();
+  }
+  rasterEntries(uniform){return [
+      {binding:0,resource:{buffer:uniform}},{binding:1,resource:{buffer:this.materialBuffer}},
       ...this.textures.map((t,i)=>({binding:i+2,resource:t.createView({dimension:'2d-array'})})),
       {binding:5,resource:this.sampler},{binding:6,resource:this.shadowTexture.createView({dimension:'2d-array'})},{binding:7,resource:this.shadowSampler},
       {binding:8,resource:{buffer:this.instanceBuffer}},{binding:9,resource:{buffer:this.shadowUniform}},{binding:10,resource:{buffer:this.surfaceField}},
-    ]});
+    ];
   }
   async loadSurfaceEffects(url){await loadSurfaceField(this,url);}
   async load(triangles){
@@ -183,7 +191,7 @@ export class DistrictRenderer {
     const matrix=multiply(perspective(fov,aspect,this.sceneName==='moscow'?1:.3,this.sceneName==='moscow'?this.city.extentMetres*6:550,true),lookAt(eye,c.target));
     const data=new Float32Array(48);data.set(matrix);data.set(this.shadowMatrix,16);data.set([...eye,0],32);data.set([...this.sun,this.sunPower??1],36);
     data.set([this.state.materials,this.state.textures?1:0,this.state.shadows?1:0,0],40);data.set([this.state.exposure,this.sceneName==='moscow'?0:.00055,this.waterEnabled?this.waterClock.time:performance.now()/1000,0],44);
-    this.device.queue.writeBuffer(this.uniform,0,data);this.eye=eye;return matrix;
+    this.device.queue.writeBuffer(this.uniform,0,data);this.frameData=data;this.eye=eye;return matrix;
   }
   waterFrame(time){
     this.waterDt=this.waterClock.tick(time,this.waterSettings.animated);
@@ -216,8 +224,9 @@ export class DistrictRenderer {
       }
       this.shadowDirty=false;
     }
+    this.reflection?.draw(encoder,slot,matrix);
     const pass=encoder.beginRenderPass({...this.timer.pass(slot,'geometry'),colorAttachments:[{view:this.state.contactAO?this.contactAO.color.createView():(this.ocean?this.ocean.hdr.createView():this.context.getCurrentTexture().createView()),clearValue:{r:.70,g:.735,b:.745,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:this.depth.createView(),depthClearValue:0,depthLoadOp:'clear',depthStoreOp:'store'}});
-    pass.setPipeline(this.pipeline);pass.setBindGroup(0,this.mainGroup);if(this.ocean)pass.setBindGroup(1,this.ocean.cityGroups[this.ocean.foamCur]);
+    pass.setPipeline(this.pipeline);pass.setBindGroup(0,this.mainGroup);if(this.ocean){pass.setBindGroup(1,this.ocean.cityGroups[this.ocean.foamCur]);pass.setBindGroup(2,this.reflection.group);}
     for(const c of chunks){pass.setVertexBuffer(0,c.vertex,c.vertexOffset??0,c.vertexBytes);pass.setIndexBuffer(c.index,'uint32',c.indexOffset??0,c.indexBytes);pass.drawIndexed(c.triangles*3,c.instanceCount,0,0,c.instanceFirst);}this.ocean?.drawSky(pass);pass.end();
     if(this.state.contactAO)this.contactAO.draw(encoder,slot,inverseMatrix(matrix,this.eye),[0,0,0]);
     this.ocean?.post(encoder,slot);
@@ -226,7 +235,7 @@ export class DistrictRenderer {
     this.device.queue.onSubmittedWorkDone().then(()=>{this.inFlight--;if(!this.timer.enabled)this.collect(null,{revision:this.revision,dt});}).catch(e=>{if(this.running)this.fail(e.message);});
     this.publish();
   }
-  timing(times,meta){if(meta.revision!==this.revision)return;if(meta.trace){this.gpu=times.total;this.tracer.recordTiming(times,meta);return;}this.gpu=times.total??null;if(times.shadow)this.shadowMs=times.shadow;this.collect(times.total,meta);}
+  timing(times,meta){if(meta.revision!==this.revision)return;if(meta.trace){this.gpu=times.total;this.tracer.recordTiming(times,meta);return;}this.gpu=times.total??null;if(times.shadow)this.shadowMs=times.shadow;if(times.reflection){this.reflectionMs=times.reflection;this.syncReflectionStatus?.();}this.collect(times.total,meta);}
   collect(gpu,meta){
     const m=this.measurement;if(!m||m.revision!==meta.revision)return;
     if(m.warm-->0)return;
@@ -263,5 +272,5 @@ export class DistrictRenderer {
       target:[(id%6-2.5)*10.5,roof?6.4:stone?1.0:3.8,(Math.floor(id/6)-3.5)*11.5+(stone||glass?2.7:0)]};
   }
   fail(message){this.running=false;cancelAnimationFrame(this.raf);this.cancelBuild();this.cancelMeasurement(message);this.onError(message);}
-  dispose(){this.running=false;cancelAnimationFrame(this.raf);this.cancelBuild();this.cancelMeasurement('Страница закрыта.');this.resizeObserver?.disconnect();this.timer?.dispose();this.ocean?.dispose();this.device?.destroy();}
+  dispose(){this.running=false;cancelAnimationFrame(this.raf);this.cancelBuild();this.cancelMeasurement('Страница закрыта.');this.resizeObserver?.disconnect();this.timer?.dispose();this.reflection?.dispose();this.ocean?.dispose();this.device?.destroy();}
 }

@@ -1,5 +1,5 @@
 import {MergedFenceVisibility,validateVisibility} from './merged-visibility.js?v=scene-layers-1';
-import {TileRenderer} from './tile-renderer.js?v=scene-layers-1';
+import {TileRenderer} from './tile-renderer.js?v=water-reflections-1';
 import {loadCityMaterials} from '../../src/district/city-materials.js?v=moscow-defaults-1';
 import {orthographic,lookAt,multiply} from '../../src/district/math.js?v=moscow-defaults-1';
 import {planMergedTrace,mergedInstances,sha256} from './merged-trace.js?v=moscow-defaults-1';
@@ -71,6 +71,7 @@ export class MergedGlbRenderer extends TileRenderer {
           }
           if(bytes.byteLength>this.device.limits.maxBufferSize)throw Error('GPU не поддерживает размер буфера объединённой сцены');
           const begun=performance.now(),kind=action.type,usage=kind==='vertex'?GPUBufferUsage.VERTEX:GPUBufferUsage.INDEX;
+          if(kind==='vertex')this.waterHeights.add(action.draw.id,bytes,data.materials,action.draw.instanced);
           const descriptor=this.mergedPlan?.descriptors.get(action.draw.id),offset=descriptor?descriptor[kind]*4:0;
           if(this.mergedPlan&&await sha256(bytes)!==this.mergedPlan.records.get(action.draw.id)[kind+'Sha256'])throw Error('GLB не совпадает с ускорителем: '+action.draw.name);
           const buffer=descriptor?this.mergedArenas[descriptor.page]:this.device.createBuffer({label:`Merged ${kind} ${action.draw.id}`,size:bytes.byteLength,usage:usage|GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_DST});

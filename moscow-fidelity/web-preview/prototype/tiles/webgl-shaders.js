@@ -1,4 +1,5 @@
 import {surfaceFunctions} from './water-shaders.js?v=moscow-defaults-1';
+import {PLANAR_GLSL} from '../../src/district/ocean/planar-shader.js?v=water-reflections-1';
 export const vertex=`#version 300 es
 precision highp float;
 precision highp int;
@@ -58,6 +59,7 @@ in float shade;
 flat in uint material;
 out vec4 result;
 ${surfaceFunctions}
+${PLANAR_GLSL}
 vec3 sky(vec3 d,float rough){return waterSky(d,rough);}
 vec3 fresnel(float c,vec3 f0){return f0+(1.-f0)*pow(1.-clamp(c,0.,1.),5.);}
 float dielectric(float c,float eta){
@@ -112,7 +114,9 @@ void main(){
   float rawShadow=visibility(world,geometricNormal),shadeSun=sunVisibility(rawShadow);
   vec3 light=(diffuse+spec)*waterSunColor()*nl*shadeSun*sunPower;
   light+=color*(1.-metal)*waterAmbient(n);
-  light+=sky(reflect(-wo,n),rough)*(int(physical.z)==12?vec3(waterFresnel(nv)):fresnel(nv,f0))*mix(1.,.40,rough);
+  vec3 environment=sky(reflect(-wo,n),rough);
+  if(int(physical.z)==12)environment=sceneReflection(world,n,rough,environment);
+  light+=environment*(int(physical.z)==12?vec3(waterFresnel(nv)):fresnel(nv,f0))*mix(1.,.40,rough);
   if(int(physical.z)==4){
     float f=dielectric(nv,physical.y);vec3 transmitted=vec3(.028,.032,.034)*exp(-vec3(.25,.09,.06)*(.012/max(.15,nv)));
     light=sky(reflect(-wo,n),rough)*f+transmitted*(1.-f)+spec*waterSunColor()*nl*shadeSun*sunPower;
@@ -120,3 +124,8 @@ void main(){
   light*=mix(1./1.4,1.,shadeSun)*shadowFill(rawShadow);
   result=lightingOutput(light);
 }`;
+export const captureFragment=fragment.replace(PLANAR_GLSL,'')
+ .replace('void main(){','uniform float captureHeight;\nvoid main(){\n if(world.y<captureHeight+.03)discard;')
+ .replace('  vec4 info=','  if(int(physical.z)==12)discard;\n  vec4 info=')
+ .replace('  if(int(physical.z)==12)environment=sceneReflection(world,n,rough,environment);','')
+ .replace('vec4 lightingOutput(vec3 light){','vec4 lightingOutput(vec3 light){return vec4(light/8.,1);}\nvec4 unusedGrade(vec3 light){');

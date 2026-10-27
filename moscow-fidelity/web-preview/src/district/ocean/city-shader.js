@@ -2,6 +2,7 @@ import {hosekWGSL} from '../hosek/shaders.js?v=moscow-defaults-1';
 import {SEASCAPE_WGSL} from '../seascape/seascape-wgsl.js?v=moscow-defaults-1';
 import {OCEAN} from './vendor/ocean.js?v=moscow-defaults-1';
 import {WATER_OPTICS_WGSL} from './optics.js?v=moscow-defaults-1';
+import {PLANAR_WGSL} from './planar-shader.js?v=water-reflections-1';
 // Keep the upstream spectral BRDF; use our finite water footprints instead of
 // the demonstration's infinite CDLOD ocean. All coordinates remain metres.
 export function cityOceanShader(){
@@ -61,7 +62,7 @@ export function cityOceanShader(){
  }
  `;
 }
-export function withCityOcean(source){
+export function withCityOcean(source,{planar=false}={}){
  source=source.replace(/fn sky\([\s\S]*?\n}/,original=>original.replace('fn sky(', 'fn classicSky(')+`\nfn sky(d:vec3f,rough:f32)->vec3f {return oceanEnvironment(d,rough);}`);
  const start=source.indexOf('  if u32(m.physical.z)==12u {');
  const end=source.indexOf('  let wo=',start);
@@ -81,5 +82,13 @@ export function withCityOcean(source){
  source=source.replace('mix(3.0,.12,rough)*frame.sun.w','mix(3.0,.12,rough)*frame.sun.w*F.viewProj[1].w');
  source=source.replace('return vec4f(srgb(toneMap(light*frame.display.x)),1);','return lightingOutput(light);');
  source=source.replaceAll('*frame.sun.w','*solarPower()');
- return 'diagnostic(off, derivative_uniformity);\n'+source+'\n'+cityOceanShader();
+ let ocean=cityOceanShader(),capture='';
+ if(planar){
+  ocean=ocean.replace('let refl = oceanEnvironment(R,(envLod)/8.0);','let refl = sceneReflection(world,nV,envLod/8.0,oceanEnvironment(R,envLod/8.0));');
+  capture=source.slice(source.indexOf('@fragment fn fragment(')).replace('fn fragment(', 'fn captureFragment(')
+   .replace(/  if u32\(m.physical.z\)==12u \{[\s\S]*?  if m.scale.w/,'  if m.scale.w')
+   .replace('  let m=materials[v.material];','  if v.world.y<frame.display.w+.03 || u32(materials[v.material].physical.z)==12u {discard;}\n  let m=materials[v.material];')
+   .replace('return lightingOutput(light);','return vec4f(light,1);');
+ }
+ return 'diagnostic(off, derivative_uniformity);\n'+source+'\n'+ocean+(planar?PLANAR_WGSL+capture:'');
 }

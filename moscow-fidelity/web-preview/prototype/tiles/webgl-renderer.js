@@ -5,11 +5,12 @@ import {installSurfaceField,isRoad} from '../../src/district/surface-effects.js?
 import {sunCascades,shadowUniform,inverseMatrix} from '../../src/district/sun-shadows.js?v=moscow-defaults-1';
 import {isFacade,facadePixels} from '../../src/district/facade-relief.js?v=moscow-defaults-1';
 import {contactVertex,contactFragment,contactComposite} from './webgl-contact-ao.js?v=moscow-defaults-1';
-import {TileRenderer} from './tile-renderer.js?v=scene-layers-1';
+import {TileRenderer} from './tile-renderer.js?v=water-reflections-1';
 import {activeChunkIds,sceneInstances,rasterLayout} from './tile-scene.js?v=moscow-defaults-1';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from '../../src/district/math.js?v=moscow-defaults-1';
 import {budgetTiles,overviewDistance} from './webgl-budget.js?v=moscow-defaults-1';
-import {vertex,fragment,shadowFragment} from './webgl-shaders.js?v=moscow-defaults-1';
+import {WebGLReflection} from './planar-webgl.js?v=water-reflections-1';
+import {vertex,fragment,shadowFragment,captureFragment} from './webgl-shaders.js?v=water-reflections-1';
 
 function program(gl,vs,fs){
   const shaders=[];const p=gl.createProgram();
@@ -58,6 +59,7 @@ export class WebGLTileRenderer extends TileRenderer {
     this.canvas.addEventListener('webglcontextlost',this.onContextLost);
     this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(this.canvas);this.resize();
     this.waterSkyProgram=program(this.gl,waterSkyVertex,waterSkyFragment);
+    this.reflection=new WebGLReflection(this,program(gl,vertex,captureFragment));
     this.running=true;this.raf=requestAnimationFrame(t=>this.frame(t));
   }
   async open(url){
@@ -216,6 +218,20 @@ export class WebGLTileRenderer extends TileRenderer {
     });
     if(disjoint)this.gpu=null;
   }
+  bindCityProgram(target,matrix,eye,shadowData,cascades,waterData){
+    const gl=this.gl,P=this.waterSettings;
+    const {program,uniforms:u}=target;gl.useProgram(program);
+    gl.uniformMatrix4fv(u.view,false,matrix);gl.uniformMatrix4fv(u.shadow,false,shadowData.subarray(0,48));gl.uniform4fv(u.shadowParams,shadowData.subarray(48,60));gl.uniform1i(u.shadowCount,this.state.shadows?cascades.length:0);gl.uniform1ui(u.materialCount,this.state.materials);
+    gl.uniform3fv(u.camera,eye);gl.uniform3fv(u.sun,this.sun);gl.uniform1f(u.sunPower,this.waterSettings.lighting==='hosek'?1:(this.sunPower??1));gl.uniform1f(u.exposure,this.state.exposure*(this.waterSettings.lighting==='ocean'?this.waterSettings.exposure/1.2:1));gl.uniform1f(u.shadowSize,this.shadowSize);
+    if(target===this.mainProgram&&this.lightingRevision!==this.revision){this.lightingRevision=this.revision;this.canvas.dataset.lighting=JSON.stringify({texels:cascades.map(c=>c.params[0]),count:gl.getUniform(program,u.shadowCount),shadow:Array.from(gl.getUniform(program,u.shadow)),shadowSize:gl.getUniform(program,u.shadowSize)});}
+    gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D_ARRAY,this.albedo);gl.uniform1i(u.albedo,0);
+    gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,this.materialTexture);gl.uniform1i(u.materials,1);
+    gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D_ARRAY,this.shadowTexture);gl.uniform1i(u.shadowMap,2);
+    gl.activeTexture(gl.TEXTURE3);gl.bindTexture(gl.TEXTURE_2D,this.facadeNormal);gl.uniform1i(u.facadeNormal,3);
+    gl.activeTexture(gl.TEXTURE4);gl.bindTexture(gl.TEXTURE_2D,this.surfaceField);gl.uniform1i(u.surfaceField,4);gl.uniform1f(u.waterTime,this.waterClock.time);
+    gl.uniform4fv(u.waterP,waterData);
+    if(P.lighting==='hosek')gl.uniform4fv(u.hwP,this.hosekCache.update(this.sun,P));
+  }
   frame(time){
     if(!this.running)return;this.raf=requestAnimationFrame(t=>this.frame(t));
     if(document.hidden){this.waterClock.last=null;this.lastTime=0;return;}
@@ -240,17 +256,10 @@ export class WebGLTileRenderer extends TileRenderer {
     }
     gl.bindFramebuffer(gl.FRAMEBUFFER,this.state.contactAO?this.contactFramebuffer:null);gl.viewport(0,0,this.canvas.width,this.canvas.height);
     gl.clearColor(.70,.735,.745,1);gl.clearDepth(1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
-    const {program,uniforms:u}=this.mainProgram;gl.useProgram(program);
-    gl.uniformMatrix4fv(u.view,false,matrix);gl.uniformMatrix4fv(u.shadow,false,shadowData.subarray(0,48));gl.uniform4fv(u.shadowParams,shadowData.subarray(48,60));gl.uniform1i(u.shadowCount,this.state.shadows?cascades.length:0);gl.uniform1ui(u.materialCount,this.state.materials);
-    gl.uniform3fv(u.camera,eye);gl.uniform3fv(u.sun,this.sun);gl.uniform1f(u.sunPower,this.waterSettings.lighting==='hosek'?1:(this.sunPower??1));gl.uniform1f(u.exposure,this.state.exposure*(this.waterSettings.lighting==='ocean'?this.waterSettings.exposure/1.2:1));gl.uniform1f(u.shadowSize,this.shadowSize);
-    if(this.lightingRevision!==this.revision){this.lightingRevision=this.revision;this.canvas.dataset.lighting=JSON.stringify({texels:cascades.map(c=>c.params[0]),count:gl.getUniform(program,u.shadowCount),shadow:Array.from(gl.getUniform(program,u.shadow)),shadowSize:gl.getUniform(program,u.shadowSize)});}
-    gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D_ARRAY,this.albedo);gl.uniform1i(u.albedo,0);
-    gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,this.materialTexture);gl.uniform1i(u.materials,1);
-    gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D_ARRAY,this.shadowTexture);gl.uniform1i(u.shadowMap,2);
-    gl.activeTexture(gl.TEXTURE3);gl.bindTexture(gl.TEXTURE_2D,this.facadeNormal);gl.uniform1i(u.facadeNormal,3);
-    gl.activeTexture(gl.TEXTURE4);gl.bindTexture(gl.TEXTURE_2D,this.surfaceField);gl.uniform1i(u.surfaceField,4);gl.uniform1f(u.waterTime,this.waterClock.time);
-    const P=this.waterSettings;const waterData=new Float32Array([P.windSpeed,P.windDir*Math.PI/180,P.fetchKm,P.choppy,P.swellHs,P.swellLength,P.swellDir*Math.PI/180,P.turbidity,P.foam,P.shoreFoam,P.haze,P.clouds,P.veil,P.lighting==='classic'?1:P.lighting==='seascape'?2:P.lighting==='blend'?3:P.lighting==='hosek'?4:0,P.waterModel==='seascape'?1:0,P.lightingMix/100,P.seaHeight,P.seaFrequency,P.seaChoppy,P.seaSpeed,P.seaExposure,P.sunIntensity/100,P.shadowStrength/100,0,...absorptionCoefficients(P),P.waterIOR,...linearColor(P.scatteringColor),0]);gl.uniform4fv(u.waterP,waterData);
-    if(P.lighting==='hosek')gl.uniform4fv(u.hwP,this.hosekCache.update(this.sun,P));
+    const P=this.waterSettings;const waterData=new Float32Array([P.windSpeed,P.windDir*Math.PI/180,P.fetchKm,P.choppy,P.swellHs,P.swellLength,P.swellDir*Math.PI/180,P.turbidity,P.foam,P.shoreFoam,P.haze,P.clouds,P.veil,P.lighting==='classic'?1:P.lighting==='seascape'?2:P.lighting==='blend'?3:P.lighting==='hosek'?4:0,P.waterModel==='seascape'?1:0,P.lightingMix/100,P.seaHeight,P.seaFrequency,P.seaChoppy,P.seaSpeed,P.seaExposure,P.sunIntensity/100,P.shadowStrength/100,0,...absorptionCoefficients(P),P.waterIOR,...linearColor(P.scatteringColor),0]);
+    const reflectionDraws=this.reflection.draw(matrix,eye,(target,m,e)=>this.bindCityProgram(target,m,e,shadowData,cascades,waterData));
+    gl.bindFramebuffer(gl.FRAMEBUFFER,this.state.contactAO?this.contactFramebuffer:null);gl.viewport(0,0,this.canvas.width,this.canvas.height);
+    this.bindCityProgram(this.mainProgram,matrix,eye,shadowData,cascades,waterData);this.reflection.bind(this.mainProgram.uniforms);
     this.draw(chunks);
     if(P.lighting!=='classic'){
     const sky=this.waterSkyProgram;gl.useProgram(sky.program);gl.disable(gl.CULL_FACE);gl.depthFunc(gl.LEQUAL);gl.depthMask(false);gl.bindVertexArray(null);
@@ -263,12 +272,12 @@ export class WebGLTileRenderer extends TileRenderer {
     this.canvas.dataset.water=JSON.stringify({time:this.waterClock.time,renders:this.waterRenders=(this.waterRenders||0)+1,animated:P.animated,backend:'WebGL',waterModel:P.waterModel,lighting:P.lighting,lightingMix:P.lightingMix,sunIntensity:P.sunIntensity,shadowStrength:P.shadowStrength,settings:this.waterRevision||0});
     if(this.state.contactAO)this.drawContact(matrix,eye);
     if(query){gl.endQuery(this.timerExtension.TIME_ELAPSED_EXT);this.queries.push({query,revision:this.revision});}
-    this.stats.submitted=chunks.reduce((n,c)=>n+c.triangles*c.instanceCount,0);this.stats.draws=chunks.length+(this.state.contactAO?2:0)+shadowDraws+(P.lighting!=='classic'?1:0);
+    this.stats.submitted=chunks.reduce((n,c)=>n+c.triangles*c.instanceCount,0);this.stats.draws=chunks.length+(this.state.contactAO?2:0)+shadowDraws+reflectionDraws+(P.lighting!=='classic'?1:0);
     const dt=this.lastTime?time-this.lastTime:16.7;this.lastTime=time;this.frameMs=this.frameMs*.92+dt*.08;this.publish();
   }
   dispose(){
     this.running=false;cancelAnimationFrame(this.raf);this.resizeObserver?.disconnect();this.canvas.removeEventListener('webglcontextlost',this.onContextLost);
-    const gl=this.gl;if(!gl)return;
+    const gl=this.gl;if(!gl)return;this.reflection?.dispose();
     for(const c of this.rasterMeshes.values())this.releaseMesh(c);this.rasterMeshes.clear();this.meshCache.clear();
     gl.deleteBuffer(this.instanceBuffer);gl.deleteTexture(this.albedo);gl.deleteTexture(this.materialTexture);gl.deleteTexture(this.shadowTexture);
     for(const texture of [this.surfaceField,this.facadeNormal,this.contactColor,this.contactDepth,this.contactResult])gl.deleteTexture(texture);gl.deleteFramebuffer(this.contactFramebuffer);gl.deleteFramebuffer(this.contactResultFramebuffer);gl.deleteProgram(this.waterSkyProgram?.program);gl.deleteProgram(this.contactProgram?.program);gl.deleteProgram(this.contactComposite?.program);
