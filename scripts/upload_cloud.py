@@ -79,6 +79,7 @@ def main():
     p.add_argument('--bucket', default='nuray-scenes')
     p.add_argument('--endpoint', default='https://s3.cloud.ru')
     p.add_argument('--region', default='ru-central-1')
+    p.add_argument('--addressing-style', choices=('path', 'virtual'), default='path')
     p.add_argument('--credentials-file', type=Path)
     p.add_argument('--state-dir', type=Path, default=Path('.local/uploads'))
     p.add_argument('--part-mib', type=int, default=8)
@@ -105,7 +106,7 @@ def main():
             key_id = secret['tenantId'] + ':' + key_id
         credentials = {'aws_access_key_id': key_id, 'aws_secret_access_key': secret['secretAccessKey']}
     client = boto3.client('s3', endpoint_url=args.endpoint, region_name=args.region,
-        config=Config(signature_version='s3v4', s3={'addressing_style': 'path'},
+        config=Config(signature_version='s3v4', s3={'addressing_style': args.addressing_style},
                       connect_timeout=20, read_timeout=120, max_pool_connections=args.workers + 2,
                       retries={'mode': 'standard', 'max_attempts': 5},
                       request_checksum_calculation='when_required',
