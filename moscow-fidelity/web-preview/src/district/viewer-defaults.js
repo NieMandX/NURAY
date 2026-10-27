@@ -29,13 +29,16 @@ export const VIEWER_DEFAULTS=Object.freeze({
   }),
 });
 
-// Approved live Moscow state, kept independent from the Saint Petersburg baseline.
+// Approved Chrome water/light/reflection state: docs/moscow-approved-20261027-02.json.
+// Kept independent from the Saint Petersburg baseline and previous local overrides.
 export const MOSCOW_DEFAULTS=Object.freeze({
-  id:'moscow-approved-20261027-01',
+  id:'moscow-approved-20261027-02',
   waterTime:48.38810000000599,
   water:Object.freeze({...VIEWER_DEFAULTS.water,
     windSpeed:2,windDir:104,fetchKm:28,swellHs:.1,swellLength:35,swellDir:110,choppy:0,
-    turbidity:.69,attenuationDistance:9.3,hwExposure:3.3,
+    turbidity:.92,scatteringColor:'#2b2822',attenuationDistance:15.7,hwExposure:3.3,
+    reflectionEnabled:true,reflectionQuality:100,reflectionBlur:.9,reflectionDistortion:1.15,
+    groundReflectionQuality:100,groundReflectionStrength:100,
   }),
   sun:Object.freeze({date:'2026-06-21',minute:1206}),
   display:Object.freeze({...VIEWER_DEFAULTS.display,engine:'raster'}),

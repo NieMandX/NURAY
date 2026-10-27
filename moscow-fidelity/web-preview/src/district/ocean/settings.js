@@ -1,4 +1,4 @@
-import {VIEWER_DEFAULTS} from '../viewer-defaults.js?v=ground-reflections-1';
+import {VIEWER_DEFAULTS} from '../viewer-defaults.js?v=moscow-preset-2';
 // Time is independent of wall-clock time: pausing never jumps the waves.
 export class WaterClock {
   constructor(){this.time=VIEWER_DEFAULTS.waterTime;this.last=null;this.playing=false;}

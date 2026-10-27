@@ -1,6 +1,6 @@
 import {GpuOcean} from './ocean/gpu-ocean.js?v=moscow-defaults-1';
 import {withCityOcean} from './ocean/city-shader.js?v=ground-reflections-1';
-import {WaterClock,WATER_DEFAULTS,waterFrameKey} from './ocean/settings.js?v=ground-reflections-1';
+import {WaterClock,WATER_DEFAULTS,waterFrameKey} from './ocean/settings.js?v=moscow-preset-2';
 import {installSurfaceField,loadSurfaceField} from './surface-effects.js?v=moscow-defaults-1';
 import {sunCascades,shadowUniform,inverseMatrix} from './sun-shadows.js?v=moscow-defaults-1';
 import {ContactAO} from './contact-ao.js?v=moscow-defaults-1';

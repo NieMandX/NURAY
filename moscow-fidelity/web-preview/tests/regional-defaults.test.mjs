@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {VIEWER_DEFAULTS,MOSCOW_DEFAULTS,viewerDefaults,catalogKey,defaultSunPreset} from '../src/district/viewer-defaults.js';
 import {cleanWaterSettings} from '../src/district/ocean/settings.js';
 test('Moscow preset survives hosting prefixes without changing Petersburg',()=>{
@@ -10,9 +11,20 @@ test('Moscow preset survives hosting prefixes without changing Petersburg',()=>{
 test('fresh Moscow visit preserves the approved complete optical and rendering state',()=>{
  assert.deepEqual(cleanWaterSettings({},MOSCOW_DEFAULTS.water),MOSCOW_DEFAULTS.water);
  assert.equal(MOSCOW_DEFAULTS.display.engine,'raster');assert.equal(MOSCOW_DEFAULTS.display.renderer,'webgpu');assert.equal(MOSCOW_DEFAULTS.display.samples,64);
- assert.equal(MOSCOW_DEFAULTS.water.hwExposure,3.3);assert.equal(MOSCOW_DEFAULTS.water.attenuationDistance,9.3);
+ assert.equal(MOSCOW_DEFAULTS.water.hwExposure,3.3);assert.equal(MOSCOW_DEFAULTS.water.attenuationDistance,15.7);
  assert.equal(MOSCOW_DEFAULTS.water.animated,false);assert.equal(MOSCOW_DEFAULTS.waterTime,48.38810000000599);
  assert.equal(VIEWER_DEFAULTS.water.hwExposure,2.55);assert.equal(VIEWER_DEFAULTS.display.engine,'trace');
+});
+test('Moscow defaults exactly match the approved Chrome controls, including disabled ground reflections',()=>{
+ const capture=JSON.parse(readFileSync(new URL('../../../docs/moscow-approved-20261027-02.json',import.meta.url),'utf8'));
+ assert.equal(MOSCOW_DEFAULTS.id,capture.id);
+ assert.deepEqual(cleanWaterSettings({},MOSCOW_DEFAULTS.water),capture.water);
+ assert.equal(MOSCOW_DEFAULTS.waterTime,capture.waterTime);
+ assert.deepEqual(MOSCOW_DEFAULTS.sun,capture.sun);
+ assert.deepEqual(MOSCOW_DEFAULTS.display,capture.display);
+ assert.equal(VIEWER_DEFAULTS.id,'approved-20261024-01');
+ assert.equal(VIEWER_DEFAULTS.water.reflectionEnabled,false);
+ assert.equal(VIEWER_DEFAULTS.water.groundReflectionQuality,50);
 });
 test('partial user edits and reset are relative to the current city',()=>{
  const p=cleanWaterSettings({waterIOR:1.333,windSpeed:Infinity},MOSCOW_DEFAULTS.water);
