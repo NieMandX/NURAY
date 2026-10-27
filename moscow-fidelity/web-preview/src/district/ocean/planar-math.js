@@ -1,4 +1,4 @@
-import {isStandardGround,upwardPackedNormal} from '../ground-surfaces.js?v=ground-reflections-1';
+import {isStandardGround,upwardPackedNormal} from '../ground-surfaces.js?v=dry-ground-1';
 import {multiply,visible} from '../math.js';
 
 export function reflectedView(view,height){

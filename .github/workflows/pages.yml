@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: Check viewer presets, water and tile transport
         working-directory: moscow-fidelity/web-preview
-        run: node --test tests/regional-defaults.test.mjs tests/water-settings.test.mjs tests/water-optics.test.mjs tests/packed-mesh.test.mjs tests/scene-layers.test.mjs tests/planar-reflections.test.mjs
+        run: node --test tests/regional-defaults.test.mjs tests/water-settings.test.mjs tests/water-optics.test.mjs tests/packed-mesh.test.mjs tests/scene-layers.test.mjs tests/planar-reflections.test.mjs tests/environment-brdf.test.mjs
       - name: Check transfer integrity and offline restoration
         run: python3 -m unittest discover -s scripts -p 'test_*.py'
       - name: Verify published scene objects and byte ranges

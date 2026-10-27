@@ -6,6 +6,7 @@ import {WaterHeights,reflectedView,reflectedEye,reflectionSize,reflectionKey,ref
 import {isStandardGround} from '../src/district/ground-surfaces.js';
 import {cleanWaterSettings} from '../src/district/ocean/settings.js';
 import {withCityOcean} from '../src/district/ocean/city-shader.js';
+import {ENVIRONMENT_BRDF_WGSL} from '../src/district/environment-brdf.js';
 import {captureFragment} from '../prototype/tiles/webgl-shaders.js';
 const project=(m,p)=>[0,1,2,3].map(i=>m[i]*p[0]+m[i+4]*p[1]+m[i+8]*p[2]+m[i+12]);
 test('mirrored view fixes water points and exactly mirrors objects about the chosen water elevation',()=>{
@@ -36,12 +37,13 @@ test('reflection dimensions cap allocation and clean settings reject nonfinite i
  assert.equal(p.reflectionEnabled,true);assert.equal(p.reflectionQuality,100);assert.equal(p.reflectionStrength,0);assert.equal(p.reflectionBlur,1);assert.equal(p.reflectionDetail,true);
 });
 test('capture shaders exclude water and return linear radiance without recursively sampling their own target',()=>{
- const source=readFileSync(new URL('../src/district/district.wgsl',import.meta.url),'utf8'),plain=withCityOcean(source),s=withCityOcean(source,{planar:true}),capture=s.slice(s.indexOf('@fragment fn captureFragment'));
+ const source=ENVIRONMENT_BRDF_WGSL+readFileSync(new URL('../src/district/district.wgsl',import.meta.url),'utf8'),plain=withCityOcean(source),s=withCityOcean(source,{planar:true}),capture=s.slice(s.indexOf('@fragment fn captureFragment'));
+ assert.equal([...s.matchAll(/fn environmentBRDF\(/g)].length,1);
  assert.ok(!plain.includes('@group(2)'));assert.match(s,/let refl = sceneReflection/);
  assert.match(capture,/v.world.y<frame.display.w/);assert.match(capture,/return vec4f\(light,1\)/);assert.ok(!/oceanShade|sceneReflection|lightingOutput/.test(capture));
  assert.ok(!/reflectionMap|sceneReflection/.test(captureFragment));assert.match(captureFragment,/if\(int\(physical.z\)==12\)discard/);assert.match(captureFragment,/return vec4\(light\/8.,1\)/);
  assert.ok(!/groundReflection|sceneGroundReflection/.test(capture+captureFragment));
- assert.match(s,/m.scale.z<-.5 && geometricNormal.y>.96/);
+ assert.match(s,/m.scale.z<-.5 && m.scale.z> -1.5 && geometricNormal.y>.96/);
 });
 test('ground classification and height sampling reject same-coloured walls, roofs, grass, asphalt and water',()=>{
  const materials=[{kind:1,family:'Пешеходное покрытие'},{kind:1,family:'Buildings'},

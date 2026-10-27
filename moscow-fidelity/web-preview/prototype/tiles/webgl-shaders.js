@@ -1,5 +1,6 @@
 import {surfaceFunctions} from './water-shaders.js?v=shore-water-1';
-import {PLANAR_GLSL,GROUND_GLSL,GROUND_COAT_GLSL} from '../../src/district/ocean/planar-shader.js?v=ground-reflections-1';
+import {ENVIRONMENT_BRDF_GLSL} from '../../src/district/environment-brdf.js?v=dry-ground-1';
+import {PLANAR_GLSL,GROUND_GLSL,GROUND_COAT_GLSL} from '../../src/district/ocean/planar-shader.js?v=dry-ground-1';
 export const vertex=`#version 300 es
 precision highp float;
 precision highp int;
@@ -63,6 +64,7 @@ ${PLANAR_GLSL}
 ${GROUND_GLSL}
 vec3 sky(vec3 d,float rough){return waterSky(d,rough);}
 vec3 fresnel(float c,vec3 f0){return f0+(1.-f0)*pow(1.-clamp(c,0.,1.),5.);}
+${ENVIRONMENT_BRDF_GLSL}
 float dielectric(float c,float eta){
   float st2=(1.-c*c)/(eta*eta);if(st2>=1.)return 1.;
   float ct=sqrt(max(0.,1.-st2)),a=(c-eta*ct)/(c+eta*ct),b=(eta*c-ct)/(eta*c+ct);return .5*(a*a+b*b);
@@ -117,7 +119,9 @@ void main(){
   light+=color*(1.-metal)*waterAmbient(n);
   vec3 environment=sky(reflect(-wo,n),rough);
   if(int(physical.z)==12)environment=sceneReflection(world,n,rough,environment);
-  light+=environment*(int(physical.z)==12?vec3(waterFresnel(nv)):fresnel(nv,f0))*mix(1.,.40,rough);
+  vec3 environmentWeight=(int(physical.z)==12?vec3(waterFresnel(nv)):fresnel(nv,f0))*mix(1.,.40,rough);
+  if(info.y<-.5)environmentWeight=environmentBRDF(nv,rough,f0);
+  light+=environment*environmentWeight;
   if(int(physical.z)==4){
     float f=dielectric(nv,physical.y);vec3 transmitted=vec3(.028,.032,.034)*exp(-vec3(.25,.09,.06)*(.012/max(.15,nv)));
     light=sky(reflect(-wo,n),rough)*f+transmitted*(1.-f)+spec*waterSunColor()*nl*shadeSun*sunPower;

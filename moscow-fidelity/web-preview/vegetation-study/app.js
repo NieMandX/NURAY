@@ -1,5 +1,6 @@
-import {DistrictRenderer} from '../src/district/renderer.js?v=shore-water-1';
-import {loadCityMaterials} from '../src/district/city-materials.js?v=ground-reflections-1';
+import {DistrictRenderer} from '../src/district/renderer.js?v=dry-ground-1';
+import {ENVIRONMENT_BRDF_WGSL} from '../src/district/environment-brdf.js?v=dry-ground-1';
+import {loadCityMaterials} from '../src/district/city-materials.js?v=dry-ground-1';
 import {orthographic,lookAt,multiply} from '../src/district/math.js';
 import {DEFAULT_SETTINGS,normalizeSettings,buildGeometry,buildSurfaceGeometry,exportGLB} from './foliage-editor.js';
 import {decodePackedGeometry,normalizeAngle,smoothFoliage} from './foliage-smoothing.js?v=exact-base-1';
@@ -11,7 +12,7 @@ class StudyRenderer extends DistrictRenderer{
   async init(){
     const result=await super.init(),response=await fetch(new URL('../src/district/district.wgsl',import.meta.url));
     if(!response.ok)throw Error('Не найден шейдер мастерской');
-    const module=this.device.createShaderModule({label:'Foliage vertex shading',code:workshopShader(await response.text())});
+    const module=this.device.createShaderModule({label:'Foliage vertex shading',code:workshopShader(ENVIRONMENT_BRDF_WGSL+await response.text())});
     const errors=(await module.getCompilationInfo()).messages.filter(m=>m.type==='error');if(errors.length)throw Error(errors.map(e=>e.message).join('\n'));
     const attributes=[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'snorm16x2'},{shaderLocation:2,offset:16,format:'float32x2'},{shaderLocation:3,offset:24,format:'uint32'},{shaderLocation:4,offset:28,format:'float32'}];
     this.pipeline=await this.device.createRenderPipelineAsync({label:'Workshop PBR with curvature',layout:'auto',vertex:{module,entryPoint:'vertex',buffers:[{arrayStride:32,attributes}]},fragment:{module,entryPoint:'fragment',targets:[{format:this.format}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'greater'}});

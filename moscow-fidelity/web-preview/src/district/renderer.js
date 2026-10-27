@@ -1,5 +1,6 @@
 import {GpuOcean} from './ocean/gpu-ocean.js?v=shore-water-1';
-import {withCityOcean} from './ocean/city-shader.js?v=shore-water-1';
+import {withCityOcean} from './ocean/city-shader.js?v=dry-ground-1';
+import {ENVIRONMENT_BRDF_WGSL} from './environment-brdf.js?v=dry-ground-1';
 import {WaterClock,WATER_DEFAULTS,waterFrameKey} from './ocean/settings.js?v=moscow-preset-2';
 import {installSurfaceField,loadSurfaceField} from './surface-effects.js?v=moscow-defaults-1';
 import {sunCascades,shadowUniform,inverseMatrix} from './sun-shadows.js?v=moscow-defaults-1';
@@ -8,14 +9,14 @@ import {GpuTimer} from '../gpu-timer.js?v=moscow-defaults-1';
 import {makeMaterials,TEXTURE_SIZE,textureBytes} from './materials.js?v=moscow-defaults-1';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from './math.js?v=moscow-defaults-1';
 import {MeshTracer} from './tracer.js?v=shore-water-1';
-import {loadCityMaterials} from './city-materials.js?v=ground-reflections-1';
+import {loadCityMaterials} from './city-materials.js?v=dry-ground-1';
 import {identityTransform} from './bvh.js?v=moscow-defaults-1';
 import {cityManifest} from './city-config.js?v=moscow-defaults-1';
 import {renderSize} from './resolution.js?v=moscow-defaults-1';
 import {gpuPageLimit} from './gpu-limits.js?v=moscow-defaults-1';
 import {withDeadline} from './deadline.js?v=moscow-defaults-1';
-import {WaterHeights} from './ocean/planar-math.js?v=ground-reflections-1';
-import {PlanarReflection,cityReflectionLayouts} from './ocean/planar-reflection.js?v=ground-reflections-1';
+import {WaterHeights} from './ocean/planar-math.js?v=dry-ground-1';
+import {PlanarReflection,cityReflectionLayouts} from './ocean/planar-reflection.js?v=dry-ground-1';
 export const cameraDefaults=()=>({yaw:.64,pitch:.78,distance:160,target:[0,3,0]});
 const vertexLayout={arrayStride:32,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'snorm16x2'},{shaderLocation:2,offset:16,format:'float32x2'},{shaderLocation:3,offset:24,format:'uint32'},{shaderLocation:4,offset:28,format:'float32'}]};
 const median=values=>{const a=[...values].sort((x,y)=>x-y);return a[Math.floor(a.length/2)];};
@@ -47,7 +48,8 @@ export class DistrictRenderer {
     const shaders=await Promise.all(['district','textures'].map(async name=>{
       const response=await fetch(new URL(`${name}.wgsl`,import.meta.url),{cache:'no-store'});
       if(!response.ok)throw new Error(`Не найден ${name}.wgsl`);
-      const module=this.device.createShaderModule({label:name,code:name==='district'&&this.ocean?withCityOcean(await response.text(),{planar:true}):await response.text()});
+      const source=(name==='district'?ENVIRONMENT_BRDF_WGSL:'')+await response.text();
+      const module=this.device.createShaderModule({label:name,code:name==='district'&&this.ocean?withCityOcean(source,{planar:true}):source});
       const errors=(await module.getCompilationInfo()).messages.filter(m=>m.type==='error');
       if(errors.length)throw new Error(`${name}: `+errors.map(e=>`${e.lineNum}: ${e.message}`).join('\n'));return module;
     }));

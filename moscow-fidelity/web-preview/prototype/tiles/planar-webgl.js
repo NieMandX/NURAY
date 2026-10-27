@@ -1,4 +1,4 @@
-import {reflectionState,reflectionChunks,reflectionParameters} from '../../src/district/ocean/planar-math.js?v=ground-reflections-1';
+import {reflectionState,reflectionChunks,reflectionParameters} from '../../src/district/ocean/planar-math.js?v=dry-ground-1';
 export class WebGLReflection {
  constructor(owner,program,ground=false){this.ground=ground;this.name=ground?'groundReflection':'reflection';this.o=owner;this.gl=owner.gl;this.program=program;this.updates=0;this.resize([1,1]);}
  resize(size){

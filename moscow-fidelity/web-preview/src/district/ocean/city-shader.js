@@ -2,7 +2,7 @@ import {hosekWGSL} from '../hosek/shaders.js?v=moscow-defaults-1';
 import {SEASCAPE_WGSL} from '../seascape/seascape-wgsl.js?v=shore-water-1';
 import {OCEAN} from './vendor/ocean.js?v=moscow-defaults-1';
 import {WATER_OPTICS_WGSL} from './optics.js?v=shore-water-1';
-import {PLANAR_WGSL,GROUND_WGSL,GROUND_COAT_WGSL} from './planar-shader.js?v=ground-reflections-1';
+import {PLANAR_WGSL,GROUND_WGSL,GROUND_COAT_WGSL} from './planar-shader.js?v=dry-ground-1';
 // Keep the upstream spectral BRDF; use our finite water footprints instead of
 // the demonstration's infinite CDLOD ocean. All coordinates remain metres.
 export function cityOceanShader(){

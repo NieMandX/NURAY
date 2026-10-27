@@ -51,13 +51,13 @@ export const GROUND_GLSL=PLANAR_GLSL.replaceAll('Reflection','GroundReflection')
 // Thin reflective finish on the existing beige material, stronger at grazing
 // angles. Missing/invalid capture returns the original light exactly.
 export const GROUND_COAT_WGSL=`
-  if m.scale.z<-.5 && geometricNormal.y>.96 && groundReflection.size.z>.5 {
+  if m.scale.z<-.5 && m.scale.z> -1.5 && geometricNormal.y>.96 && groundReflection.size.z>.5 {
    let reflected=sceneGroundReflection(v.world,geometricNormal,.25,light);
    light=mix(light,reflected,.25+.5*pow(1-clamp(nv,0,1),5.0));
   }
 `;
 export const GROUND_COAT_GLSL=`
-  if(info.y<-.5&&geometricNormal.y>.96&&groundReflectionSize.z>.5){
+  if(info.y<-.5&&info.y> -1.5&&geometricNormal.y>.96&&groundReflectionSize.z>.5){
    vec3 reflected=sceneGroundReflection(world,geometricNormal,.25,light);
    light=mix(light,reflected,.25+.5*pow(1.-clamp(nv,0.,1.),5.));
   }

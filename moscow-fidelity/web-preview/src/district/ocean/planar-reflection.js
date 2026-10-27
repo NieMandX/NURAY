@@ -1,4 +1,4 @@
-import {reflectionState,reflectionChunks,reflectionParameters} from './planar-math.js?v=ground-reflections-1';
+import {reflectionState,reflectionChunks,reflectionParameters} from './planar-math.js?v=dry-ground-1';
 // Explicit layouts can be shared by the normal and reflected-camera pipelines.
 export function cityReflectionLayouts(d){
  const F=GPUShaderStage.FRAGMENT,V=GPUShaderStage.VERTEX;

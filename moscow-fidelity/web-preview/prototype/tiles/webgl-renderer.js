@@ -1,4 +1,4 @@
-import {isStandardGround} from '../../src/district/ground-surfaces.js?v=ground-reflections-1';
+import {groundMaterialRole} from '../../src/district/ground-surfaces.js?v=dry-ground-1';
 import {absorptionCoefficients,linearColor} from '../../src/district/ocean/optics.js?v=shore-water-1';
 import {HosekCache} from '../../src/district/hosek/model.js?v=moscow-defaults-1';
 import {waterSkyVertex,waterSkyFragment} from './water-webgl-sky.js?v=shore-water-1';
@@ -6,12 +6,12 @@ import {installSurfaceField,isRoad} from '../../src/district/surface-effects.js?
 import {sunCascades,shadowUniform,inverseMatrix} from '../../src/district/sun-shadows.js?v=moscow-defaults-1';
 import {isFacade,facadePixels} from '../../src/district/facade-relief.js?v=moscow-defaults-1';
 import {contactVertex,contactFragment,contactComposite} from './webgl-contact-ao.js?v=moscow-defaults-1';
-import {TileRenderer} from './tile-renderer.js?v=shore-water-1';
+import {TileRenderer} from './tile-renderer.js?v=dry-ground-1';
 import {activeChunkIds,sceneInstances,rasterLayout} from './tile-scene.js?v=moscow-defaults-1';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from '../../src/district/math.js?v=moscow-defaults-1';
 import {budgetTiles,overviewDistance} from './webgl-budget.js?v=moscow-defaults-1';
-import {WebGLReflection} from './planar-webgl.js?v=ground-reflections-1';
-import {vertex,fragment,shadowFragment,captureFragment} from './webgl-shaders.js?v=shore-water-1';
+import {WebGLReflection} from './planar-webgl.js?v=dry-ground-1';
+import {vertex,fragment,shadowFragment,captureFragment} from './webgl-shaders.js?v=dry-ground-1';
 
 function program(gl,vs,fs){
   const shaders=[];const p=gl.createProgram();
@@ -101,7 +101,7 @@ export class WebGLTileRenderer extends TileRenderer {
     }
     gl.generateMipmap(gl.TEXTURE_2D_ARRAY);
     const data=new Float32Array(materials.length*12);
-    materials.forEach((m,i)=>data.set([...m.color,m.roughness,m.metallic,m.ior,m.kind,m.alphaCutoff,layers.get(m.texture)||0,isFacade(m)?1:isStandardGround(m)?-1:0,isRoad(m)?1:0,0],i*12));
+    materials.forEach((m,i)=>data.set([...m.color,m.roughness,m.metallic,m.ior,m.kind,m.alphaCutoff,layers.get(m.texture)||0,isFacade(m)?1:groundMaterialRole(m),isRoad(m)?1:0,0],i*12));
     this.materialTexture=gl.createTexture();gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,this.materialTexture);
     gl.texStorage2D(gl.TEXTURE_2D,1,gl.RGBA32F,3,materials.length);gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,3,materials.length,gl.RGBA,gl.FLOAT,data);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);

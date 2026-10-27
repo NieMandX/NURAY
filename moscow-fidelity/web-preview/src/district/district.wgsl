@@ -160,7 +160,9 @@ fn srgb(x:vec3f)->vec3f {return select(1.055*pow(x,vec3f(1/2.4))-.055,x*12.92,x<
   let shadow=visibility(v.world,geometricNormal);
   var light=(diffuse+spec)*vec3f(4.2,3.77,3.1)*nl*shadow*frame.sun.w;
   light+=color*(1-metal)*mix(vec3f(.17,.18,.20),vec3f(.45,.51,.58),n.y*.5+.5)*ao;
-  light+=sky(reflect(-wo,n),rough)*fresnel(nv,f0)*mix(1.0,.40,rough);
+  var environmentWeight=fresnel(nv,f0)*mix(1.0,.40,rough);
+  if m.scale.z<-.5 {environmentWeight=environmentBRDF(nv,rough,f0)*ao;}
+  light+=sky(reflect(-wo,n),rough)*environmentWeight;
   if u32(m.physical.z)==4u {
     // Thin architectural glazing over a dark interior. Environment reflection,
     // Fresnel transmission and Beer attenuation; no scene-space ray refraction.

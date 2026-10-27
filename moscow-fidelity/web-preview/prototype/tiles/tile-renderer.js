@@ -1,9 +1,9 @@
 import {layerDefaults,normalizeLayers,layerVisible} from './scene-layers.js?v=scene-layers-1';
 import {meshBytes} from './packed-mesh.js?v=moscow-defaults-1';
-import {DistrictRenderer} from '../../src/district/renderer.js?v=shore-water-1';
+import {DistrictRenderer} from '../../src/district/renderer.js?v=dry-ground-1';
 import {REGION_GPU_PAGE_BYTES} from '../../src/district/gpu-limits.js?v=moscow-defaults-1';
 import {orthographic,lookAt,perspective,multiply,visible} from '../../src/district/math.js?v=moscow-defaults-1';
-import {loadCityMaterials} from '../../src/district/city-materials.js?v=ground-reflections-1';
+import {loadCityMaterials} from '../../src/district/city-materials.js?v=dry-ground-1';
 import {planGpuPages} from './gpu-pages.js?v=moscow-defaults-1';
 import {activeChunkIds,pageChunkIds,sceneInstances,rasterLayout,traceScene} from './tile-scene.js?v=moscow-defaults-1';
 
