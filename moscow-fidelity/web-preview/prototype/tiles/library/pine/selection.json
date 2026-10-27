@@ -1,0 +1,16 @@
+{
+  "angle": 86,
+  "model": "pine",
+  "triangles": 1210,
+  "variant": "pine-approved-01",
+  "appearance": {
+    "curvatureStrength": 100,
+    "foliageColor": "#6f794d",
+    "model": "pine"
+  },
+  "path": "approved-d2c84997f528.glb",
+  "date": "2026-10-12",
+  "sourceVariant": "new",
+  "sha256": "d2c84997f528e173713e18aaa793daf3de8b6b94eed02c9eaf540d600dc1b76f",
+  "selectedBy": "user"
+}

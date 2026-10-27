@@ -1,0 +1,77 @@
+{
+  "camera": {
+    "distance": 1540.6722721722172,
+    "pitch": 0.548,
+    "target": [
+      754.9159720320167,
+      0,
+      -1421.4774717587673
+    ],
+    "yaw": -3.513093750000067
+  },
+  "display": {
+    "contactAO": true,
+    "engine": "raster",
+    "pixels": 0,
+    "renderer": "webgpu",
+    "samples": 64,
+    "shadows": true
+  },
+  "sceneWater": "{\"time\":48.38810000000599,\"renders\":5211,\"updates\":339,\"animated\":false,\"backend\":\"FFT\",\"waterModel\":\"ocean\",\"lighting\":\"hosek\",\"lightingMix\":50,\"sunIntensity\":15,\"shadowStrength\":100,\"settings\":239}",
+  "solar": {
+    "altitude": 6.976108061166158,
+    "azimuth": 302.18254829644354,
+    "date": "2026-06-21",
+    "direction": [
+      -0.8400897680320782,
+      0.12145544802686212,
+      -0.5286754730384258
+    ],
+    "geo": {
+      "label": "Москва",
+      "latitude": 55.739484634027754,
+      "longitude": 37.5320013550023,
+      "timeZone": "Europe/Moscow",
+      "utcOffset": 3
+    },
+    "minute": 1206
+  },
+  "url": "http://127.0.0.1:8776/prototype/tiles/?catalog=assets-moscow-style-20261024-r14%2Ftileset.json&layout=merged&view=waterfront-parapet-review",
+  "water": {
+    "absorptionColor": "#8ac6d1",
+    "animated": false,
+    "attenuationDistance": 9.3,
+    "bloom": 0.08,
+    "choppy": 0,
+    "clouds": 0.4,
+    "exposure": 1.2,
+    "fetchKm": 28,
+    "foam": 3,
+    "haze": 3,
+    "hwAlbedo": 0.2,
+    "hwExposure": 3.3,
+    "hwSkyIntensity": 180,
+    "hwTurbidity": 3,
+    "lighting": "hosek",
+    "lightingMix": 50,
+    "scatteringColor": "#2c3f36",
+    "seaChoppy": 4,
+    "seaExposure": 1,
+    "seaFrequency": 0.16,
+    "seaHeight": 0.6,
+    "seaSpeed": 0.8,
+    "shadowStrength": 100,
+    "shoreFoam": 2,
+    "sunIntensity": 15,
+    "swellDir": 110,
+    "swellHs": 0.1,
+    "swellLength": 35,
+    "swellSpread": 48,
+    "turbidity": 0.69,
+    "veil": 0.36,
+    "waterIOR": 1.4,
+    "waterModel": "ocean",
+    "windDir": 104,
+    "windSpeed": 2
+  }
+}

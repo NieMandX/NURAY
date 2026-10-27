@@ -1,0 +1,663 @@
+{
+  "version": 2,
+  "name": "NURAY · утверждённая мастерская",
+  "models": [
+    {
+      "id": "nuray-approved-bush",
+      "model": "bush",
+      "label": "Кустарник",
+      "layer": "Model_tree_shrubs_point",
+      "mesh": 62,
+      "sourceTemplate": "Template_autumn_bush.001",
+      "sourceChunk": 62,
+      "sourceBounds": {
+        "min": [
+          -2.5785038471221924,
+          0.0,
+          -2.627852201461792
+        ],
+        "max": [
+          2.886594533920288,
+          6.350172996520996,
+          2.846935987472534
+        ]
+      },
+      "referenceTemplate": "Template_autumn_bush.001",
+      "referenceBounds": {
+        "min": [
+          -2.5785038471221924,
+          0.0,
+          -2.627852201461792
+        ],
+        "max": [
+          2.886594533920288,
+          6.350172996520996,
+          2.846935987472534
+        ]
+      },
+      "uniformTemplateScale": 2.0,
+      "sceneScale": 2.0,
+      "sceneAxisScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "triangles": 356,
+      "bounds": {
+        "min": [
+          -5.895681858062744,
+          -0.5704159140586853,
+          -5.600600719451904
+        ],
+        "max": [
+          6.69783353805542,
+          7.958776473999023,
+          6.46041202545166
+        ]
+      },
+      "file": "bush/model.glb",
+      "approvedGlbSha256": "429e1fdc815cef7f33d6f163a7507c9b9379d9b19bd8e93d2c1d4b6d468e4dd1",
+      "variant": "bush-approved-01",
+      "smoothingAngle": 48,
+      "foliageColor": "#4d5336",
+      "curvatureStrength": 100,
+      "materialIndices": [
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160
+      ],
+      "sha256": "7ab69cb937a7bf54c30805126602ce931622aee4b336cb11b3ab4ef10a47504b"
+    },
+    {
+      "id": "nuray-approved-open",
+      "model": "open",
+      "label": "Лиственное · сквозистое",
+      "layer": "Model_tree_deciduous_point",
+      "mesh": 68,
+      "sourceTemplate": "Template_autumn_tree.001",
+      "sourceChunk": 68,
+      "sourceBounds": {
+        "min": [
+          -4.286088466644287,
+          -7.105427357601002e-15,
+          -4.208696365356445
+        ],
+        "max": [
+          4.201239109039307,
+          18.889102935791016,
+          4.155843734741211
+        ]
+      },
+      "referenceTemplate": "Template_autumn_bigtree.001",
+      "referenceBounds": {
+        "min": [
+          -7.919135093688965,
+          0.0,
+          -7.450586795806885
+        ],
+        "max": [
+          8.42839527130127,
+          20.264036178588867,
+          8.496820449829102
+        ]
+      },
+      "uniformTemplateScale": 0.9321490925756138,
+      "sceneScale": 1.0,
+      "sceneAxisScale": [
+        1.0,
+        2.0,
+        1.0
+      ],
+      "triangles": 684,
+      "bounds": {
+        "min": [
+          -9.23404598236084,
+          0.0,
+          -7.283375263214111
+        ],
+        "max": [
+          9.515508651733398,
+          41.96510696411133,
+          8.659393310546875
+        ]
+      },
+      "file": "open/model.glb",
+      "approvedGlbSha256": "837eb24704c52e6737a4f17bbda790c37e31fe5d4b73483b7a412e6203cf6b5e",
+      "variant": "open-approved-01",
+      "smoothingAngle": 65,
+      "foliageColor": "#5c6949",
+      "curvatureStrength": 100,
+      "materialIndices": [
+        161,
+        162,
+        163,
+        164,
+        158,
+        159,
+        160
+      ],
+      "sha256": "a28670473d48edc66ebe8a3b26d212232426ab9da0af843390d32cf105b2bd45"
+    },
+    {
+      "id": "nuray-approved-growth",
+      "model": "growth",
+      "label": "Лиственная поросль",
+      "layer": "Model_tree_deciduous_growth_point",
+      "mesh": 65,
+      "sourceTemplate": "Template_autumn_porosl.001",
+      "sourceChunk": 65,
+      "sourceBounds": {
+        "min": [
+          -1.895753264427185,
+          4.76837158203125e-07,
+          -1.960835337638855
+        ],
+        "max": [
+          1.9397531747817993,
+          9.991893768310547,
+          1.8856488466262817
+        ]
+      },
+      "referenceTemplate": "Template_autumn_porosl.001",
+      "referenceBounds": {
+        "min": [
+          -1.895753264427185,
+          4.76837158203125e-07,
+          -1.960835337638855
+        ],
+        "max": [
+          1.9397531747817993,
+          9.991893768310547,
+          1.8856488466262817
+        ]
+      },
+      "uniformTemplateScale": 2.0,
+      "sceneScale": 2.0,
+      "sceneAxisScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "triangles": 404,
+      "bounds": {
+        "min": [
+          -4.172335624694824,
+          9.5367431640625e-07,
+          -4.608468055725098
+        ],
+        "max": [
+          4.290858268737793,
+          21.036577224731445,
+          3.5831596851348877
+        ]
+      },
+      "file": "growth/model.glb",
+      "approvedGlbSha256": "88af1fb3f71a3d7ccb888601acde1fdb9a6553d3abf5609f1dcd3a5632ee13fe",
+      "variant": "growth-approved-01",
+      "smoothingAngle": 68,
+      "foliageColor": "#7d925c",
+      "curvatureStrength": 100,
+      "materialIndices": [
+        165,
+        166,
+        167,
+        168,
+        158,
+        159,
+        160
+      ],
+      "sha256": "85e56bd37f82f5705ec6cc6f6a97d9ac0ea7e42a0d0417a8f04ae705cc5f7e8b"
+    },
+    {
+      "id": "nuray-approved-low",
+      "model": "low",
+      "label": "Низкое лиственное",
+      "layer": "Model_tree_deciduous_low_point",
+      "mesh": 63,
+      "sourceTemplate": "Template_autumn_listvennoe.001",
+      "sourceChunk": 63,
+      "sourceBounds": {
+        "min": [
+          -4.215015888214111,
+          0.0,
+          -4.397694110870361
+        ],
+        "max": [
+          4.377999782562256,
+          15.497129440307617,
+          4.297478199005127
+        ]
+      },
+      "referenceTemplate": "Template_autumn_listvennoe.001",
+      "referenceBounds": {
+        "min": [
+          -4.215015888214111,
+          0.0,
+          -4.397694110870361
+        ],
+        "max": [
+          4.377999782562256,
+          15.497129440307617,
+          4.297478199005127
+        ]
+      },
+      "uniformTemplateScale": 1.0,
+      "sceneScale": 1.0,
+      "sceneAxisScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "triangles": 474,
+      "bounds": {
+        "min": [
+          -4.894486904144287,
+          0.0,
+          -4.918895244598389
+        ],
+        "max": [
+          5.773108959197998,
+          16.021724700927734,
+          5.167095184326172
+        ]
+      },
+      "file": "low/model.glb",
+      "approvedGlbSha256": "fde9db9c557796f544f8b9fc2487584f53a4731a448a437fd9b638eaec2c9e62",
+      "variant": "low-approved-01",
+      "smoothingAngle": 70,
+      "foliageColor": "#687d4b",
+      "curvatureStrength": 100,
+      "materialIndices": [
+        169,
+        170,
+        171,
+        172,
+        158,
+        159,
+        160
+      ],
+      "sha256": "ff186dcc6f746b8fbb07e3bd4f22cb7938f78fa013466942df35bab340b79a59"
+    },
+    {
+      "id": "nuray-approved-spruce",
+      "model": "spruce",
+      "label": "Ель",
+      "layer": "Model_tree_coniferous_point",
+      "mesh": 67,
+      "sourceTemplate": "Template_summer_pine.001",
+      "sourceChunk": 67,
+      "sourceBounds": {
+        "min": [
+          -6.003055095672607,
+          0.0,
+          -6.001304626464844
+        ],
+        "max": [
+          6.119256496429443,
+          19.679536819458008,
+          6.121607780456543
+        ]
+      },
+      "referenceTemplate": "Template_summer_pine.001",
+      "referenceBounds": {
+        "min": [
+          -6.003055095672607,
+          0.0,
+          -6.001304626464844
+        ],
+        "max": [
+          6.119256496429443,
+          19.679536819458008,
+          6.121607780456543
+        ]
+      },
+      "uniformTemplateScale": 1.0,
+      "sceneScale": 1.0,
+      "sceneAxisScale": [
+        0.6666666666666666,
+        1.0,
+        0.6666666666666666
+      ],
+      "triangles": 778,
+      "bounds": {
+        "min": [
+          -4.651588439941406,
+          -0.7500700950622559,
+          -6.038027286529541
+        ],
+        "max": [
+          6.339558124542236,
+          19.639062881469727,
+          6.331972599029541
+        ]
+      },
+      "file": "spruce/model.glb",
+      "approvedGlbSha256": "e0f6e132a38f65d2c5d649009cac4982fe5530057130b6695f268c9926c4ff70",
+      "variant": "spruce-approved-01",
+      "smoothingAngle": 52,
+      "foliageColor": "#5d7453",
+      "curvatureStrength": 100,
+      "materialIndices": [
+        173,
+        174,
+        175,
+        176,
+        158,
+        159,
+        160
+      ],
+      "sha256": "8e476dcc4ebf22498fe894a67157f7f60ebb56dff0087845d45ff21c6b035117"
+    },
+    {
+      "id": "nuray-approved-compact",
+      "model": "compact",
+      "label": "Лиственное · широкое",
+      "layer": "Model_tree_deciduous_wide_crown_point",
+      "mesh": 70,
+      "sourceTemplate": "Template_autumn_bigtree.001",
+      "sourceChunk": 70,
+      "sourceBounds": {
+        "min": [
+          -7.919135093688965,
+          0.0,
+          -7.450586795806885
+        ],
+        "max": [
+          8.42839527130127,
+          20.264036178588867,
+          8.496820449829102
+        ]
+      },
+      "referenceTemplate": "Template_autumn_bigtree.001",
+      "referenceBounds": {
+        "min": [
+          -7.919135093688965,
+          0.0,
+          -7.450586795806885
+        ],
+        "max": [
+          8.42839527130127,
+          20.264036178588867,
+          8.496820449829102
+        ]
+      },
+      "uniformTemplateScale": 1.0,
+      "sceneScale": 1.0,
+      "sceneAxisScale": [
+        1.0,
+        2.0,
+        1.0
+      ],
+      "triangles": 680,
+      "bounds": {
+        "min": [
+          -8.39389419555664,
+          0.0,
+          -8.138263702392578
+        ],
+        "max": [
+          8.858773231506348,
+          41.54658508300781,
+          9.270731925964355
+        ]
+      },
+      "file": "compact/model.glb",
+      "approvedGlbSha256": "a8953b8f212db86ae4739ac7875247d744759634df29ed6c9c2e22ac3512c3cf",
+      "variant": "compact-step-3",
+      "smoothingAngle": 75,
+      "foliageColor": "#697548",
+      "curvatureStrength": 100,
+      "materialIndices": [
+        177,
+        178,
+        179,
+        180,
+        158,
+        159,
+        160
+      ],
+      "sha256": "aef53321cbad23b23122b909ba6da5cf89aee7ae9301515a853cbc1aaa87497c"
+    },
+    {
+      "id": "nuray-approved-thuja",
+      "model": "thuja",
+      "label": "Туя",
+      "layer": "Model_tree_narrow_tall_point",
+      "mesh": 66,
+      "sourceTemplate": "Template_autumn_tuya.001",
+      "sourceChunk": 66,
+      "sourceBounds": {
+        "min": [
+          -2.1159040927886963,
+          0.0,
+          -2.097687005996704
+        ],
+        "max": [
+          2.216301679611206,
+          19.987804412841797,
+          2.246718645095825
+        ]
+      },
+      "referenceTemplate": "Template_autumn_tuya.001",
+      "referenceBounds": {
+        "min": [
+          -2.1159040927886963,
+          0.0,
+          -2.097687005996704
+        ],
+        "max": [
+          2.216301679611206,
+          19.987804412841797,
+          2.246718645095825
+        ]
+      },
+      "uniformTemplateScale": 2.0,
+      "sceneScale": 2.0,
+      "sceneAxisScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "triangles": 540,
+      "bounds": {
+        "min": [
+          -4.669643878936768,
+          0.0,
+          -4.525278091430664
+        ],
+        "max": [
+          4.751004219055176,
+          41.18364334106445,
+          4.876057147979736
+        ]
+      },
+      "file": "thuja/model.glb",
+      "approvedGlbSha256": "fd57abf17aca536d2e268d36d9088be9ef207429efcf609be344138ca83e5539",
+      "variant": "thuja-approved-01",
+      "smoothingAngle": 58,
+      "foliageColor": "#527253",
+      "curvatureStrength": 100,
+      "materialIndices": [
+        181,
+        182,
+        183,
+        184,
+        158,
+        159,
+        160
+      ],
+      "sha256": "f0861566068234369cb6c364b0d9d22b7e4c9a2666fb64aa6ccc477069d604ae"
+    },
+    {
+      "id": "nuray-approved-birch",
+      "model": "birch",
+      "label": "Берёза",
+      "layer": "Model_tree_birch_point",
+      "mesh": 69,
+      "sourceTemplate": "Template_autumn_birch.002",
+      "sourceChunk": 69,
+      "sourceBounds": {
+        "min": [
+          -4.966656684875488,
+          0.0,
+          -4.132490158081055
+        ],
+        "max": [
+          4.267912864685059,
+          20.13904571533203,
+          3.859945774078369
+        ]
+      },
+      "referenceTemplate": "Template_autumn_birch.002",
+      "referenceBounds": {
+        "min": [
+          -4.966656684875488,
+          0.0,
+          -4.132490158081055
+        ],
+        "max": [
+          4.267912864685059,
+          20.13904571533203,
+          3.859945774078369
+        ]
+      },
+      "uniformTemplateScale": 1.0,
+      "sceneScale": 1.0,
+      "sceneAxisScale": [
+        1.0,
+        2.0,
+        1.0
+      ],
+      "triangles": 478,
+      "bounds": {
+        "min": [
+          -5.353388786315918,
+          0.0,
+          -4.707566261291504
+        ],
+        "max": [
+          5.809922218322754,
+          42.974246978759766,
+          4.530797004699707
+        ]
+      },
+      "file": "birch/model.glb",
+      "approvedGlbSha256": "9a44047b74d09cdd76ec93f75ac35ebdcce2485404af47a39125467ab30fea2f",
+      "variant": "birch-approved-01",
+      "smoothingAngle": 73,
+      "foliageColor": "#6c7b4c",
+      "curvatureStrength": 100,
+      "materialIndices": [
+        185,
+        186,
+        187,
+        188,
+        158,
+        159,
+        160
+      ],
+      "sha256": "edff16f46881457669d71e867acac2f84fe4b6e2cac06c644bf79d01ec204679"
+    },
+    {
+      "id": "nuray-approved-pine",
+      "model": "pine",
+      "label": "Сосна",
+      "layer": "Model_tree_pine_point",
+      "mesh": 64,
+      "sourceTemplate": "Template_summer_sosna.001",
+      "sourceChunk": 64,
+      "sourceBounds": {
+        "min": [
+          -6.89801025390625,
+          0.0,
+          -5.297028064727783
+        ],
+        "max": [
+          8.41209602355957,
+          26.360477447509766,
+          6.457265377044678
+        ]
+      },
+      "referenceTemplate": "Template_summer_sosna.001",
+      "referenceBounds": {
+        "min": [
+          -6.89801025390625,
+          0.0,
+          -5.297028064727783
+        ],
+        "max": [
+          8.41209602355957,
+          26.360477447509766,
+          6.457265377044678
+        ]
+      },
+      "uniformTemplateScale": 2.0,
+      "sceneScale": 2.0,
+      "sceneAxisScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "triangles": 1210,
+      "bounds": {
+        "min": [
+          -12.216934204101562,
+          0.0,
+          -10.1594820022583
+        ],
+        "max": [
+          14.398226737976074,
+          53.575157165527344,
+          11.403584480285645
+        ]
+      },
+      "file": "pine/model.glb",
+      "approvedGlbSha256": "d2c84997f528e173713e18aaa793daf3de8b6b94eed02c9eaf540d600dc1b76f",
+      "variant": "pine-approved-01",
+      "smoothingAngle": 86,
+      "foliageColor": "#6f794d",
+      "curvatureStrength": 100,
+      "materialIndices": [
+        189,
+        190,
+        191,
+        192,
+        158,
+        159,
+        160
+      ],
+      "sha256": "c5600de00b2ac88d24536c47f03b2cb7c29dc3408f4590617650fb2c44ba7bcb"
+    }
+  ],
+  "sourceTemplates": {
+    "Template_autumn_bush.001": 62,
+    "Template_autumn_listvennoe.001": 63,
+    "Template_summer_sosna.001": 64,
+    "Template_autumn_porosl.001": 65,
+    "Template_autumn_tuya.001": 66,
+    "Template_summer_pine.001": 67,
+    "Template_autumn_tree.001": 68,
+    "Template_autumn_birch.002": 69,
+    "Template_autumn_bigtree.001": 70
+  },
+  "materialsOffset": 154,
+  "modelsCount": 9,
+  "uniqueTriangles": 5604,
+  "instancesPerModel": {
+    "nuray-approved-bush": 27482,
+    "nuray-approved-open": 12431,
+    "nuray-approved-growth": 8965,
+    "nuray-approved-low": 9222,
+    "nuray-approved-spruce": 6863,
+    "nuray-approved-compact": 702,
+    "nuray-approved-thuja": 3315,
+    "nuray-approved-birch": 1660,
+    "nuray-approved-pine": 2502
+  },
+  "libraryIndexSha256": "3ef3f90ded3d0d2e5c5c0d95a2f2ea70998db5ad664c7e17a6eb0623ceb73459",
+  "policy": "Approved workshop GLBs with explicit per-species scene size/proportions and inverse-transpose normals; linear per-corner curvature tint in raster, ray tracing and GLB; unchanged instance matrices, roots, IDs, tile ownership and deterministic variation. Uniform source-class normalization when the workshop reference differs; no procedural regeneration."
+}

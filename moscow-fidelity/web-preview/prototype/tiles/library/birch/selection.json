@@ -1,0 +1,15 @@
+{
+  "angle": 73,
+  "model": "birch",
+  "triangles": 478,
+  "variant": "birch-approved-01",
+  "appearance": {
+    "curvatureStrength": 100,
+    "foliageColor": "#6c7b4c",
+    "model": "birch"
+  },
+  "path": "approved-9a44047b74d0.glb",
+  "sha256": "9a44047b74d09cdd76ec93f75ac35ebdcce2485404af47a39125467ab30fea2f",
+  "selectedBy": "user",
+  "date": "2026-10-11"
+}

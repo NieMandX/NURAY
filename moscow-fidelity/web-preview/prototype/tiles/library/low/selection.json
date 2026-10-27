@@ -1,0 +1,16 @@
+{
+  "angle": 70,
+  "model": "low",
+  "triangles": 474,
+  "variant": "low-approved-01",
+  "appearance": {
+    "curvatureStrength": 100,
+    "foliageColor": "#687d4b",
+    "model": "low"
+  },
+  "path": "approved-fde9db9c5577.glb",
+  "date": "2026-10-13",
+  "sourceVariant": "new",
+  "sha256": "fde9db9c557796f544f8b9fc2487584f53a4731a448a437fd9b638eaec2c9e62",
+  "selectedBy": "user"
+}

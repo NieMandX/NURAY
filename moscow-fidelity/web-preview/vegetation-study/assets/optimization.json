@@ -1,0 +1,286 @@
+{
+  "source": "compact",
+  "sourceGeometrySha256": "45a4b958db5ec99abef246cf5ad803f49a209df64f05cdfb66b0a7e6e5550c51",
+  "sourceTriangles": 1824,
+  "sourceFoliageTriangles": 1512,
+  "woodTriangles": 312,
+  "sourceMeshBytes": 48387,
+  "blenderVersion": "4.2.1 LTS",
+  "unionSeconds": 2.284824001137167,
+  "buildSeconds": 2.6098792110569775,
+  "foliageScale": 1.2,
+  "variants": [
+    {
+      "id": "compact-union",
+      "label": "Объединение",
+      "description": "Точная внешняя оболочка листвы. Внутренние поверхности удалены; ствол и ветви исходные.",
+      "triangles": 3216,
+      "foliageTriangles": 2904,
+      "woodTriangles": 312,
+      "bounds": {
+        "min": [
+          -8.39389419555664,
+          0.0,
+          -8.138263702392578
+        ],
+        "max": [
+          9.042366981506348,
+          20.773292541503906,
+          9.270731925964355
+        ]
+      },
+      "meshBytes": 62081,
+      "glbBytes": 251056,
+      "closed": true,
+      "volume": 965.0531768131275,
+      "surfaceArea": 1033.200736990043,
+      "silhouetteIoUMean": 0.9997898700901894,
+      "silhouetteIoUMin": 0.9995852804170894
+    },
+    {
+      "id": "compact-clean",
+      "label": "Объединение · очистка",
+      "description": "Внешняя оболочка с удалением лишних рёбер в одной плоскости. Сохранены границы материалов.",
+      "triangles": 3216,
+      "foliageTriangles": 2904,
+      "woodTriangles": 312,
+      "bounds": {
+        "min": [
+          -8.39389419555664,
+          0.0,
+          -8.138263702392578
+        ],
+        "max": [
+          9.042366981506348,
+          20.773292541503906,
+          9.270731925964355
+        ]
+      },
+      "meshBytes": 62081,
+      "glbBytes": 251056,
+      "closed": true,
+      "volume": 965.0531768131275,
+      "surfaceArea": 1033.200736990043,
+      "silhouetteIoUMean": 0.9997898700901894,
+      "silhouetteIoUMin": 0.9995852804170894
+    },
+    {
+      "id": "compact-reduced-75",
+      "label": "Упрощение 75%",
+      "description": "Объединённая и упрощённая листва; ствол и ветви исходные. Доля относится к сетке листвы после очистки.",
+      "triangles": 2490,
+      "foliageTriangles": 2178,
+      "woodTriangles": 312,
+      "bounds": {
+        "min": [
+          -8.39389419555664,
+          0.0,
+          -8.138263702392578
+        ],
+        "max": [
+          9.042366981506348,
+          20.773292541503906,
+          9.270731925964355
+        ]
+      },
+      "meshBytes": 59327,
+      "glbBytes": 248656,
+      "closed": true,
+      "volume": 965.0662277652809,
+      "surfaceArea": 1032.7581842410991,
+      "silhouetteIoUMean": 0.9997924507949394,
+      "silhouetteIoUMin": 0.9996147342736671
+    },
+    {
+      "id": "compact-reduced-50",
+      "label": "Упрощение 50%",
+      "description": "Объединённая и упрощённая листва; ствол и ветви исходные. Доля относится к сетке листвы после очистки.",
+      "triangles": 1764,
+      "foliageTriangles": 1452,
+      "woodTriangles": 312,
+      "bounds": {
+        "min": [
+          -8.39389419555664,
+          0.0,
+          -8.138263702392578
+        ],
+        "max": [
+          9.042366981506348,
+          20.773292541503906,
+          9.270731925964355
+        ]
+      },
+      "meshBytes": 45459,
+      "glbBytes": 190248,
+      "closed": true,
+      "volume": 964.1797367453261,
+      "surfaceArea": 1029.1612418776745,
+      "silhouetteIoUMean": 0.9993953893060987,
+      "silhouetteIoUMin": 0.9989262488266398
+    },
+    {
+      "id": "compact-reduced-35",
+      "label": "Упрощение 35%",
+      "description": "Объединённая и упрощённая листва; ствол и ветви исходные. Доля относится к сетке листвы после очистки.",
+      "triangles": 1328,
+      "foliageTriangles": 1016,
+      "woodTriangles": 312,
+      "bounds": {
+        "min": [
+          -8.39389419555664,
+          0.0,
+          -8.138263702392578
+        ],
+        "max": [
+          9.042366981506348,
+          20.773292541503906,
+          9.270731925964355
+        ]
+      },
+      "meshBytes": 33854,
+      "glbBytes": 143928,
+      "closed": true,
+      "volume": 956.8850681735677,
+      "surfaceArea": 1019.3073604771527,
+      "silhouetteIoUMean": 0.99408873849336,
+      "silhouetteIoUMin": 0.9907542549358477
+    },
+    {
+      "id": "compact-step-1",
+      "label": "Ступень 1 · ещё −20%",
+      "description": "Ступень 1: примерно на 20% меньше треугольников, чем на предыдущей. Упрощена только листва; ствол и ветви сохранены.",
+      "stage": 1,
+      "previousVariant": "compact-reduced-35",
+      "previousTriangles": 1328,
+      "targetTriangles": 1062,
+      "reductionFromPrevious": 0.20030120481927716,
+      "reductionFromStepBase": 0.20030120481927716,
+      "triangles": 1062,
+      "foliageTriangles": 750,
+      "woodTriangles": 312,
+      "bounds": {
+        "min": [
+          -8.39389419555664,
+          0.0,
+          -8.138263702392578
+        ],
+        "max": [
+          9.042366981506348,
+          20.773292541503906,
+          9.270731925964355
+        ]
+      },
+      "meshBytes": 26742,
+      "glbBytes": 115188,
+      "closed": true,
+      "volume": 953.5217734230592,
+      "surfaceArea": 1006.2179993047059,
+      "silhouetteIoUMean": 0.9905899407100995,
+      "silhouetteIoUMin": 0.9856853747674151,
+      "stepBaseSilhouetteIoUMean": 0.9948556714519067,
+      "stepBaseSilhouetteIoUMin": 0.9920360487041002
+    },
+    {
+      "id": "compact-step-2",
+      "label": "Ступень 2 · ещё −20%",
+      "description": "Ступень 2: примерно на 20% меньше треугольников, чем на предыдущей. Упрощена только листва; ствол и ветви сохранены.",
+      "stage": 2,
+      "previousVariant": "compact-step-1",
+      "previousTriangles": 1062,
+      "targetTriangles": 850,
+      "reductionFromPrevious": 0.19962335216572502,
+      "reductionFromStepBase": 0.3599397590361446,
+      "triangles": 850,
+      "foliageTriangles": 538,
+      "woodTriangles": 312,
+      "bounds": {
+        "min": [
+          -8.39389419555664,
+          0.0,
+          -8.138263702392578
+        ],
+        "max": [
+          9.042366981506348,
+          20.773292541503906,
+          9.270731925964355
+        ]
+      },
+      "meshBytes": 22214,
+      "glbBytes": 92288,
+      "closed": true,
+      "volume": 937.8178150731186,
+      "surfaceArea": 984.981651915618,
+      "silhouetteIoUMean": 0.9788128950412384,
+      "silhouetteIoUMin": 0.9734217302512801,
+      "stepBaseSilhouetteIoUMean": 0.9819503528666611,
+      "stepBaseSilhouetteIoUMin": 0.97605308224017
+    },
+    {
+      "id": "compact-step-3",
+      "label": "Ступень 3 · ещё −20%",
+      "description": "Ступень 3: примерно на 20% меньше треугольников, чем на предыдущей. Упрощена только листва; ствол и ветви сохранены.",
+      "stage": 3,
+      "previousVariant": "compact-step-2",
+      "previousTriangles": 850,
+      "targetTriangles": 680,
+      "reductionFromPrevious": 0.19999999999999996,
+      "reductionFromStepBase": 0.4879518072289156,
+      "triangles": 680,
+      "foliageTriangles": 368,
+      "woodTriangles": 312,
+      "bounds": {
+        "min": [
+          -8.39389419555664,
+          0.0,
+          -8.138263702392578
+        ],
+        "max": [
+          8.858773231506348,
+          20.773292541503906,
+          9.270731925964355
+        ]
+      },
+      "meshBytes": 17489,
+      "glbBytes": 73928,
+      "closed": true,
+      "volume": 913.1579632157387,
+      "surfaceArea": 927.7312406827484,
+      "silhouetteIoUMean": 0.9606429262781989,
+      "silhouetteIoUMin": 0.9507606999200598,
+      "stepBaseSilhouetteIoUMean": 0.9632712511167366,
+      "stepBaseSilhouetteIoUMin": 0.9521479721186166
+    }
+  ],
+  "validation": {
+    "woodUnchanged": true,
+    "closedFoliage": true,
+    "finiteNondegenerateTriangles": true
+  },
+  "scope": "One-tree geometry experiment; no city integration or render speed claim.",
+  "silhouetteTest": {
+    "views": 24,
+    "azimuthStepDegrees": 30,
+    "elevationsRadians": [
+      0.15,
+      0.6
+    ],
+    "resolution": [
+      640,
+      640
+    ],
+    "metric": "Binary silhouette intersection-over-union, same orthographic camera and scale; not a pixel color or render speed test."
+  },
+  "selectedVariant": "compact-reduced-35",
+  "reductionSteps": {
+    "baseVariant": "compact-reduced-35",
+    "baseTriangles": 1328,
+    "baseGeometrySha256": "60c25e3b33a9e0d2201f0d34dec85e247e1b2276f654e46a90e59656cbea3cf2",
+    "factor": 0.8,
+    "scope": "total-triangle-count; foliage-only edits; cumulative from previous stage",
+    "variants": [
+      "compact-step-1",
+      "compact-step-2",
+      "compact-step-3"
+    ]
+  }
+}

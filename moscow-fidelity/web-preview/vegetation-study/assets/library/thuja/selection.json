@@ -1,0 +1,16 @@
+{
+  "angle": 58,
+  "model": "thuja",
+  "triangles": 540,
+  "variant": "thuja-approved-01",
+  "appearance": {
+    "curvatureStrength": 100,
+    "foliageColor": "#527253",
+    "model": "thuja"
+  },
+  "path": "approved-fd57abf17aca.glb",
+  "date": "2026-10-13",
+  "sourceVariant": "new",
+  "sha256": "fd57abf17aca536d2e268d36d9088be9ef207429efcf609be344138ca83e5539",
+  "selectedBy": "user"
+}

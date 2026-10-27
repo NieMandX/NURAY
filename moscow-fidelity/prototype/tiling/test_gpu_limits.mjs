@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {gpuPageLimit,DEFAULT_GPU_PAGE_BYTES,REGION_GPU_PAGE_BYTES} from '../../web-preview/src/district/gpu-limits.js';
+const MiB=1024*1024;
+const capable={maxStorageBufferBindingSize:2048*MiB,maxBufferSize:2048*MiB};
+assert.equal(gpuPageLimit(capable),DEFAULT_GPU_PAGE_BYTES);
+assert.equal(gpuPageLimit(capable,REGION_GPU_PAGE_BYTES),1024*MiB);
+assert.equal(gpuPageLimit({...capable,maxStorageBufferBindingSize:128*MiB},REGION_GPU_PAGE_BYTES),128*MiB);
+assert.equal(gpuPageLimit({...capable,maxBufferSize:512*MiB},REGION_GPU_PAGE_BYTES),512*MiB);
+assert.equal(gpuPageLimit(capable,129),128);
+assert.throws(()=>gpuPageLimit(capable,NaN));
+assert.throws(()=>gpuPageLimit({...capable,maxBufferSize:0}));
+console.log('Passed: region capacity remains bounded by both adapter limits; legacy default unchanged; limits are aligned and validated.');

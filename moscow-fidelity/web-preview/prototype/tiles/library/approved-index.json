@@ -1,0 +1,233 @@
+{
+  "version": 1,
+  "integrated": true,
+  "colorSpace": "linear-rgb-in-glb",
+  "models": [
+    {
+      "id": "compact",
+      "label": "Лиственное · широкое",
+      "variant": "compact-step-3",
+      "triangles": 680,
+      "smoothingAngle": 75,
+      "foliageColor": "#697548",
+      "curvatureStrength": 100,
+      "bounds": {
+        "min": [
+          -8.39389419555664,
+          0,
+          -8.138263702392578
+        ],
+        "max": [
+          8.858773231506348,
+          20.773292541503906,
+          9.270731925964355
+        ]
+      },
+      "file": "library/compact/model.glb",
+      "source": "library/compact/approved-a8953b8f212d.glb",
+      "sourceSha256": "a8953b8f212db86ae4739ac7875247d744759634df29ed6c9c2e22ac3512c3cf",
+      "glbSha256": "a8953b8f212db86ae4739ac7875247d744759634df29ed6c9c2e22ac3512c3cf"
+    },
+    {
+      "id": "birch",
+      "label": "Берёза",
+      "variant": "birch-approved-01",
+      "triangles": 478,
+      "smoothingAngle": 73,
+      "foliageColor": "#6c7b4c",
+      "curvatureStrength": 100,
+      "bounds": {
+        "min": [
+          -5.353388786315918,
+          0,
+          -4.707566261291504
+        ],
+        "max": [
+          5.809922218322754,
+          21.487123489379883,
+          4.530797004699707
+        ]
+      },
+      "file": "library/birch/model.glb",
+      "source": "library/birch/approved-9a44047b74d0.glb",
+      "sourceSha256": "9a44047b74d09cdd76ec93f75ac35ebdcce2485404af47a39125467ab30fea2f",
+      "glbSha256": "9a44047b74d09cdd76ec93f75ac35ebdcce2485404af47a39125467ab30fea2f"
+    },
+    {
+      "id": "open",
+      "label": "Лиственное · сквозистое",
+      "variant": "open-approved-01",
+      "triangles": 684,
+      "smoothingAngle": 65,
+      "foliageColor": "#5c6949",
+      "curvatureStrength": 100,
+      "bounds": {
+        "min": [
+          -9.906189918518066,
+          0,
+          -7.813530445098877
+        ],
+        "max": [
+          10.20814037322998,
+          22.509868621826172,
+          9.289708137512207
+        ]
+      },
+      "file": "library/open/model.glb",
+      "source": "library/open/approved-837eb24704c5.glb",
+      "sourceSha256": "837eb24704c52e6737a4f17bbda790c37e31fe5d4b73483b7a412e6203cf6b5e",
+      "glbSha256": "837eb24704c52e6737a4f17bbda790c37e31fe5d4b73483b7a412e6203cf6b5e"
+    },
+    {
+      "id": "pine",
+      "label": "Сосна",
+      "variant": "pine-approved-01",
+      "triangles": 1210,
+      "smoothingAngle": 86,
+      "foliageColor": "#6f794d",
+      "curvatureStrength": 100,
+      "bounds": {
+        "min": [
+          -6.108467102050781,
+          0,
+          -5.07974100112915
+        ],
+        "max": [
+          7.199113368988037,
+          26.787578582763672,
+          5.701792240142822
+        ]
+      },
+      "file": "library/pine/model.glb",
+      "source": "library/pine/approved-d2c84997f528.glb",
+      "sourceSha256": "d2c84997f528e173713e18aaa793daf3de8b6b94eed02c9eaf540d600dc1b76f",
+      "glbSha256": "d2c84997f528e173713e18aaa793daf3de8b6b94eed02c9eaf540d600dc1b76f"
+    },
+    {
+      "id": "spruce",
+      "label": "Ель",
+      "variant": "spruce-approved-01",
+      "triangles": 778,
+      "smoothingAngle": 52,
+      "foliageColor": "#5d7453",
+      "curvatureStrength": 100,
+      "bounds": {
+        "min": [
+          -6.977382659912109,
+          -0.7500700950622559,
+          -9.05704116821289
+        ],
+        "max": [
+          9.509337425231934,
+          19.639062881469727,
+          9.49795913696289
+        ]
+      },
+      "file": "library/spruce/model.glb",
+      "source": "library/spruce/approved-e0f6e132a38f.glb",
+      "sourceSha256": "e0f6e132a38f65d2c5d649009cac4982fe5530057130b6695f268c9926c4ff70",
+      "glbSha256": "e0f6e132a38f65d2c5d649009cac4982fe5530057130b6695f268c9926c4ff70"
+    },
+    {
+      "id": "thuja",
+      "label": "Туя",
+      "variant": "thuja-approved-01",
+      "triangles": 540,
+      "smoothingAngle": 58,
+      "foliageColor": "#527253",
+      "curvatureStrength": 100,
+      "bounds": {
+        "min": [
+          -2.334821939468384,
+          0,
+          -2.262639045715332
+        ],
+        "max": [
+          2.375502109527588,
+          20.591821670532227,
+          2.438028573989868
+        ]
+      },
+      "file": "library/thuja/model.glb",
+      "source": "library/thuja/approved-fd57abf17aca.glb",
+      "sourceSha256": "fd57abf17aca536d2e268d36d9088be9ef207429efcf609be344138ca83e5539",
+      "glbSha256": "fd57abf17aca536d2e268d36d9088be9ef207429efcf609be344138ca83e5539"
+    },
+    {
+      "id": "growth",
+      "label": "Лиственная поросль",
+      "variant": "growth-approved-01",
+      "triangles": 404,
+      "smoothingAngle": 68,
+      "foliageColor": "#7d925c",
+      "curvatureStrength": 100,
+      "bounds": {
+        "min": [
+          -2.086167812347412,
+          4.76837158203125e-07,
+          -2.304234027862549
+        ],
+        "max": [
+          2.1454291343688965,
+          10.518288612365723,
+          1.7915798425674438
+        ]
+      },
+      "file": "library/growth/model.glb",
+      "source": "library/growth/approved-88af1fb3f71a.glb",
+      "sourceSha256": "88af1fb3f71a3d7ccb888601acde1fdb9a6553d3abf5609f1dcd3a5632ee13fe",
+      "glbSha256": "88af1fb3f71a3d7ccb888601acde1fdb9a6553d3abf5609f1dcd3a5632ee13fe"
+    },
+    {
+      "id": "low",
+      "label": "Низкое лиственное",
+      "variant": "low-approved-01",
+      "triangles": 474,
+      "smoothingAngle": 70,
+      "foliageColor": "#687d4b",
+      "curvatureStrength": 100,
+      "bounds": {
+        "min": [
+          -4.894486904144287,
+          0,
+          -4.918895244598389
+        ],
+        "max": [
+          5.773108959197998,
+          16.021724700927734,
+          5.167095184326172
+        ]
+      },
+      "file": "library/low/model.glb",
+      "source": "library/low/approved-fde9db9c5577.glb",
+      "sourceSha256": "fde9db9c557796f544f8b9fc2487584f53a4731a448a437fd9b638eaec2c9e62",
+      "glbSha256": "fde9db9c557796f544f8b9fc2487584f53a4731a448a437fd9b638eaec2c9e62"
+    },
+    {
+      "id": "bush",
+      "label": "Кустарник",
+      "variant": "bush-approved-01",
+      "triangles": 356,
+      "smoothingAngle": 48,
+      "foliageColor": "#4d5336",
+      "curvatureStrength": 100,
+      "bounds": {
+        "min": [
+          -2.947840929031372,
+          -0.28520795702934265,
+          -2.800300359725952
+        ],
+        "max": [
+          3.34891676902771,
+          3.9793882369995117,
+          3.23020601272583
+        ]
+      },
+      "file": "library/bush/model.glb",
+      "source": "library/bush/approved-429e1fdc815c.glb",
+      "sourceSha256": "429e1fdc815cef7f33d6f163a7507c9b9379d9b19bd8e93d2c1d4b6d468e4dd1",
+      "glbSha256": "429e1fdc815cef7f33d6f163a7507c9b9379d9b19bd8e93d2c1d4b6d468e4dd1"
+    }
+  ],
+  "integratedRelease": "assets-km1-approved-plants-01"
+}

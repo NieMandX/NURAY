@@ -1,0 +1,16 @@
+{
+  "angle": 52,
+  "model": "spruce",
+  "triangles": 778,
+  "variant": "spruce-approved-01",
+  "appearance": {
+    "curvatureStrength": 100,
+    "foliageColor": "#5d7453",
+    "model": "spruce"
+  },
+  "path": "approved-e0f6e132a38f.glb",
+  "date": "2026-10-13",
+  "sourceVariant": "new",
+  "sha256": "e0f6e132a38f65d2c5d649009cac4982fe5530057130b6695f268c9926c4ff70",
+  "selectedBy": "user"
+}

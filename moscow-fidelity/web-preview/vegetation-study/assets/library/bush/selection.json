@@ -1,0 +1,16 @@
+{
+  "angle": 48,
+  "model": "bush",
+  "triangles": 356,
+  "variant": "bush-approved-01",
+  "appearance": {
+    "curvatureStrength": 100,
+    "foliageColor": "#4d5336",
+    "model": "bush"
+  },
+  "path": "approved-429e1fdc815c.glb",
+  "date": "2026-10-13",
+  "sourceVariant": "new",
+  "sha256": "429e1fdc815cef7f33d6f163a7507c9b9379d9b19bd8e93d2c1d4b6d468e4dd1",
+  "selectedBy": "user"
+}

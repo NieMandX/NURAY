@@ -1,0 +1,47 @@
+{
+  "variant": "thuja-approved-01",
+  "folder": "thuja-approved-01",
+  "label": "Туя · утверждённая форма",
+  "description": "Выбранная в мастерской форма: общий размер 100%, X/Y/Z 100/100/100%, повороты X/Y/Z 0/0/0%. Boolean, упрощение 331%, сглаживание 58°. Форма, цвет и материалы утверждены пользователем.",
+  "triangles": 540,
+  "foliageTriangles": 314,
+  "woodTriangles": 226,
+  "baseFoliageTriangles": 1038,
+  "bounds": {
+    "min": [
+      -2.334821939468384,
+      0.0,
+      -2.262639045715332
+    ],
+    "max": [
+      2.375502109527588,
+      20.591821670532227,
+      2.438028573989868
+    ]
+  },
+  "settings": {
+    "optimize": 331,
+    "rx": 0,
+    "ry": 0,
+    "rz": 0,
+    "scale": 100,
+    "scaleX": 100,
+    "scaleY": 100,
+    "scaleZ": 100
+  },
+  "mode": "boolean",
+  "smoothingAngle": 58,
+  "sourceGeometrySha256": "1e44681369426044a89f7ac52362cc3b89d793e8ca16da11b7f51c471190b075",
+  "geometrySha256": "0a408e5018edd00fba8e6427e0d04f28806d7ec216d95099003d23c0dfd1ec94",
+  "glbSha256": "fd57abf17aca536d2e268d36d9088be9ef207429efcf609be344138ca83e5539",
+  "inputGlbSha256": "fd57abf17aca536d2e268d36d9088be9ef207429efcf609be344138ca83e5539",
+  "selectedBy": "user",
+  "date": "2026-10-13",
+  "integrated": true,
+  "provenance": "Exact live workshop export; no regeneration or simplification on approval.",
+  "engines": {
+    "manifold": "3.5.4",
+    "meshoptimizer": "1.3.0"
+  },
+  "integratedRelease": "assets-km1-approved-plants-01"
+}

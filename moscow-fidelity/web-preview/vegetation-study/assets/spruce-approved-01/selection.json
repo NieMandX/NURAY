@@ -1,0 +1,47 @@
+{
+  "variant": "spruce-approved-01",
+  "folder": "spruce-approved-01",
+  "label": "Ель · утверждённая форма",
+  "description": "Выбранная в мастерской хвоя: размер 105%, X 100%, Y 125%, Z 104%, случайный поворот Y 85%. Boolean-оболочка упрощена в 10 раз, сглаживание 52°. Форма, цвет и оформление утверждены пользователем.",
+  "triangles": 778,
+  "foliageTriangles": 262,
+  "woodTriangles": 516,
+  "baseFoliageTriangles": 2618,
+  "bounds": {
+    "min": [
+      -6.977382659912109,
+      -0.7500700950622559,
+      -9.05704116821289
+    ],
+    "max": [
+      9.509337425231934,
+      19.639062881469727,
+      9.49795913696289
+    ]
+  },
+  "settings": {
+    "optimize": 1000,
+    "rx": 0,
+    "ry": 85,
+    "rz": 0,
+    "scale": 105,
+    "scaleX": 100,
+    "scaleY": 125,
+    "scaleZ": 104
+  },
+  "mode": "boolean",
+  "smoothingAngle": 52,
+  "sourceGeometrySha256": "6f8ad64053c2c4ab403e8e33657943008030b3ae9061c3cf3788fecc1ffba478",
+  "geometrySha256": "be0f1c5efbfe8e56b88747a76e1c422a15f22af2a86198ee0866c82ef15bd6fe",
+  "glbSha256": "e0f6e132a38f65d2c5d649009cac4982fe5530057130b6695f268c9926c4ff70",
+  "inputGlbSha256": "e0f6e132a38f65d2c5d649009cac4982fe5530057130b6695f268c9926c4ff70",
+  "selectedBy": "user",
+  "date": "2026-10-13",
+  "integrated": true,
+  "provenance": "Exact live workshop export; no regeneration or simplification on approval.",
+  "engines": {
+    "manifold": "3.5.4",
+    "meshoptimizer": "1.3.0"
+  },
+  "integratedRelease": "assets-km1-approved-plants-01"
+}

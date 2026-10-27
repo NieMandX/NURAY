@@ -1,0 +1,109 @@
+{
+  "models": [
+    {
+      "sourceCode": 0,
+      "typeStatus": "source",
+      "resource": "fenceconcrete",
+      "styleId": "795853",
+      "label": "Бетонное",
+      "family": "solid",
+      "heightM": 1.8,
+      "spacingM": 1.3,
+      "material": 2,
+      "triangles": 108,
+      "file": "fenceconcrete/model.glb"
+    },
+    {
+      "sourceCode": 1,
+      "typeStatus": "source",
+      "resource": "fencebrick",
+      "styleId": "713787",
+      "label": "Кирпичное",
+      "family": "solid",
+      "heightM": 1.8,
+      "spacingM": 1.4,
+      "material": 9,
+      "triangles": 108,
+      "file": "fencebrick/model.glb"
+    },
+    {
+      "sourceCode": 2,
+      "typeStatus": "source",
+      "resource": "fencewood",
+      "styleId": "966432",
+      "label": "Деревянное",
+      "family": "wood",
+      "heightM": 1.6,
+      "spacingM": 1.7,
+      "material": 1,
+      "triangles": 420,
+      "file": "fencewood/model.glb"
+    },
+    {
+      "sourceCode": 3,
+      "typeStatus": "source",
+      "resource": "fencemetalhigh",
+      "styleId": "605807",
+      "label": "Металлическое · высокое",
+      "family": "metal",
+      "heightM": 1.8,
+      "spacingM": 1.8,
+      "material": 0,
+      "triangles": 468,
+      "file": "fencemetalhigh/model.glb"
+    },
+    {
+      "sourceCode": 4,
+      "typeStatus": "source",
+      "resource": "fencemetallow",
+      "styleId": "690821",
+      "label": "Металлическое · низкое",
+      "family": "metal",
+      "heightM": 0.9,
+      "spacingM": 1.3,
+      "material": 0,
+      "triangles": 480,
+      "file": "fencemetallow/model.glb"
+    },
+    {
+      "sourceCode": 5,
+      "typeStatus": "source",
+      "resource": "fencetreehigh",
+      "styleId": "153409",
+      "label": "Живая изгородь · высокая",
+      "family": "hedge",
+      "heightM": 1.8,
+      "spacingM": 2.5,
+      "material": 10,
+      "triangles": 40,
+      "file": "fencetreehigh/model.glb"
+    },
+    {
+      "sourceCode": 6,
+      "typeStatus": "source",
+      "resource": "fencetreelow",
+      "styleId": "54769",
+      "label": "Живая изгородь · низкая",
+      "family": "hedge",
+      "heightM": 0.8,
+      "spacingM": 1.5,
+      "material": 10,
+      "triangles": 40,
+      "file": "fencetreelow/model.glb"
+    },
+    {
+      "sourceCode": null,
+      "typeStatus": "missing",
+      "resource": "fencedefault",
+      "styleId": "382958",
+      "label": "Тип не указан",
+      "family": "neutral",
+      "heightM": 1.2,
+      "spacingM": 1.3,
+      "material": 0,
+      "triangles": 108,
+      "file": "fencedefault/model.glb"
+    }
+  ],
+  "dimensions": "display defaults"
+}

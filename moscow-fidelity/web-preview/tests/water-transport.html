@@ -1,0 +1,7 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><title>NURAY · проверка преломления воды</title>
+<style>body{font:16px system-ui;background:#18232a;color:#e4eaeb;margin:32px}button,input{font:inherit}canvas{width:min(100%,900px);image-rendering:auto;border:1px solid #51616b}pre{white-space:pre-wrap}label{display:inline-block;margin:12px 20px 12px 0}p{max-width:900px}h1{font-size:24px}</style>
+<h1>Преломление · проверка по реальной геометрии</h1><p>Диагностический бассейн: дно слева на 2 м, справа на 6 м. Один и тот же транспортный шейдер, что в городе. Шахматный рисунок находится на дне, под поверхностью воды.</p>
+<label>IOR <input id="ior" aria-label="IOR теста" type="range" min="1" max="2" step="0.001" value="1.333"><output id="ior-value">1.333</output></label>
+<label>Затухание, м <input id="distance" aria-label="Затухание теста" type="range" min="1" max="50" step="1" value="12"><output id="distance-value">12</output></label><button id="render">Пересчитать</button>
+<p id="status">Загрузка шейдеров…</p><canvas width="640" height="360"></canvas><pre id="results"></pre>
+<script type="module" src="./water-transport-gpu.js"></script></html>

@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "date": "2026-10-13",
+  "release": "assets-km1-approved-plants-01",
+  "models": 9,
+  "plants": 1646,
+  "validationSha256": "1b9db8529f8a74d581fdd8cc2e43757d4af87407db152b6eb4f92ff41afb7da3",
+  "catalogSha256": "67c81e4163efaa936d3792bafe15741b80a2394ffdbee3f05791c87b5a85a597",
+  "approvalIndexSha256": "a725faf91e9bd702be348c0a429497e79e7faa2b9b05d25ac34df67363c5ebfe",
+  "source": "approved workshop GLBs",
+  "mapping": {
+    "Model_tree_shrubs_point": "bush",
+    "Model_tree_deciduous_point": "open",
+    "Model_tree_deciduous_growth_point": "growth",
+    "Model_tree_deciduous_low_point": "low",
+    "Model_tree_coniferous_point": "spruce",
+    "Model_tree_deciduous_wide_crown_point": "compact",
+    "Model_tree_narrow_tall_point": "thuja",
+    "Model_tree_birch_point": "birch",
+    "Model_tree_pine_point": "pine"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "variant": "pine-approved-01",
+  "folder": "pine-approved-01",
+  "label": "Сосна · утверждённая форма",
+  "description": "Хвоя сдвинута к оси ствола на 30%. Высоты, размеры объёмов, ствол и ветви сохранены. Форма и оформление выбраны пользователем.",
+  "triangles": 1210,
+  "foliageTriangles": 1008,
+  "woodTriangles": 202,
+  "bounds": {
+    "min": [
+      -6.108467102050781,
+      0.0,
+      -5.07974100112915
+    ],
+    "max": [
+      7.199113368988037,
+      26.787578582763672,
+      5.701792240142822
+    ]
+  },
+  "crownRadialFactor": 0.7,
+  "geometrySha256": "b389dd89264d6bd7c0add02e51d617ce4654aae9f3d8ca54654d8ec59611f6f2",
+  "selectedBy": "user",
+  "date": "2026-10-12",
+  "integrated": true,
+  "smoothingAngle": 86,
+  "provenance": "Exact live workshop export; first 30% inward crown translation, no regeneration or simplification on approval.",
+  "integratedRelease": "assets-km1-approved-plants-01"
+}

@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "colorSpace": "srgb",
+  "models": {
+    "open": {
+      "foliageColor": "#5c6949",
+      "curvatureStrength": 100,
+      "label": "Зелёный · сквозистое",
+      "selectedBy": "user",
+      "date": "2026-10-11"
+    },
+    "compact": {
+      "foliageColor": "#697548",
+      "curvatureStrength": 100,
+      "label": "Тёмный зелёный · широкое",
+      "selectedBy": "user",
+      "date": "2026-10-11"
+    },
+    "birch": {
+      "foliageColor": "#6c7b4c",
+      "curvatureStrength": 100,
+      "label": "Светлый зелёный · берёза",
+      "selectedBy": "user",
+      "date": "2026-10-11"
+    },
+    "pine": {
+      "foliageColor": "#6f794d",
+      "curvatureStrength": 100,
+      "selectedBy": "user",
+      "date": "2026-10-12"
+    },
+    "spruce": {
+      "foliageColor": "#5d7453",
+      "curvatureStrength": 100,
+      "selectedBy": "user",
+      "date": "2026-10-13"
+    },
+    "thuja": {
+      "foliageColor": "#527253",
+      "curvatureStrength": 100,
+      "selectedBy": "user",
+      "date": "2026-10-13"
+    },
+    "growth": {
+      "foliageColor": "#7d925c",
+      "curvatureStrength": 100,
+      "selectedBy": "user",
+      "date": "2026-10-13"
+    },
+    "low": {
+      "foliageColor": "#687d4b",
+      "curvatureStrength": 100,
+      "selectedBy": "user",
+      "date": "2026-10-13"
+    },
+    "bush": {
+      "foliageColor": "#4d5336",
+      "curvatureStrength": 100,
+      "selectedBy": "user",
+      "date": "2026-10-13"
+    }
+  }
+}

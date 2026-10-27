@@ -1,0 +1,706 @@
+{
+  "version": "shape-study-03",
+  "foliageScale": 1.2,
+  "foliageScales": {
+    "birch": 1.56,
+    "spruce": 1.944
+  },
+  "status": "review-only",
+  "integrated": false,
+  "models": [
+    {
+      "id": "open",
+      "label": "Лиственное · сквозистое",
+      "description": "Неровный ярусный силуэт, открытые развилки и просветы между ветвями.",
+      "sourceTemplate": "Template_autumn_bigtree.001",
+      "sourceBounds": {
+        "min": [
+          -7.919135093688965,
+          0.0,
+          -7.450586795806885
+        ],
+        "max": [
+          8.42839527130127,
+          20.264036178588867,
+          8.496820449829102
+        ]
+      },
+      "triangles": 1824,
+      "bounds": {
+        "min": [
+          -8.20300006866455,
+          0.0,
+          -7.813530445098877
+        ],
+        "max": [
+          8.691953659057617,
+          20.562458038330078,
+          9.289708137512207
+        ]
+      },
+      "previousBounds": {
+        "min": [
+          -7.919135093688965,
+          0.0,
+          -7.450586795806885
+        ],
+        "max": [
+          8.42839527130127,
+          20.264036178588867,
+          8.496820449829102
+        ]
+      },
+      "previousTriangles": 304,
+      "components": 49,
+      "foliageGroups": 36,
+      "foliageScale": 1.2,
+      "comparisons": [
+        {
+          "value": "open-selected-before-trunk",
+          "folder": "open-selected-before-trunk",
+          "label": "Выбранная крона · прежний ствол",
+          "triangles": 684,
+          "bounds": {
+            "min": [
+              -9.906189918518066,
+              0.0,
+              -7.813530445098877
+            ],
+            "max": [
+              10.20814037322998,
+              22.509868621826172,
+              9.289708137512207
+            ]
+          },
+          "description": "Точная выбранная в мастерской форма до исправления овальных сечений ствола."
+        }
+      ]
+    },
+    {
+      "id": "compact",
+      "label": "Лиственное · широкое",
+      "description": "Крупная смещённая масса с выемками по нижнему краю.",
+      "sourceTemplate": "Template_autumn_bigtree.001",
+      "sourceBounds": {
+        "min": [
+          -7.919135093688965,
+          0.0,
+          -7.450586795806885
+        ],
+        "max": [
+          8.42839527130127,
+          20.264036178588867,
+          8.496820449829102
+        ]
+      },
+      "triangles": 1824,
+      "bounds": {
+        "min": [
+          -8.39389419555664,
+          0.0,
+          -8.138263702392578
+        ],
+        "max": [
+          9.042366981506348,
+          20.773292541503906,
+          9.270731925964355
+        ]
+      },
+      "previousBounds": {
+        "min": [
+          -7.919135093688965,
+          0.0,
+          -7.450586795806885
+        ],
+        "max": [
+          8.42839527130127,
+          20.264036178588867,
+          8.496820449829102
+        ]
+      },
+      "previousTriangles": 304,
+      "components": 49,
+      "foliageGroups": 36
+    },
+    {
+      "id": "birch",
+      "label": "Берёза",
+      "description": "Тонкий светлый ствол, неравные ветви, опущенные концы кроны.",
+      "sourceTemplate": "Template_autumn_birch.002",
+      "sourceBounds": {
+        "min": [
+          -4.966656684875488,
+          0.0,
+          -4.132490158081055
+        ],
+        "max": [
+          4.267912864685059,
+          20.13904571533203,
+          3.859945774078369
+        ]
+      },
+      "triangles": 1326,
+      "bounds": {
+        "min": [
+          -5.866530418395996,
+          0.0,
+          -5.04927921295166
+        ],
+        "max": [
+          4.891790866851807,
+          21.487123489379883,
+          4.928736686706543
+        ]
+      },
+      "previousBounds": {
+        "min": [
+          -4.966656684875488,
+          0.0,
+          -4.132490158081055
+        ],
+        "max": [
+          4.267912864685059,
+          20.13904571533203,
+          3.859945774078369
+        ]
+      },
+      "previousTriangles": 160,
+      "components": 37,
+      "foliageGroups": 25,
+      "foliageScale": 1.56,
+      "studyLabel": "Листва берёзы +30%",
+      "scaleDescription": "Каждый фрагмент листвы увеличен ещё на 30% относительно предыдущей пробы. Ствол и ветви прежние.",
+      "comparisons": [
+        {
+          "value": "birch-before-growth",
+          "folder": "birch-before-growth",
+          "label": "Берёза до увеличения",
+          "description": "Предыдущая проба берёзы до дополнительного увеличения листвы на 30%.",
+          "triangles": 1326,
+          "bounds": {
+            "min": [
+              -5.2880401611328125,
+              0.0,
+              -4.435893535614014
+            ],
+            "max": [
+              4.365281105041504,
+              20.61160659790039,
+              4.24165678024292
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "pine",
+      "label": "Сосна",
+      "description": "Изломанный ствол и разновысокие плоские группы хвои.",
+      "sourceTemplate": "Template_summer_sosna.001",
+      "sourceBounds": {
+        "min": [
+          -6.89801025390625,
+          0.0,
+          -5.297028064727783
+        ],
+        "max": [
+          8.41209602355957,
+          26.360477447509766,
+          6.457265377044678
+        ]
+      },
+      "triangles": 1210,
+      "bounds": {
+        "min": [
+          -6.108467102050781,
+          0.0,
+          -5.07974100112915
+        ],
+        "max": [
+          7.199113368988037,
+          26.787578582763672,
+          5.701792240142822
+        ]
+      },
+      "previousBounds": {
+        "min": [
+          -6.89801025390625,
+          0.0,
+          -5.297028064727783
+        ],
+        "max": [
+          8.41209602355957,
+          26.360477447509766,
+          6.457265377044678
+        ]
+      },
+      "previousTriangles": 206,
+      "components": 31,
+      "foliageGroups": 24,
+      "foliageScale": 1.2,
+      "studyLabel": "Крона компактнее · центры −30%",
+      "crownRadialFactor": 0.7,
+      "scaleDescription": "Центры всех объёмов хвои сдвинуты на 30% ближе к вертикальной оси ствола относительно исходной сосны. Высоты, размеры и формы объёмов, ствол и ветви сохранены.",
+      "comparisons": [
+        {
+          "value": "pine-before-inward",
+          "folder": "pine-before-inward",
+          "label": "Сосна · до сближения хвои",
+          "description": "Предыдущая сосна до сдвига центров хвои к оси ствола; размеры объёмов те же.",
+          "triangles": 1210,
+          "bounds": {
+            "min": [
+              -7.348270893096924,
+              0.0,
+              -5.647737503051758
+            ],
+            "max": [
+              8.72238826751709,
+              26.787578582763672,
+              6.768670558929443
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "spruce",
+      "label": "Ель",
+      "description": "Вытянутые хвойные лапы идут по спирали: широкие внизу, короткие у вершины.",
+      "sourceTemplate": "Template_summer_pine.001",
+      "sourceBounds": {
+        "min": [
+          -6.003055095672607,
+          0.0,
+          -6.001304626464844
+        ],
+        "max": [
+          6.119256496429443,
+          19.679536819458008,
+          6.121607780456543
+        ]
+      },
+      "triangles": 1476,
+      "bounds": {
+        "min": [
+          -9.072980880737305,
+          0.0,
+          -9.009544372558594
+        ],
+        "max": [
+          9.10366153717041,
+          19.746816635131836,
+          9.148311614990234
+        ]
+      },
+      "previousBounds": {
+        "min": [
+          -6.003055095672607,
+          0.0,
+          -6.001304626464844
+        ],
+        "max": [
+          6.119256496429443,
+          19.679536819458008,
+          6.121607780456543
+        ]
+      },
+      "previousTriangles": 64,
+      "components": 81,
+      "foliageGroups": 40,
+      "foliageScale": 1.944,
+      "studyLabel": "Ель · крупные объёмные лапы",
+      "crownLayout": "ascending-helix",
+      "spiral": {
+        "boughs": 40,
+        "stepDegrees": 65,
+        "heightExponent": 1.35,
+        "baseHeight": 0.18,
+        "azimuthJitterDegrees": 22,
+        "heightStepJitter": 0.3
+      },
+      "scaleDescription": "Лапы увеличены ещё на 20% и утолщены по высоте. Редкая спираль, разные наклоны и неровные края.",
+      "comparisons": [
+        {
+          "value": "spruce-large-flat",
+          "folder": "spruce-large-flat",
+          "label": "Ель · крупные плоские лапы",
+          "description": "Предыдущая укрупнённая нерегулярная спираль до дополнительного увеличения и утолщения лап.",
+          "triangles": 1476,
+          "bounds": {
+            "min": [
+              -8.0171537399292,
+              0.0,
+              -7.9785847663879395
+            ],
+            "max": [
+              8.078198432922363,
+              19.704891204833984,
+              8.11074447631836
+            ]
+          }
+        },
+        {
+          "value": "spruce-spiral-fine",
+          "folder": "spruce-spiral-fine",
+          "label": "Ель · мелкая регулярная спираль",
+          "description": "Первая спиральная проба: 72 небольшие лапы и около 14 витков.",
+          "triangles": 2628,
+          "bounds": {
+            "min": [
+              -6.613753795623779,
+              0.0,
+              -6.6139373779296875
+            ],
+            "max": [
+              6.746293067932129,
+              19.686941146850586,
+              6.742411136627197
+            ]
+          }
+        },
+        {
+          "value": "spruce-before-spiral",
+          "folder": "spruce-before-spiral",
+          "label": "Ель · прежние объёмные фрагменты",
+          "description": "Предыдущая проба ели с раздельными объёмными группами хвои, до спирального расположения плоских лап.",
+          "triangles": 1680,
+          "bounds": {
+            "min": [
+              -6.341977119445801,
+              0.0,
+              -6.3294148445129395
+            ],
+            "max": [
+              6.376063823699951,
+              20.064769744873047,
+              6.4599714279174805
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "bush",
+      "label": "Кустарник",
+      "description": "Несколько стволиков, низкая несимметричная крона и неровный край.",
+      "sourceTemplate": "Template_autumn_bush.001",
+      "sourceBounds": {
+        "min": [
+          -2.5785038471221924,
+          0.0,
+          -2.627852201461792
+        ],
+        "max": [
+          2.886594533920288,
+          6.350172996520996,
+          2.846935987472534
+        ]
+      },
+      "triangles": 1358,
+      "bounds": {
+        "min": [
+          -2.710507869720459,
+          -0.08684118837118149,
+          -2.7880377769470215
+        ],
+        "max": [
+          3.1449532508850098,
+          3.7140414714813232,
+          3.0444459915161133
+        ]
+      },
+      "previousBounds": {
+        "min": [
+          -2.5785038471221924,
+          0.0,
+          -2.627852201461792
+        ],
+        "max": [
+          2.886594533920288,
+          6.350172996520996,
+          2.846935987472534
+        ]
+      },
+      "previousTriangles": 174,
+      "components": 35,
+      "foliageGroups": 28,
+      "studyLabel": "Кустарник · низкая неровная крона",
+      "defaultSmoothingAngle": 65,
+      "defaultFoliageColor": "#62794b",
+      "defaultCurvatureStrength": 100,
+      "scaleDescription": "Несколько тонких стволиков и 28 неравных лиственных фрагментов. Доступны размер по осям, повороты, Boolean и упрощение оболочки."
+    },
+    {
+      "id": "thuja",
+      "label": "Туя",
+      "description": "Узкая вертикальная крона: крупные вытянутые группы хвои, неровные плечи и смещённая вершина.",
+      "sourceTemplate": "Template_autumn_tuya.001",
+      "sourceBounds": {
+        "min": [
+          -2.1159040927886963,
+          0.0,
+          -2.097687005996704
+        ],
+        "max": [
+          2.216301679611206,
+          19.987804412841797,
+          2.246718645095825
+        ]
+      },
+      "triangles": 730,
+      "bounds": {
+        "min": [
+          -2.334821939468384,
+          0.0,
+          -2.262639045715332
+        ],
+        "max": [
+          2.375502109527588,
+          20.591821670532227,
+          2.438028573989868
+        ]
+      },
+      "previousBounds": {
+        "min": [
+          -2.1159040927886963,
+          0.0,
+          -2.097687005996704
+        ],
+        "max": [
+          2.216301679611206,
+          19.987804412841797,
+          2.246718645095825
+        ]
+      },
+      "previousTriangles": 70,
+      "components": 22,
+      "foliageGroups": 12,
+      "foliageScale": 1.2,
+      "studyLabel": "Туя · вертикальные группы хвои",
+      "defaultSmoothingAngle": 58,
+      "defaultFoliageColor": "#527253",
+      "defaultCurvatureStrength": 100,
+      "scaleDescription": "Крупные фрагменты увеличены на 20% после подгонки базового габарита к шаблону 2ГИС. Стволы имеют круглые сужающиеся сечения. Доступны размер, повороты, Boolean и упрощение."
+    },
+    {
+      "id": "growth",
+      "label": "Лиственная поросль",
+      "description": "Три тонких стволика разной высоты, крупные молодые кроны и просветы между ветвями.",
+      "sourceTemplate": "Template_autumn_porosl.001",
+      "sourceBounds": {
+        "min": [
+          -1.895753264427185,
+          4.76837158203125e-07,
+          -1.960835337638855
+        ],
+        "max": [
+          1.9397531747817993,
+          9.991893768310547,
+          1.8856488466262817
+        ]
+      },
+      "triangles": 576,
+      "bounds": {
+        "min": [
+          -2.021444082260132,
+          4.76837158203125e-07,
+          -2.130782127380371
+        ],
+        "max": [
+          2.1568763256073,
+          10.240944862365723,
+          2.0416252613067627
+        ]
+      },
+      "previousBounds": {
+        "min": [
+          -1.895753264427185,
+          4.76837158203125e-07,
+          -1.960835337638855
+        ],
+        "max": [
+          1.9397531747817993,
+          9.991893768310547,
+          1.8856488466262817
+        ]
+      },
+      "previousTriangles": 160,
+      "components": 18,
+      "foliageGroups": 9,
+      "foliageScale": 1.2,
+      "studyLabel": "Поросль · три молодых стволика",
+      "defaultSmoothingAngle": 68,
+      "defaultFoliageColor": "#7d925c",
+      "defaultCurvatureStrength": 100,
+      "scaleDescription": "Крупные фрагменты увеличены на 20% после подгонки базового габарита к шаблону 2ГИС. Стволы имеют круглые сужающиеся сечения. Доступны размер, повороты, Boolean и упрощение."
+    },
+    {
+      "id": "low",
+      "label": "Низкое лиственное",
+      "description": "Короткий ствол, открытые развилки и широкая неровная крона из крупных лиственных масс.",
+      "sourceTemplate": "Template_autumn_listvennoe.001",
+      "sourceBounds": {
+        "min": [
+          -4.215015888214111,
+          0.0,
+          -4.397694110870361
+        ],
+        "max": [
+          4.377999782562256,
+          15.497129440307617,
+          4.297478199005127
+        ]
+      },
+      "triangles": 716,
+      "bounds": {
+        "min": [
+          -4.529882907867432,
+          0.0,
+          -4.796906471252441
+        ],
+        "max": [
+          4.7315850257873535,
+          15.882861137390137,
+          4.721993446350098
+        ]
+      },
+      "previousBounds": {
+        "min": [
+          -4.215015888214111,
+          0.0,
+          -4.397694110870361
+        ],
+        "max": [
+          4.377999782562256,
+          15.497129440307617,
+          4.297478199005127
+        ]
+      },
+      "previousTriangles": 160,
+      "components": 20,
+      "foliageGroups": 11,
+      "foliageScale": 1.2,
+      "studyLabel": "Низкое лиственное · крупная крона",
+      "defaultSmoothingAngle": 70,
+      "defaultFoliageColor": "#687d4b",
+      "defaultCurvatureStrength": 100,
+      "scaleDescription": "Крупные фрагменты увеличены на 20% после подгонки базового габарита к шаблону 2ГИС. Стволы имеют круглые сужающиеся сечения. Доступны размер, повороты, Boolean и упрощение."
+    }
+  ],
+  "materials": [
+    {
+      "name": "Листва · олива",
+      "family": "vegetation",
+      "color": [
+        0.16,
+        0.19,
+        0.075
+      ],
+      "roughness": 0.94,
+      "metallic": 0,
+      "ior": 1.5,
+      "kind": 1,
+      "texture": null,
+      "alphaCutoff": 0
+    },
+    {
+      "name": "Листва · свет",
+      "family": "vegetation",
+      "color": [
+        0.2,
+        0.235,
+        0.105
+      ],
+      "roughness": 0.94,
+      "metallic": 0,
+      "ior": 1.5,
+      "kind": 1,
+      "texture": null,
+      "alphaCutoff": 0
+    },
+    {
+      "name": "Листва · глубина",
+      "family": "vegetation",
+      "color": [
+        0.105,
+        0.135,
+        0.047
+      ],
+      "roughness": 0.94,
+      "metallic": 0,
+      "ior": 1.5,
+      "kind": 1,
+      "texture": null,
+      "alphaCutoff": 0
+    },
+    {
+      "name": "Хвоя",
+      "family": "vegetation",
+      "color": [
+        0.078,
+        0.125,
+        0.063
+      ],
+      "roughness": 0.94,
+      "metallic": 0,
+      "ior": 1.5,
+      "kind": 1,
+      "texture": null,
+      "alphaCutoff": 0
+    },
+    {
+      "name": "Кора",
+      "family": "vegetation",
+      "color": [
+        0.105,
+        0.072,
+        0.044
+      ],
+      "roughness": 0.94,
+      "metallic": 0,
+      "ior": 1.5,
+      "kind": 1,
+      "texture": null,
+      "alphaCutoff": 0
+    },
+    {
+      "name": "Береста",
+      "family": "vegetation",
+      "color": [
+        0.5,
+        0.48,
+        0.4
+      ],
+      "roughness": 0.94,
+      "metallic": 0,
+      "ior": 1.5,
+      "kind": 1,
+      "texture": null,
+      "alphaCutoff": 0
+    },
+    {
+      "name": "Береста · отметины",
+      "family": "vegetation",
+      "color": [
+        0.055,
+        0.047,
+        0.03
+      ],
+      "roughness": 0.94,
+      "metallic": 0,
+      "ior": 1.5,
+      "kind": 1,
+      "texture": null,
+      "alphaCutoff": 0
+    }
+  ],
+  "policy": "Branch-led asymmetry, non-convex closed foliage groups, deliberate gaps and uneven lower edge. Baseline tree envelopes and shrub footprint match source templates; baseline shrub height is 56% of source. Leaf/needle fragments scale about their own centres after fitting, without changing wood. Default scale 120%; birch 156%; spruce 194.4% after its procedural shape fitting. No production generator/config is modified.",
+  "validation": {
+    "passed": true,
+    "closedComponents": true,
+    "positiveVolume": true,
+    "finiteVertices": true,
+    "repeatable": true
+  }
+}

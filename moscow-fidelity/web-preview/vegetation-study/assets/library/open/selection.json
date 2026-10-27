@@ -1,0 +1,15 @@
+{
+  "angle": 65,
+  "model": "open",
+  "triangles": 684,
+  "variant": "open-approved-01",
+  "appearance": {
+    "curvatureStrength": 100,
+    "foliageColor": "#5c6949",
+    "model": "open"
+  },
+  "path": "approved-837eb24704c5.glb",
+  "sha256": "837eb24704c52e6737a4f17bbda790c37e31fe5d4b73483b7a412e6203cf6b5e",
+  "selectedBy": "user",
+  "date": "2026-10-11"
+}

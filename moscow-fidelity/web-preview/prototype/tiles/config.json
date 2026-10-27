@@ -1,0 +1,240 @@
+{
+  "catalog": "assets-moscow-style-20261024-r14/tileset.json",
+  "canonicalModel": "assets-moscow-style-20261024-r14/merged/model.glb",
+  "inspectionViews": [
+    {
+      "key": "rail-level-review",
+      "label": "Ж/д · пересечение уровней",
+      "minExtentMetres": 5000,
+      "camera": {
+        "yaw": -3.5716562499999984,
+        "pitch": 0.4579999999999995,
+        "distance": 14.195817813546315,
+        "target": [
+          -252.97159054407516,
+          30,
+          -1720.7858078888883
+        ]
+      }
+    },
+    {
+      "key": "interchange-review",
+      "label": "Развязка · разметка и железная дорога",
+      "camera": {
+        "yaw": -0.5473750000000001,
+        "pitch": 0.8540000000000001,
+        "distance": 49.96866909968263,
+        "target": [
+          3.3358604976208297,
+          30,
+          -666.3110275904132
+        ]
+      }
+    },
+    {
+      "key": "interchange-tip",
+      "label": "Развязка · носик ограждения",
+      "camera": {
+        "yaw": -0.55,
+        "pitch": 0.7,
+        "distance": 12,
+        "target": [
+          46.3,
+          -15.2,
+          -757.5
+        ]
+      }
+    },
+    {
+      "key": "walking-bridge-descent",
+      "label": "Пешеходный мост и спуск",
+      "minExtentMetres": 5000,
+      "camera": {
+        "yaw": -0.7,
+        "pitch": 0.9,
+        "distance": 50,
+        "target": [
+          2037,
+          -19,
+          2188
+        ]
+      }
+    },
+    {
+      "key": "adjacent-bridge-entry",
+      "label": "Въезд рядом с эстакадой",
+      "minExtentMetres": 5000,
+      "camera": {
+        "yaw": -0.7,
+        "pitch": 0.9,
+        "distance": 38,
+        "target": [
+          -1068,
+          -16,
+          -2386
+        ]
+      }
+    },
+    {
+      "key": "widening-bridge-joint",
+      "label": "Расширение эстакады",
+      "minExtentMetres": 5000,
+      "camera": {
+        "yaw": -0.7,
+        "pitch": 0.9,
+        "distance": 32,
+        "target": [
+          -154,
+          -1,
+          -1615
+        ]
+      }
+    },
+    {
+      "key": "badaevsky",
+      "label": "Бадаевский · новые корпуса",
+      "minExtentMetres": 5000,
+      "camera": {
+        "yaw": -0.4,
+        "pitch": 0.6,
+        "distance": 650,
+        "target": [
+          1600,
+          30,
+          -1277
+        ]
+      }
+    },
+    {
+      "key": "clearance-road",
+      "label": "Стык · бордюр у эстакады",
+      "camera": {
+        "yaw": -0.7,
+        "pitch": 0.9,
+        "distance": 32,
+        "target": [
+          369.95,
+          -6.2,
+          196.84
+        ]
+      }
+    },
+    {
+      "key": "clearance-neighbor",
+      "label": "Стык · соседние пешеходные входы",
+      "camera": {
+        "yaw": -0.6,
+        "pitch": 0.8,
+        "distance": 22,
+        "target": [
+          -53,
+          2,
+          65
+        ]
+      }
+    },
+    {
+      "key": "clearance-green",
+      "label": "Стык · газон перед спуском",
+      "camera": {
+        "yaw": 2.1,
+        "pitch": 0.85,
+        "distance": 22,
+        "target": [
+          49.3,
+          -0.5,
+          20
+        ]
+      }
+    },
+    {
+      "key": "clearance-curve",
+      "label": "Стык · изогнутый пешеходный спуск",
+      "camera": {
+        "yaw": -0.6,
+        "pitch": 0.9,
+        "distance": 23,
+        "target": [
+          263,
+          -3,
+          -47
+        ]
+      }
+    },
+    {
+      "key": "paint-curb",
+      "label": "Разметка · край тротуара",
+      "camera": {
+        "yaw": -0.6,
+        "pitch": 1.05,
+        "distance": 35,
+        "target": [
+          185,
+          -3.6,
+          -100
+        ]
+      }
+    },
+    {
+      "key": "railway-wide-entry-1",
+      "label": "Ж/д · широкий въезд 1",
+      "minExtentMetres": 5000,
+      "camera": {
+        "yaw": -0.7,
+        "pitch": 0.85,
+        "distance": 90,
+        "target": [
+          -2387.244,
+          -13.94,
+          2259.918
+        ]
+      }
+    },
+    {
+      "key": "railway-wide-entry-2",
+      "label": "Ж/д · широкий въезд 2",
+      "minExtentMetres": 5000,
+      "camera": {
+        "yaw": -0.7,
+        "pitch": 0.85,
+        "distance": 90,
+        "target": [
+          -2223.901,
+          -11.16,
+          1956.99
+        ]
+      }
+    }
+  ],
+  "surfaceEffects": {
+    "assets-spb-10km-live-20261024-r13/tileset.json": "assets-spb-10km-live-20261024-r13/surface-effects.json",
+    "assets-hosek-check/tileset.json": "assets-hosek-check/surface-effects.json",
+    "assets-moscow-style-20261024-r14/tileset.json": "assets-moscow-style-20261024-r14/surface-effects.json"
+  },
+  "geography": {
+    "assets-spb-10km-live-20261024-r13/tileset.json": {
+      "latitude": 59.950661,
+      "longitude": 30.212061,
+      "timeZone": "Europe/Moscow",
+      "utcOffset": 3,
+      "label": "Санкт-Петербург"
+    },
+    "assets-hosek-check/tileset.json": {
+      "latitude": 59.950661,
+      "longitude": 30.212061,
+      "timeZone": "Europe/Moscow",
+      "utcOffset": 3,
+      "label": "Санкт-Петербург"
+    },
+    "assets-moscow-style-20261024-r14/tileset.json": {
+      "latitude": 55.739484634027754,
+      "longitude": 37.5320013550023,
+      "timeZone": "Europe/Moscow",
+      "utcOffset": 3,
+      "label": "Москва"
+    }
+  },
+  "assetBase": "https://nuray-scenes.s3.cloud.ru/",
+  "libraryPreview": "library/preview.png",
+  "fenceLibraryPreview": "fence-library/preview.png"
+}

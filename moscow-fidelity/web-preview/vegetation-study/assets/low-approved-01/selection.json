@@ -1,0 +1,47 @@
+{
+  "variant": "low-approved-01",
+  "folder": "low-approved-01",
+  "label": "Низкое лиственное · утверждённая форма",
+  "description": "Выбранная в мастерской форма: общий размер 106%, X/Y/Z 100/100/100%, повороты X/Y/Z 0/17/0%. Boolean, упрощение 436%, сглаживание 70°. Форма, цвет и материалы утверждены пользователем.",
+  "triangles": 474,
+  "foliageTriangles": 220,
+  "woodTriangles": 254,
+  "baseFoliageTriangles": 958,
+  "bounds": {
+    "min": [
+      -4.894486904144287,
+      0.0,
+      -4.918895244598389
+    ],
+    "max": [
+      5.773108959197998,
+      16.021724700927734,
+      5.167095184326172
+    ]
+  },
+  "settings": {
+    "optimize": 436,
+    "rx": 0,
+    "ry": 17,
+    "rz": 0,
+    "scale": 106,
+    "scaleX": 100,
+    "scaleY": 100,
+    "scaleZ": 100
+  },
+  "mode": "boolean",
+  "smoothingAngle": 70,
+  "sourceGeometrySha256": "cd27002d95d99f797069fdd374234c6d3db599e414bf47ceef302ffd26365f08",
+  "geometrySha256": "fdd5ad8eeced8eb3266e27882a1b21782c9bf5b6d762ad33530c9996aa3d347d",
+  "glbSha256": "fde9db9c557796f544f8b9fc2487584f53a4731a448a437fd9b638eaec2c9e62",
+  "inputGlbSha256": "fde9db9c557796f544f8b9fc2487584f53a4731a448a437fd9b638eaec2c9e62",
+  "selectedBy": "user",
+  "date": "2026-10-13",
+  "integrated": true,
+  "provenance": "Exact live workshop export; no regeneration or simplification on approval.",
+  "engines": {
+    "manifold": "3.5.4",
+    "meshoptimizer": "1.3.0"
+  },
+  "integratedRelease": "assets-km1-approved-plants-01"
+}

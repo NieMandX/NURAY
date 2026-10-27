@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {planGpuPages} from '../../web-preview/prototype/tiles/gpu-pages.js';
+const tiles=Array.from({length:16},(_,i)=>({id:String(i),chunks:[String(i)],coarseChunks:[]}));
+const chunks=tiles.map((t,i)=>({id:t.id,vertexBytes:100+i,indexBytes:20,nodeBytes:30}));
+const scene={tiles,chunks},plan=planGpuPages(scene,700);
+assert.equal(plan.length,4);assert.equal(new Set(plan.flatMap(p=>p.tiles)).size,16);
+assert(plan.every(p=>p.bytes<=700));
+assert.deepEqual(planGpuPages({...scene,tiles:[...tiles].reverse()},700),plan);
+assert.throws(()=>planGpuPages(scene,500),/бюджет/);
+assert.deepEqual(planGpuPages({tiles:[],chunks:[]},700),[]);
+console.log('Passed: 16 spatial tiles fit four stable GPU pages; full-detail capacity enforced before allocation; source order independent; overflow rejected.');

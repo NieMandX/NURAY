@@ -1,0 +1,4 @@
+# Additional dependencies for the sparse regional height fit (Python 3.12).
+# The source/geometry environment supplies NumPy, Shapely and pyproj.
+-r requirements-streaming.txt
+scipy==1.18.1

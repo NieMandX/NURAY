@@ -1,4 +1,12 @@
 .DS_Store
-assets/
+/assets/
 *.blend
 .env*
+.release/
+.local/
+__pycache__/
+*.pyc
+moscow-fidelity/source/
+moscow-fidelity/output/
+moscow-fidelity/web-preview/prototype/tiles/assets*/
+moscow-fidelity/diagnostics/

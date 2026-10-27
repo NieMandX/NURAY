@@ -1,0 +1,15 @@
+{
+  "angle": 75,
+  "model": "compact",
+  "triangles": 680,
+  "variant": "compact-step-3",
+  "appearance": {
+    "curvatureStrength": 100,
+    "foliageColor": "#697548",
+    "model": "compact"
+  },
+  "path": "approved-a8953b8f212d.glb",
+  "sha256": "a8953b8f212db86ae4739ac7875247d744759634df29ed6c9c2e22ac3512c3cf",
+  "selectedBy": "user",
+  "date": "2026-10-11"
+}

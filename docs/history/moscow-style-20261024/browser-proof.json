@@ -1,0 +1,46 @@
+{
+  "engine": "trace",
+  "error": "",
+  "lighting": [
+    "classic",
+    "hosek"
+  ],
+  "loading": false,
+  "residency": {
+    "bytes": 2773163012,
+    "gpuPageLimit": 1073741824,
+    "gpuPages": 4,
+    "modes": [
+      [
+        "whole",
+        "full"
+      ]
+    ],
+    "released": 0,
+    "revision": 21,
+    "wholeSceneTrace": true
+  },
+  "samples": "64",
+  "solar": {
+    "altitude": 6.976108061166158,
+    "azimuth": 302.18254829644354,
+    "date": "2026-06-21",
+    "direction": [
+      -0.8400897680320782,
+      0.12145544802686212,
+      -0.5286754730384258
+    ],
+    "geo": {
+      "label": "Москва",
+      "latitude": 55.739484634027754,
+      "longitude": 37.5320013550023,
+      "timeZone": "Europe/Moscow",
+      "utcOffset": 3
+    },
+    "minute": 1206
+  },
+  "streaming": "Вся карта · единый GLB",
+  "trace": "\nНакоплено сэмплов64 / 64\nGPU / сэмпл · среднее461.10 мс\nСэмплов за кадр1\n",
+  "water": "ВодаOcean",
+  "consoleErrors": []
+}

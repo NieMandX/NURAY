@@ -1,0 +1,16 @@
+{
+  "angle": 68,
+  "model": "growth",
+  "triangles": 404,
+  "variant": "growth-approved-01",
+  "appearance": {
+    "curvatureStrength": 100,
+    "foliageColor": "#7d925c",
+    "model": "growth"
+  },
+  "path": "approved-88af1fb3f71a.glb",
+  "date": "2026-10-13",
+  "sourceVariant": "new",
+  "sha256": "88af1fb3f71a3d7ccb888601acde1fdb9a6553d3abf5609f1dcd3a5632ee13fe",
+  "selectedBy": "user"
+}

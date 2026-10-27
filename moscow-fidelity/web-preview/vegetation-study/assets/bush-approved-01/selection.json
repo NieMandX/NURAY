@@ -1,0 +1,47 @@
+{
+  "variant": "bush-approved-01",
+  "folder": "bush-approved-01",
+  "label": "Кустарник · утверждённая форма",
+  "description": "Выбранная в мастерской форма: размер 128%, поворот Y 76%, Boolean и упрощение ×10, сглаживание 48°. Геометрия, зелёный цвет и материалы утверждены пользователем.",
+  "triangles": 356,
+  "foliageTriangles": 174,
+  "woodTriangles": 182,
+  "baseFoliageTriangles": 1746,
+  "bounds": {
+    "min": [
+      -2.947840929031372,
+      -0.28520795702934265,
+      -2.800300359725952
+    ],
+    "max": [
+      3.34891676902771,
+      3.9793882369995117,
+      3.23020601272583
+    ]
+  },
+  "settings": {
+    "optimize": 1000,
+    "rx": 0,
+    "ry": 76,
+    "rz": 0,
+    "scale": 128,
+    "scaleX": 100,
+    "scaleY": 100,
+    "scaleZ": 100
+  },
+  "mode": "boolean",
+  "smoothingAngle": 48,
+  "sourceGeometrySha256": "965a4ba782d8801d658aef5ea1d27e1318ff3821555b9f17cdbda3a8daff5d90",
+  "geometrySha256": "26d5b4987c59000224488048594905f177baf67175733062507c5bde163cb596",
+  "glbSha256": "429e1fdc815cef7f33d6f163a7507c9b9379d9b19bd8e93d2c1d4b6d468e4dd1",
+  "inputGlbSha256": "429e1fdc815cef7f33d6f163a7507c9b9379d9b19bd8e93d2c1d4b6d468e4dd1",
+  "selectedBy": "user",
+  "date": "2026-10-13",
+  "integrated": true,
+  "provenance": "Exact live workshop export; no regeneration or simplification on approval.",
+  "engines": {
+    "manifold": "3.5.4",
+    "meshoptimizer": "1.3.0"
+  },
+  "integratedRelease": "assets-km1-approved-plants-01"
+}

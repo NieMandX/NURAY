@@ -1,0 +1,18 @@
+{
+  "model": "open",
+  "settings": {
+    "scale": 100,
+    "scaleX": 200,
+    "scaleY": 200,
+    "scaleZ": 100,
+    "rx": 0,
+    "ry": 0,
+    "rz": 0,
+    "optimize": 683
+  },
+  "mode": "boolean",
+  "triangles": 684,
+  "foliageTriangles": 372,
+  "baseFoliageTriangles": 2574,
+  "woodTriangles": 312
+}

@@ -1,0 +1,2317 @@
+{
+  "features": [
+    {
+      "id": "2gis:19798_22523_15:336",
+      "layer": "Transport_Roadbed",
+      "geometryType": "polygon",
+      "source": {
+        "tile": "19798_22523_15",
+        "index": 336,
+        "objectId": null,
+        "fileSha256": "05d1ebbd8660c406d9f5a8e0c6cd6ac246f5f03795c552b1b9b3d5a5f2e1fa53",
+        "coordinateStepM": 0.021007722795980288
+      },
+      "properties": {
+        "db_geometry_type": "polygon",
+        "db_sublayer": "Transport_Roadbed",
+        "db_layer": 18,
+        "db_region": 32,
+        "db_tiers": [
+          1
+        ],
+        "db_road_part": "roadbed_overpass",
+        "db_has_immersive_model": 0
+      },
+      "coordinates": [
+        [
+          1104.3523809587352,
+          8773.148780178159,
+          0.0
+        ],
+        [
+          1092.5215561169593,
+          8761.380105642182,
+          2.00098858363744
+        ],
+        [
+          1107.1957964948917,
+          8769.07327900926,
+          0.0
+        ]
+      ],
+      "evidence": "source",
+      "semantics": {
+        "purpose": "transport-unspecified",
+        "construction": "elevated",
+        "sourcePart": "roadbed_overpass",
+        "tiers": [
+          1
+        ],
+        "surface": "light-transport-surface",
+        "styleId": "881318",
+        "material": 12,
+        "status": "built",
+        "rule": "semantics-v1",
+        "kind": "road",
+        "rank": 100
+      }
+    },
+    {
+      "id": "2gis:19798_22523_15:337",
+      "layer": "Transport_Roadbed",
+      "geometryType": "polygon",
+      "source": {
+        "tile": "19798_22523_15",
+        "index": 337,
+        "objectId": null,
+        "fileSha256": "05d1ebbd8660c406d9f5a8e0c6cd6ac246f5f03795c552b1b9b3d5a5f2e1fa53",
+        "coordinateStepM": 0.021007753346071776
+      },
+      "properties": {
+        "db_geometry_type": "polygon",
+        "db_sublayer": "Transport_Roadbed",
+        "db_layer": 18,
+        "db_region": 32,
+        "db_tiers": [
+          1
+        ],
+        "db_road_part": "roadbed_overpass",
+        "db_has_immersive_model": 0
+      },
+      "coordinates": [
+        [
+          1096.0807451927124,
+          8757.872036138202,
+          1.8644396875607068
+        ],
+        [
+          1107.1957964948917,
+          8769.07327900926,
+          0.0
+        ],
+        [
+          1094.7752827641268,
+          8757.871755795242,
+          2.0009901998890967
+        ],
+        [
+          1092.5215561169593,
+          8761.380105642182,
+          2.00098858363744
+        ]
+      ],
+      "evidence": "source",
+      "semantics": {
+        "purpose": "transport-unspecified",
+        "construction": "elevated",
+        "sourcePart": "roadbed_overpass",
+        "tiers": [
+          1
+        ],
+        "surface": "light-transport-surface",
+        "styleId": "881318",
+        "material": 12,
+        "status": "built",
+        "rule": "semantics-v1",
+        "kind": "road",
+        "rank": 100
+      }
+    },
+    {
+      "id": "2gis:19798_22523_15:2455",
+      "layer": "Railroad_line",
+      "geometryType": "polyline",
+      "source": {
+        "tile": "19798_22523_15",
+        "index": 2455,
+        "objectId": null,
+        "fileSha256": "05d1ebbd8660c406d9f5a8e0c6cd6ac246f5f03795c552b1b9b3d5a5f2e1fa53",
+        "coordinateStepM": 0.021006492647127426
+      },
+      "properties": {
+        "db_geometry_type": "polyline",
+        "db_sublayer": "Railroad_line",
+        "db_layer": 86,
+        "db_region": 32,
+        "db_segment_level": 0,
+        "db_segment_begin_level": 0,
+        "db_segment_end_level": 0,
+        "beginningIsCut": 0,
+        "endingIsCut": 1,
+        "componentDistanceStart": 0,
+        "componentDistanceEnd": 34626,
+        "db_has_immersive_counterpart": 1
+      },
+      "coordinates": [
+        [
+          1105.742490703554,
+          8771.17405573619,
+          0.0
+        ],
+        [
+          1110.7526660113995,
+          8776.217764312423,
+          0.0
+        ],
+        [
+          1158.3899099203645,
+          8828.293112589,
+          0.0
+        ],
+        [
+          1161.0840970679824,
+          8832.285751822405,
+          0.0
+        ],
+        [
+          1164.304317131851,
+          8837.79127380418,
+          0.0
+        ],
+        [
+          1179.51847324734,
+          8875.991912422925,
+          0.0
+        ],
+        [
+          1185.6196939425529,
+          8896.415421966729,
+          0.0
+        ],
+        [
+          1187.0480670515992,
+          8910.744772188855,
+          0.0
+        ],
+        [
+          1186.3073510224642,
+          8926.817408909592,
+          0.0
+        ],
+        [
+          1179.4775057765935,
+          8961.06225154488,
+          0.0
+        ],
+        [
+          1178.2548550746176,
+          8967.343953308826,
+          0.0
+        ],
+        [
+          1175.8319861721977,
+          8974.045565220842,
+          0.0
+        ],
+        [
+          1160.1568275807874,
+          9019.276115558336,
+          0.0
+        ],
+        [
+          1145.1975957930722,
+          9065.598910493445,
+          0.0
+        ],
+        [
+          1104.0870539820191,
+          9220.090975756115,
+          0.0
+        ],
+        [
+          1072.6352692111284,
+          9309.53866729255,
+          0.0
+        ],
+        [
+          1041.9230520265712,
+          9391.926243830007,
+          0.0
+        ],
+        [
+          1034.9716423745544,
+          9411.798304574706,
+          0.0
+        ],
+        [
+          1020.9858417289495,
+          9446.29025617651,
+          0.0
+        ]
+      ],
+      "evidence": "source",
+      "semantics": {
+        "purpose": "unclassified",
+        "construction": "ground",
+        "sourcePart": null,
+        "tiers": [
+          0
+        ],
+        "surface": null,
+        "styleId": null,
+        "material": null,
+        "status": "deferred",
+        "rule": "semantics-v1"
+      }
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "surface:70870",
+      "owner": "2gis:19798_22523_15:336",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1107.1958,
+              8769.07328
+            ],
+            [
+              1104.25293,
+              8767.53044
+            ],
+            [
+              1106.62044,
+              8769.89795
+            ],
+            [
+              1107.1958,
+              8769.07328
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10792163927263841,
+        -0.07482773566981248,
+        907.5103580287109
+      ]
+    },
+    {
+      "id": "surface:70871",
+      "owner": "2gis:19798_22523_15:336",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1092.52156,
+              8761.38011
+            ],
+            [
+              1093.30144,
+              8762.15589
+            ],
+            [
+              1093.30144,
+              8761.78897
+            ],
+            [
+              1092.52156,
+              8761.38011
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.09570246542668048,
+        -0.0696345583991206,
+        848.6056572773994
+      ]
+    },
+    {
+      "id": "surface:70872",
+      "owner": "2gis:19798_22523_15:336",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1093.30144,
+              8761.78897
+            ],
+            [
+              1093.30144,
+              8762.15589
+            ],
+            [
+              1093.70749,
+              8762.55981
+            ],
+            [
+              1094.77176,
+              8762.55981
+            ],
+            [
+              1093.30144,
+              8761.78897
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.1012877903372503,
+        -0.06963455839912058,
+        854.7121010193381
+      ]
+    },
+    {
+      "id": "surface:70873",
+      "owner": "2gis:19798_22523_15:336",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1094.77176,
+              8762.55981
+            ],
+            [
+              1093.70749,
+              8762.55981
+            ],
+            [
+              1096.29187,
+              8765.13061
+            ],
+            [
+              1096.29187,
+              8763.35674
+            ],
+            [
+              1094.77176,
+              8762.55981
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10128779033725027,
+        -0.0719942746441996,
+        875.3892557481971
+      ]
+    },
+    {
+      "id": "surface:70874",
+      "owner": "2gis:19798_22523_15:336",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1096.29187,
+              8763.35674
+            ],
+            [
+              1096.29187,
+              8765.13061
+            ],
+            [
+              1096.71371,
+              8765.55024
+            ],
+            [
+              1099.2823,
+              8765.55024
+            ],
+            [
+              1097.96703,
+              8764.23497
+            ],
+            [
+              1096.29187,
+              8763.35674
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10524766832998532,
+        -0.0719942746441996,
+        879.7304377820988
+      ]
+    },
+    {
+      "id": "surface:70875",
+      "owner": "2gis:19798_22523_15:336",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1099.2823,
+              8764.92452
+            ],
+            [
+              1099.2823,
+              8765.55024
+            ],
+            [
+              1100.47582,
+              8765.55024
+            ],
+            [
+              1099.2823,
+              8764.92452
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10670898560128934,
+        -0.07342654657579946,
+        893.8914895609172
+      ]
+    },
+    {
+      "id": "surface:70876",
+      "owner": "2gis:19798_22523_15:336",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1097.96703,
+              8764.23497
+            ],
+            [
+              1099.2823,
+              8765.55024
+            ],
+            [
+              1099.2823,
+              8764.92452
+            ],
+            [
+              1097.96703,
+              8764.23497
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.1038153963983865,
+        -0.07342654657579946,
+        890.7106181763863
+      ]
+    },
+    {
+      "id": "surface:70877",
+      "owner": "2gis:19798_22523_15:336",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1100.47582,
+              8765.55024
+            ],
+            [
+              1099.2823,
+              8765.55024
+            ],
+            [
+              1099.2823,
+              8768.10533
+            ],
+            [
+              1099.50054,
+              8768.32243
+            ],
+            [
+              1101.65469,
+              8766.16828
+            ],
+            [
+              1100.47582,
+              8765.55024
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10670898560128948,
+        -0.07400882783265453,
+        898.995505171245
+      ]
+    },
+    {
+      "id": "surface:70878",
+      "owner": "2gis:19798_22523_15:336",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1099.2823,
+              8768.10533
+            ],
+            [
+              1099.2823,
+              8765.55024
+            ],
+            [
+              1096.71371,
+              8765.55024
+            ],
+            [
+              1099.2823,
+              8768.10533
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10524766832998433,
+        -0.07400882783265454,
+        897.3891049651094
+      ]
+    },
+    {
+      "id": "surface:70879",
+      "owner": "2gis:19798_22523_15:336",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1101.65469,
+              8766.16828
+            ],
+            [
+              1099.50054,
+              8768.32243
+            ],
+            [
+              1102.27273,
+              8771.08005
+            ],
+            [
+              1102.27273,
+              8766.49229
+            ],
+            [
+              1101.65469,
+              8766.16828
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10807529776932846,
+        -0.07537514000069342,
+        912.4780317624375
+      ]
+    },
+    {
+      "id": "surface:70880",
+      "owner": "2gis:19798_22523_15:336",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1106.62044,
+              8769.89795
+            ],
+            [
+              1104.25293,
+              8767.53044
+            ],
+            [
+              1102.27273,
+              8766.49229
+            ],
+            [
+              1102.27273,
+              8771.08005
+            ],
+            [
+              1102.72616,
+              8771.5311
+            ],
+            [
+              1105.48101,
+              8771.5311
+            ],
+            [
+              1106.62044,
+              8769.89795
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10737423494175628,
+        -0.07537514000069341,
+        911.7052693274999
+      ]
+    },
+    {
+      "id": "surface:70881",
+      "owner": "2gis:19798_22523_15:336",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1105.48101,
+              8771.5311
+            ],
+            [
+              1102.72616,
+              8771.5311
+            ],
+            [
+              1104.35238,
+              8773.14878
+            ],
+            [
+              1105.48101,
+              8771.5311
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.1073742349417563,
+        -0.07518385408275675,
+        910.0273989492349
+      ]
+    },
+    {
+      "id": "surface:72388",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1096.65764,
+              8759.56938
+            ],
+            [
+              1097.76503,
+              8759.56938
+            ],
+            [
+              1096.29187,
+              8758.08479
+            ],
+            [
+              1096.29187,
+              8759.2395
+            ],
+            [
+              1096.65764,
+              8759.56938
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10687723897087435,
+        -0.06391206951537584,
+        810.70183615959
+      ]
+    },
+    {
+      "id": "surface:72389",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1099.9735,
+              8762.55981
+            ],
+            [
+              1100.73245,
+              8762.55981
+            ],
+            [
+              1099.2823,
+              8761.09841
+            ],
+            [
+              1099.2823,
+              8761.93644
+            ],
+            [
+              1099.9735,
+              8762.55981
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.11060556577790408,
+        -0.06543200081584186,
+        828.1142634908973
+      ]
+    },
+    {
+      "id": "surface:72390",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1103.28937,
+              8765.55024
+            ],
+            [
+              1103.69987,
+              8765.55024
+            ],
+            [
+              1102.98905,
+              8764.83391
+            ],
+            [
+              1102.75482,
+              8765.06815
+            ],
+            [
+              1103.28937,
+              8765.55024
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.11266602074641013,
+        -0.06797255700389668,
+        852.6492793920642
+      ]
+    },
+    {
+      "id": "surface:72391",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1107.1958,
+              8769.07328
+            ],
+            [
+              1103.69987,
+              8765.55024
+            ],
+            [
+              1103.28937,
+              8765.55024
+            ],
+            [
+              1107.1958,
+              8769.07328
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.1126660207464101,
+        -0.06783807108016529,
+        851.4704362711268
+      ]
+    },
+    {
+      "id": "surface:72392",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1094.77528,
+              8757.87176
+            ],
+            [
+              1096.29187,
+              8759.2395
+            ],
+            [
+              1096.29187,
+              8758.08479
+            ],
+            [
+              1096.08075,
+              8757.87204
+            ],
+            [
+              1094.77528,
+              8757.87176
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10173889339749827,
+        -0.06391206951537584,
+        805.0687097026531
+      ]
+    },
+    {
+      "id": "surface:72393",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1099.2823,
+              8761.93644
+            ],
+            [
+              1099.2823,
+              8761.09841
+            ],
+            [
+              1097.76503,
+              8759.56938
+            ],
+            [
+              1096.65764,
+              8759.56938
+            ],
+            [
+              1099.2823,
+              8761.93644
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10687723897087392,
+        -0.06543200081584186,
+        824.0157798358008
+      ]
+    },
+    {
+      "id": "surface:72394",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1102.75482,
+              8765.06815
+            ],
+            [
+              1102.98905,
+              8764.83391
+            ],
+            [
+              1102.27273,
+              8764.11203
+            ],
+            [
+              1102.27273,
+              8764.63338
+            ],
+            [
+              1102.75482,
+              8765.06815
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.11197814702581932,
+        -0.0672846832833087,
+        845.8614632939862
+      ]
+    },
+    {
+      "id": "surface:72395",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1102.27273,
+              8764.63338
+            ],
+            [
+              1102.27273,
+              8764.11203
+            ],
+            [
+              1100.73245,
+              8762.55981
+            ],
+            [
+              1099.9735,
+              8762.55981
+            ],
+            [
+              1102.27273,
+              8764.63338
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.11060556577790431,
+        -0.0672846832833087,
+        844.3485044184436
+      ]
+    },
+    {
+      "id": "surface:72396",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1096.29187,
+              8759.2395
+            ],
+            [
+              1096.29187,
+              8759.56938
+            ],
+            [
+              1096.65764,
+              8759.56938
+            ],
+            [
+              1096.29187,
+              8759.2395
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10429783898921072,
+        -0.06677216918907856,
+        832.9263589663827
+      ]
+    },
+    {
+      "id": "surface:72397",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1096.29187,
+              8762.55981
+            ],
+            [
+              1099.2823,
+              8762.55981
+            ],
+            [
+              1096.29187,
+              8759.56938
+            ],
+            [
+              1096.29187,
+              8762.55981
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10598037789049423,
+        -0.06660956158826208,
+        833.3465401173961
+      ]
+    },
+    {
+      "id": "surface:72398",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1099.2823,
+              8761.93644
+            ],
+            [
+              1099.2823,
+              8762.55981
+            ],
+            [
+              1099.9735,
+              8762.55981
+            ],
+            [
+              1099.2823,
+              8761.93644
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10802616579624044,
+        -0.06829210048954458,
+        850.33878629769
+      ]
+    },
+    {
+      "id": "surface:72399",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1102.75482,
+              8765.06815
+            ],
+            [
+              1102.27273,
+              8765.55024
+            ],
+            [
+              1103.28937,
+              8765.55024
+            ],
+            [
+              1102.75482,
+              8765.06815
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.11008662076474651,
+        -0.0708326566775994,
+        874.8738021988569
+      ]
+    },
+    {
+      "id": "surface:72400",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1103.28937,
+              8765.55024
+            ],
+            [
+              1102.27273,
+              8765.55024
+            ],
+            [
+              1104.25293,
+              8767.53044
+            ],
+            [
+              1107.1958,
+              8769.07328
+            ],
+            [
+              1103.28937,
+              8765.55024
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.11008662076474647,
+        -0.07069817075386801,
+        873.6949590779195
+      ]
+    },
+    {
+      "id": "surface:72401",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1093.68475,
+              8759.56938
+            ],
+            [
+              1096.29187,
+              8759.56938
+            ],
+            [
+              1094.70447,
+              8757.98198
+            ],
+            [
+              1093.68475,
+              8759.56938
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10234820372427252,
+        -0.06358345888064003,
+        802.8572605106277
+      ]
+    },
+    {
+      "id": "surface:72402",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1094.77528,
+              8757.87176
+            ],
+            [
+              1094.70447,
+              8757.98198
+            ],
+            [
+              1096.29187,
+              8759.56938
+            ],
+            [
+              1096.29187,
+              8759.2395
+            ],
+            [
+              1094.77528,
+              8757.87176
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.09915949341583463,
+        -0.06677216918907856,
+        827.2932325094458
+      ]
+    },
+    {
+      "id": "surface:72403",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1092.52156,
+              8761.38011
+            ],
+            [
+              1093.30144,
+              8761.78897
+            ],
+            [
+              1093.30144,
+              8760.16608
+            ],
+            [
+              1092.52156,
+              8761.38011
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.09786744691878854,
+        -0.06550499348317614,
+        814.790258326608
+      ]
+    },
+    {
+      "id": "surface:72404",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1093.53482,
+              8759.80277
+            ],
+            [
+              1096.29187,
+              8762.55981
+            ],
+            [
+              1096.29187,
+              8759.56938
+            ],
+            [
+              1093.68475,
+              8759.56938
+            ],
+            [
+              1093.53482,
+              8759.80277
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10234820372427181,
+        -0.06660956158826209,
+        829.3646171229669
+      ]
+    },
+    {
+      "id": "surface:72405",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1093.30144,
+              8760.16608
+            ],
+            [
+              1093.30144,
+              8761.78897
+            ],
+            [
+              1094.77176,
+              8762.55981
+            ],
+            [
+              1096.29187,
+              8762.55981
+            ],
+            [
+              1093.53482,
+              8759.80277
+            ],
+            [
+              1093.30144,
+              8760.16608
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10345277182935836,
+        -0.06550499348317612,
+        820.8967020685467
+      ]
+    },
+    {
+      "id": "surface:72406",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1096.29187,
+              8763.35674
+            ],
+            [
+              1096.29187,
+              8762.55981
+            ],
+            [
+              1094.77176,
+              8762.55981
+            ],
+            [
+              1096.29187,
+              8763.35674
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10345277182935833,
+        -0.06786470972825513,
+        841.5738567974057
+      ]
+    },
+    {
+      "id": "surface:72407",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1096.65764,
+              8759.56938
+            ],
+            [
+              1096.29187,
+              8759.56938
+            ],
+            [
+              1099.2823,
+              8762.55981
+            ],
+            [
+              1099.2823,
+              8761.93644
+            ],
+            [
+              1096.65764,
+              8759.56938
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10429783898921029,
+        -0.06829210048954458,
+        846.2403026425935
+      ]
+    },
+    {
+      "id": "surface:72408",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1097.96703,
+              8764.23497
+            ],
+            [
+              1096.29187,
+              8762.55981
+            ],
+            [
+              1096.29187,
+              8763.35674
+            ],
+            [
+              1097.96703,
+              8764.23497
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10741264982209338,
+        -0.06786470972825513,
+        845.9150388313074
+      ]
+    },
+    {
+      "id": "surface:72409",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1102.27273,
+              8764.63338
+            ],
+            [
+              1102.27273,
+              8765.55024
+            ],
+            [
+              1102.75482,
+              8765.06815
+            ],
+            [
+              1102.27273,
+              8764.63338
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10939874704415568,
+        -0.07014478295701142,
+        868.0859861007789
+      ]
+    },
+    {
+      "id": "surface:72410",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1099.9735,
+              8762.55981
+            ],
+            [
+              1099.2823,
+              8762.55981
+            ],
+            [
+              1102.27273,
+              8765.55024
+            ],
+            [
+              1102.27273,
+              8764.63338
+            ],
+            [
+              1099.9735,
+              8762.55981
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10802616579624068,
+        -0.07014478295701142,
+        866.5730272252363
+      ]
+    },
+    {
+      "id": "surface:72411",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1100.47582,
+              8765.55024
+            ],
+            [
+              1102.27273,
+              8765.55024
+            ],
+            [
+              1099.2823,
+              8762.55981
+            ],
+            [
+              1099.2823,
+              8764.92452
+            ],
+            [
+              1100.47582,
+              8765.55024
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.1088739670933974,
+        -0.069296981659855,
+        860.0760906101258
+      ]
+    },
+    {
+      "id": "surface:72412",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1099.2823,
+              8764.92452
+            ],
+            [
+              1099.2823,
+              8762.55981
+            ],
+            [
+              1096.29187,
+              8762.55981
+            ],
+            [
+              1097.96703,
+              8764.23497
+            ],
+            [
+              1099.2823,
+              8764.92452
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10598037789049455,
+        -0.069296981659855,
+        856.8952192255949
+      ]
+    },
+    {
+      "id": "surface:72413",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1101.65469,
+              8766.16828
+            ],
+            [
+              1102.27273,
+              8765.55024
+            ],
+            [
+              1100.47582,
+              8765.55024
+            ],
+            [
+              1101.65469,
+              8766.16828
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10887396709339754,
+        -0.06987926291671007,
+        865.1801062204536
+      ]
+    },
+    {
+      "id": "surface:72414",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1102.27273,
+              8766.49229
+            ],
+            [
+              1102.27273,
+              8765.55024
+            ],
+            [
+              1101.65469,
+              8766.16828
+            ],
+            [
+              1102.27273,
+              8766.49229
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.11024027926143652,
+        -0.07124557508474896,
+        878.6626328116461
+      ]
+    },
+    {
+      "id": "surface:72415",
+      "owner": "2gis:19798_22523_15:337",
+      "material": 12,
+      "kind": "roadbed_overpass",
+      "tiers": [
+        1
+      ],
+      "purpose": "transport-unspecified",
+      "construction": "elevated",
+      "surfaceType": "light-transport-surface",
+      "styleId": "881318",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1104.25293,
+              8767.53044
+            ],
+            [
+              1102.27273,
+              8765.55024
+            ],
+            [
+              1102.27273,
+              8766.49229
+            ],
+            [
+              1104.25293,
+              8767.53044
+            ]
+          ]
+        ]
+      },
+      "heightPlane": [
+        -0.10953921643386434,
+        -0.07124557508474895,
+        877.8898703767085
+      ]
+    }
+  ],
+  "originMSK": [
+    2125.0,
+    8070.0,
+    145.0
+  ],
+  "interface": {
+    "id": "railway-interface:4",
+    "mouthGeometry": {
+      "type": "LineString",
+      "coordinates": [
+        [
+          1104.35238,
+          8773.14878
+        ],
+        [
+          1107.1958,
+          8769.07328
+        ]
+      ]
+    },
+    "mouthWidthM": 4.96937999617573,
+    "relativeHeightsM": [
+      0.0,
+      0.0
+    ],
+    "atGround": true,
+    "surfaceOffsetM": 0.12,
+    "ends": [
+      {
+        "kind": "roadbed_overpass",
+        "level": [
+          1
+        ],
+        "parents": [
+          "2gis:19798_22523_15:336",
+          "2gis:19798_22523_15:337"
+        ]
+      },
+      {
+        "kind": "railway_ground",
+        "level": [
+          0
+        ],
+        "parents": [
+          "2gis:19798_22523_15:2455"
+        ]
+      }
+    ],
+    "maxHeightMismatchM": 0.0,
+    "evidence": "source railway endpoints share level zero and opposite slab sides; full source mouth has zero relative height",
+    "witnesses": [
+      {
+        "axis": "2gis:19798_22523_15:2453",
+        "ground": "2gis:19798_22523_15:2455",
+        "endpoint": [
+          1105.742490703554,
+          8771.17405573619
+        ],
+        "endpointGapM": 0.0,
+        "mouthDistanceM": 0.010147283196407612
+      }
+    ]
+  },
+  "terrain": [
+    [
+      {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1107.3745808090544,
+              8770.652092770777
+            ],
+            [
+              1105.8662965693222,
+              8769.143808531044
+            ],
+            [
+              1108.0283191478984,
+              8769.715083605772
+            ],
+            [
+              1107.3745808090544,
+              8770.652092770777
+            ]
+          ]
+        ]
+      },
+      [
+        -0.008080135516754183,
+        -0.005169828294093367,
+        186.13097051434633
+      ]
+    ],
+    [
+      {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1106.3060620440774,
+              8768.513488637267
+            ],
+            [
+              1108.0283191478984,
+              8769.715083605772
+            ],
+            [
+              1105.8662965693222,
+              8769.143808531044
+            ],
+            [
+              1106.3060620440774,
+              8768.513488637267
+            ]
+          ]
+        ]
+      },
+      [
+        -0.008080135516754183,
+        -0.005169828294093367,
+        186.13097051434633
+      ]
+    ],
+    [
+      {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1107.3745808090544,
+              8770.652092770777
+            ],
+            [
+              1106.7613092850193,
+              8771.531100478469
+            ],
+            [
+              1105.8662965693222,
+              8769.143808531044
+            ],
+            [
+              1107.3745808090544,
+              8770.652092770777
+            ]
+          ]
+        ]
+      },
+      [
+        -0.00753273118587205,
+        -0.005717232624974301,
+        190.32588181313534
+      ]
+    ],
+    [
+      {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1104.2007159855548,
+              8771.531100478469
+            ],
+            [
+              1105.8662965693222,
+              8769.143808531044
+            ],
+            [
+              1106.7613092850193,
+              8771.531100478469
+            ],
+            [
+              1104.2007159855548,
+              8771.531100478469
+            ]
+          ]
+        ]
+      },
+      [
+        -0.00753273118587205,
+        -0.005717232624974301,
+        190.32588181313534
+      ]
+    ],
+    [
+      {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1106.7613092850193,
+              8771.531100478469
+            ],
+            [
+              1105.2421179559226,
+              8773.708571362733
+            ],
+            [
+              1104.2007159855548,
+              8771.531100478469
+            ],
+            [
+              1106.7613092850193,
+              8771.531100478469
+            ]
+          ]
+        ]
+      },
+      [
+        -0.007532731185872065,
+        -0.005525946707037643,
+        188.6480114348704
+      ]
+    ],
+    [
+      {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1103.5198608521016,
+              8772.506976394228
+            ],
+            [
+              1104.2007159855548,
+              8771.531100478469
+            ],
+            [
+              1105.2421179559226,
+              8773.708571362733
+            ],
+            [
+              1103.5198608521016,
+              8772.506976394228
+            ]
+          ]
+        ]
+      },
+      [
+        -0.007532731185872065,
+        -0.005525946707037643,
+        188.6480114348704
+      ]
+    ]
+  ],
+  "meshes": [
+    [
+      "overpass_riser",
+      [
+        [
+          [
+            -1022.273681640625,
+            -12.854519844055176,
+            -701.53125
+          ],
+          [
+            -1020.6476440429688,
+            -13.150725364685059,
+            -703.1487426757812
+          ],
+          [
+            -1020.6476440429688,
+            -13.050724983215332,
+            -703.1487426757812
+          ]
+        ]
+      ]
+    ],
+    [
+      "overpass_riser",
+      [
+        [
+          [
+            -1022.273681640625,
+            -12.854519844055176,
+            -701.53125
+          ],
+          [
+            -1020.6476440429688,
+            -13.050724983215332,
+            -703.1487426757812
+          ],
+          [
+            -1022.273681640625,
+            -12.75451946258545,
+            -701.53125
+          ]
+        ]
+      ]
+    ],
+    [
+      "overpass_shoulder",
+      [
+        [
+          [
+            -1022.2738647460938,
+            -12.75449275970459,
+            -701.5311279296875
+          ],
+          [
+            -1020.6476440429688,
+            -13.050724983215332,
+            -703.1487426757812
+          ],
+          [
+            -1020.8375244140625,
+            -13.050804138183594,
+            -703.4208374023438
+          ]
+        ]
+      ]
+    ]
+  ]
+}

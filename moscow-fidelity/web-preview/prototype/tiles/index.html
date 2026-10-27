@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NURAY · Городские поверхности</title>
+<style>
+:root{font:14px/1.5 system-ui,sans-serif;color:#e4e8ed;background:#11161c;color-scheme:dark}*{box-sizing:border-box}body{margin:0}header{padding:16px 22px;border-bottom:1px solid #303842;display:flex;justify-content:space-between;align-items:center;gap:18px}h1{font-size:18px;margin:0;font-weight:600}header p{margin:2px 0;color:#a7b3c1;font-size:12px}a{color:#9dc9f5;text-underline-offset:3px}main{display:grid;grid-template-columns:minmax(0,1fr) 320px;height:calc(100dvh - 80px)}.stage{position:relative;min-height:360px;background:#1a222b}canvas{display:block;width:100%;height:100%;touch-action:none}.caption{position:absolute;left:16px;bottom:14px;right:16px;color:#fff;background:#111c;padding:8px 12px;border-radius:6px;pointer-events:none;font-size:12px}.brief{position:absolute;right:16px;top:16px;display:grid;grid-template-columns:1fr auto;gap:3px 12px;padding:8px 12px;background:#111d;border-radius:6px;font-size:11px;color:#c1ccd8}.brief b{font-weight:500;color:#edf5fc}.badge{position:absolute;left:16px;top:16px;background:#111d;padding:8px 12px;border-radius:6px;color:#d2e4f3}button,select{font:inherit;background:#27323e;color:#eaf0f7;border:1px solid #435261;border-radius:6px;padding:7px 10px;cursor:pointer}button:hover{border-color:#91adbf}button[aria-pressed=true]{background:#d0e5f5;color:#102638;border-color:#d0e5f5}button:disabled,select:disabled{opacity:.5;cursor:wait}aside{padding:18px;overflow:auto;background:#171e26}fieldset{border:0;margin:0 0 15px;padding:0}legend{font-weight:600;margin-bottom:8px}label{display:grid;gap:4px;margin-bottom:9px}.views{display:grid;gap:6px}.views button{text-align:left}.tile-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}.tile-grid button{text-align:left;min-height:60px}.tile-grid button[data-detail=full]{border-color:#82caaa;background:#214239;color:#eaf7f1}.tile-grid small{display:block;font-size:10px}.tile-grid button{padding:6px 3px;font-size:12px}.muted{font-size:12px;color:#a7b3c1}.stats{border-top:1px solid #37414c;padding-top:8px}.stat{display:flex;justify-content:space-between;gap:8px;margin:5px 0;font-size:12px}.stat b{font-weight:500;text-align:right}#error{position:absolute;left:20px;right:20px;top:65px;background:#6d2733;color:white;padding:15px;white-space:pre-wrap}#loading{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);background:#111e;padding:15px 22px;border-radius:8px;max-width:90%}#activity{min-height:20px;color:#acd2b7;font-size:12px}details{margin-top:14px}summary{cursor:pointer}.downloads{display:grid;gap:6px;margin-top:15px;font-size:12px}#validation{color:#acd2b7;font-size:12px}@media(max-width:760px){header{padding:12px 16px;align-items:flex-start}h1{font-size:16px}main{height:auto;grid-template-columns:1fr}.stage{height:58dvh}aside{padding:16px}.caption{left:8px;bottom:8px;right:8px}.badge{left:8px;top:8px;font-size:12px}.brief{top:54px;right:8px;font-size:10px}}
+.tile-grid.compact{gap:2px}.tile-grid.compact button{padding:0;min-height:12px;height:12px;font-size:0;border-radius:2px}.tile-grid.compact small{display:none}.tile-grid.compact button[data-detail=coarse]{background:#476575}
+[hidden]{display:none!important}.stage-hud{position:absolute;top:16px;left:16px;right:16px;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px;pointer-events:none}.stage-hud .badge,.stage-hud .brief{position:static}.stage-hud .brief{margin-left:auto;min-width:230px;grid-template-columns:minmax(0,1fr) auto;font-variant-numeric:tabular-nums}.stats{margin-bottom:18px}.stats h2{font-size:14px;margin:0 0 10px}.stats b{font-variant-numeric:tabular-nums;white-space:nowrap}.stats details{margin:10px 0}.stats .muted{font-size:11px}.stats details summary{font-size:12px;color:#bdcddc}.stats .stat{align-items:baseline}.stats .stat span{min-width:0}.brief b{font-variant-numeric:tabular-nums}@media(max-width:760px){.stage-hud{top:8px;left:8px;right:8px;gap:6px}.stage-hud .brief{min-width:210px}.stage-hud .badge{font-size:11px;padding:6px 9px}.stage-hud .brief{font-size:10px;padding:6px 9px}}
+.mobile-hint{display:none}@media(max-width:760px){.desktop-hint{display:none}.mobile-hint{display:inline}.brief span:nth-of-type(3),.brief b:nth-of-type(3),.brief span:nth-of-type(4),.brief b:nth-of-type(4),.brief span:nth-of-type(6),.brief b:nth-of-type(6){display:none}}
+
+body{height:100dvh;display:flex;flex-direction:column}header{flex-shrink:0;flex-wrap:wrap}main{flex:1;min-height:0;height:auto}
+#heliodon{display:grid;grid-template-columns:145px minmax(180px,300px);column-gap:16px;margin:0;align-items:center;min-width:340px}#heliodon legend{font-size:12px;float:left;grid-column:1/-1;display:none}#heliodon label{margin:0;font-size:11px;color:#b9c9d7}.sun-date-row{display:flex;gap:5px}#sun-date{font:inherit;color:inherit;background:#27323e;border:1px solid #435261;border-radius:5px;padding:4px;min-width:0;width:100%}#sun-today{font-size:13px;padding:2px 6px}#sun-time{width:100%;margin:1px 0;accent-color:#e6bf71;cursor:ew-resize}.sun-clock{display:flex;justify-content:space-between;align-items:center}#sun-hour{font-size:16px;color:#f8db9b;font-variant-numeric:tabular-nums}.sun-ends{display:flex;justify-content:space-between;font-size:10px;color:#a7b3c1}#sun-status{grid-column:1/-1;font-size:10px;color:#a7b3c1}
+@media(max-width:760px){body{height:auto;display:block}header{gap:10px}header>a{display:none}#heliodon{width:100%;min-width:0;grid-template-columns:135px minmax(140px,1fr)}main{display:grid;height:auto;min-height:0}.stage{height:58dvh}}
+header{flex-wrap:wrap}#water-toggle{white-space:nowrap}#water-panel p{margin:7px 0}#water-panel>button,#water-panel>.water-playback{flex-shrink:0}#water-panel{position:fixed;z-index:30;right:18px;top:108px;width:340px;max-height:calc(100dvh - 126px);overflow:hidden;display:flex;flex-direction:column;padding:18px;background:#19232cf5;border:1px solid #526270;border-radius:12px;box-shadow:0 12px 48px #0007;backdrop-filter:blur(14px)}.water-heading{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;gap:12px}.water-heading h2{margin:0;font-size:17px}.water-heading button{font-size:22px;padding:0 9px}.water-playback{display:flex;gap:8px}.water-playback button{flex:1}#water-state{font-size:12px;color:#abd6c0}.water-label{display:flex;justify-content:space-between;gap:10px}.water-label output{color:#add5ee;font-variant-numeric:tabular-nums}#water-fields{overflow:auto;min-height:0;flex:1;padding-right:5px}#water-fields fieldset{border-top:1px solid #40505e;padding-top:8px;margin-top:10px}#water-fields label{margin:12px 0;font-size:12px}#water-fields input{width:100%;accent-color:#a6cbe0;cursor:pointer}#water-reset{width:100%}@media(max-width:760px){header{flex-wrap:wrap}#water-panel{right:8px;top:12px;width:min(340px,calc(100vw - 16px));max-height:calc(100dvh - 24px)}}
+#lighting-control,#water-model-control{display:grid;gap:4px;margin:0;font-size:11px;color:#b9c9d7}#lighting-model,#water-model{min-width:154px;padding:6px;font-size:12px}#water-fields label:has(input:disabled){opacity:.45}
+.water-color{display:flex;align-items:center;gap:10px;margin-top:5px}#water-fields .water-color input[type=color]{width:48px;height:30px;padding:2px}#water-fields .water-color input[type=text]{width:104px;padding:5px 8px;background:#25313b;border:1px solid #526270;border-radius:5px;color:#dce8ef;font-family:monospace}#water-fields small{display:block;color:#aec2d0;line-height:1.45;margin-top:8px}
+</style></head><body>
+<header><div><h1 id="region-title">NURAY · Городские поверхности</h1><p id="region-subtitle">Загрузка каталога участков</p></div><fieldset id="heliodon" disabled aria-label="Солнце · гелиодон"><legend>Солнце · гелиодон</legend><label>☀ Дата<div class="sun-date-row"><input id="sun-date" type="date" aria-label="Дата солнца"><button id="sun-today" type="button" title="Сегодня" aria-label="Сегодня">↺</button></div></label><label><span class="sun-clock">Время солнца <output id="sun-hour">—</output></span><input id="sun-time" type="range" min="0" max="1440" step="1" value="720" aria-label="Время солнца"><span class="sun-ends"><span id="sun-rise">Восход</span><span id="sun-set">Закат</span></span></label><div id="sun-status">Координаты участка…</div></fieldset><span id="water-model-control">Вода<strong>Ocean</strong></span><label id="lighting-control">Освещение<select id="lighting-model" aria-label="Освещение" disabled><option value="classic" selected>Прежнее · NURAY</option><option value="hosek">Hosek–Wilkie · физическое небо</option></select></label><button id="water-toggle" disabled aria-expanded="false" aria-controls="water-panel">Вода и свет</button></header>
+<section id="water-panel" hidden role="region" aria-labelledby="water-title">
+<div class="water-heading"><h2 id="water-title">Вода и свет</h2><button id="water-close" aria-label="Закрыть настройки воды">×</button></div>
+<p id="water-mode" class="muted"></p><div class="water-playback"><button id="water-play" aria-pressed="false">▶ Анимация</button><button id="water-freeze" aria-pressed="true">❚❚ Заморозить</button></div><p id="water-state" role="status"></p>
+<p id="water-lighting-note" class="muted"></p><p class="muted">Направление солнца — в гелиодоне. Свет и тени: 100% — прежняя сила. Заморозка останавливает движение воды; её настройки продолжают работать.</p>
+<div id="water-fields"></div><button id="water-reset">Вернуть сохранённые значения</button><p class="muted">По умолчанию — утверждённые настройки света и воды. Ваши изменения сохраняются в браузере. <a href="https://github.com/Noniv/web-ocean" target="_blank" rel="noopener">Модель воды · Noniv / web-ocean</a></p></section>
+<main><section class="stage"><canvas id="scene" aria-label="Трёхмерная модель города: дороги, здания, растения и городские предметы"></canvas>
+<div class="stage-hud"><div class="badge" id="residency">Подготовка участков…</div>
+<div class="brief" aria-label="Статистика отрисовки">
+<span>FPS</span><b id="brief-fps">—</b>
+<span>GPU · кадр</span><b id="brief-gpu">—</b>
+<span id="brief-submitted-label">Треугольники · в кадре</span><b id="brief-submitted">—</b>
+<span>Вызовы отрисовки</span><b id="brief-draws">—</b>
+<span>GPU · меши и BVH</span><b id="brief-memory">—</b>
+<span>Разрешение</span><b id="brief-resolution">—</b>
+</div></div><div id="loading">Подготавливаем графику…</div><div id="error" hidden role="alert"></div><button id="retry" hidden style="position:absolute;bottom:70px;left:20px">Восстановить сцену</button>
+<div class="caption"><span id="view-name">Общий план</span><span class="desktop-hint"> · мышь — вращение · Shift — сдвиг · колесо — масштаб</span><span class="mobile-hint"> · один палец — вращение · два — сдвиг и масштаб</span></div></section>
+<aside><fieldset id="settings" disabled><legend>Отображение</legend>
+<label>Графика<select id="backend" aria-label="Графический API"><option value="auto">Автоматически</option><option value="webgpu">WebGPU</option><option value="webgl2">WebGL 2 · совместимый</option></select></label><p id="backend-note" class="muted"></p>
+<label>Движок<select id="engine" aria-label="Движок"><option value="raster">PBR · растеризация</option><option value="trace">NURAY · рейтрейс</option><option value="cascade">NURAY · каскады</option></select></label>
+<label>Разрешение<select id="quality" aria-label="Разрешение"><option value="180000">180 тыс. пикселей</option><option value="700000">700 тыс. пикселей</option><option value="0" selected>По размеру страницы</option></select></label>
+<label>Сэмплы<select id="samples" aria-label="Сэмплы"><option>4</option><option>8</option><option>16</option><option>32</option><option selected>64</option><option>256</option><option>2048</option><option>5000</option></select></label>
+<label style="display:flex"><input id="contact-shadows" type="checkbox" checked>Контактные тени</label>
+<label style="display:flex"><input id="sun-shadows" type="checkbox" checked>Солнечные тени</label>
+<label>Загрузка<select id="streaming" aria-label="Загрузка"><option value="auto">По положению камеры</option><option value="full" selected>Все тайлы подробно</option></select></label></fieldset>
+<section class="stats" aria-labelledby="stats-title">
+<h2 id="stats-title">Производительность</h2>
+<div class="stat"><span>FPS</span><b id="fps">—</b></div>
+<div class="stat"><span>Интервал кадра</span><b id="frame-time">—</b></div>
+<div class="stat"><span>GPU · весь кадр</span><b id="gpu-time">—</b></div>
+<div class="stat"><span id="submitted-label">Треугольников в кадре</span><b id="submitted">—</b></div>
+<div class="stat"><span>Вызовы отрисовки</span><b id="draws">—</b></div>
+<div class="stat"><span>Уникальные треугольники</span><b id="unique-triangles">—</b></div>
+<div class="stat"><span>С учётом инстансов</span><b id="triangles">—</b></div>
+<div class="stat"><span>Блоки геометрии</span><b id="mesh-count">—</b></div>
+<div class="stat"><span>Экземпляры общих моделей</span><b id="instance-count">—</b></div>
+<div class="stat"><span>Материалы</span><b id="materials-count">—</b></div>
+<div class="stat"><span>Разрешение</span><b id="resolution">—</b></div>
+<div id="trace-stats" hidden>
+<div class="stat"><span>Накоплено сэмплов</span><b id="spp">—</b></div>
+<div class="stat"><span>GPU / сэмпл · среднее</span><b id="path-time">—</b></div>
+<div class="stat"><span>Сэмплов за кадр</span><b id="trace-batch">—</b></div>
+</div>
+<p class="muted" id="timing-note">GPU — сумма измеренных проходов кадра. Интервал кадра включает ожидание браузера; это не время CPU.</p>
+<details><summary>Память и подготовка</summary>
+<div class="stat"><span>Подробных / обзорных тайлов</span><b id="tile-count">—</b></div>
+<div class="stat"><span>Геометрия · GPU</span><b id="geometry-memory">—</b></div>
+<div class="stat"><span>BVH · GPU</span><b id="bvh-memory">—</b></div>
+<div class="stat"><span>Текстуры и материалы · GPU</span><b id="texture-memory">—</b></div><div class="stat"><span>Вода и атмосфера · GPU</span><b id="ocean-memory">—</b></div><div class="stat"><span>Берега и дорожные полосы</span><b id="surface-memory">—</b></div>
+<div class="stat"><span>Геометрия и BVH · GPU</span><b id="memory">—</b></div>
+<div class="stat"><span>Пик геометрии и BVH</span><b id="peak">—</b></div>
+<div class="stat"><span>Освобождено GPU · всего</span><b id="released">—</b></div>
+<div class="stat"><span>Кэш геометрии CPU</span><b id="cpu">—</b></div>
+<div class="stat"><span>Меши по сети · всего</span><b id="network">—</b></div>
+<div class="stat"><span>Запросов / из кэша</span><b id="requests">—</b></div>
+<div class="stat"><span>Загрузка и сборка тайлов</span><b id="build-time">—</b></div>
+<div class="stat"><span>Подготовка GPU-буферов · CPU</span><b id="upload-time">—</b></div>
+<div class="stat"><span>Верхний BVH · CPU</span><b id="bvh-build-time">—</b></div>
+<div class="stat"><span>Тень · последнее обновление</span><b id="shadow-time">—</b></div>
+<p class="muted">Время подготовки — для последнего изменения набора тайлов или режима. BVH отдельных мешей уже хранится в файлах; в рейтрейсе строится только верхний индекс экземпляров.</p>
+<p class="muted">GPU-память не включает экранные буферы, кэши освещения и расходы браузера. «Освобождено» и «По сети» накапливаются за сеанс.</p>
+</details>
+<p class="muted" id="stats-scope">Счётчики относятся к загруженным тайлам. «В кадре» — отправленные треугольники после отсечения блоков вне ракурса, до проверки глубины.</p>
+</section>
+<fieldset id="views" disabled><legend>Участки · север ↑</legend><div class="tile-grid" id="tile-grid"></div>
+<p class="muted" id="streaming-note">По умолчанию загружаются все тайлы подробно. Режим по положению камеры можно выбрать в настройках.</p>
+<div class="views"><button data-view="overview">Общий план</button><button data-view="buildings">Здания · Сбер</button><button data-view="buildingSlope">Цоколь · здание на склоне</button><button data-view="courtyard">Двор · общий вид</button><button data-view="streetSwings">Качели · направление</button><button data-view="vegetation">Деревья и кварталы</button><button data-view="vegetationClose">Растительность · крупно</button><button data-view="landscape">Дорожки и газоны</button><button data-view="fountainGreen">Фонтан и газоны</button><button data-view="greenCurb">Газон · бордюр крупно</button><button data-view="pedestrianPortal">Спуски · пешеходные</button><button data-view="railwayPortal">Тоннель · железная дорога</button><button data-view="railway">Рельсы · крупно</button><button data-view="railwayCurve">Железная дорога · поворот</button><button data-view="railwayEntry">Железная дорога · въезд на эстакаду</button><button data-view="center">Пересечение границ тайлов</button><button data-view="seam">Дорога через границу тайла</button><button data-view="entry">Въезд на эстакаду</button><button data-view="descentJoin">Эстакада → спуск в тоннель</button><button data-view="rampContext">Эстакада · общий вид</button><button data-view="tunnelWalls">Стенки тоннельного въезда</button><button data-view="pedestrian">Пешеходный переход</button><button data-view="stopPaint">Остановочная разметка</button><button data-view="crackMain">Стык контуров · магистраль</button><button data-view="crackLocal">Стык контуров · подъезд</button></div></fieldset>
+<p class="muted" id="objects-summary"></p><div id="activity" role="status">Подготовка…</div>
+<button id="measure-scene" disabled>Замерить 48 кадров</button><pre id="benchmark-result" hidden style="white-space:pre-wrap;font-size:10px;max-height:220px;overflow:auto"></pre><p><a id="layout-link">Пробная версия · единый GLB</a></p><details><summary>Проверки и устройство сборки</summary><p id="validation">Читаем результаты проверок…</p><p class="muted">До построения земли и бордюров сшиваются щели до 5 см между противоположными краями асфальта на одном уровне. Настоящие газоны, тротуары и физические островки сохраняются; разметка остаётся на асфальте. Готовые проходы проверяются на отсутствие поперечных бордюров.</p><p class="muted">Сначала строится общий участок с едиными высотами, материалами и открытыми въездами. Затем готовые треугольники разрезаются по сетке. Разрез сохраняет UV, нормали и происхождение граней; он не создаёт бордюр или торец. BVH каждого меша подготовлен при экспорте. При смене тайлов перестраивается только небольшой верхний индекс сцены.</p><p class="muted">Назначение перехода, его положение над или под землёй и покрытие определяются отдельно. Стенки спусков сверяются с исходными контурами и высотами; участки без подтверждения отмечены в отчёте.</p><p class="muted">Цоколь заполняет зазор между основанием здания и готовой поверхностью; крыши, навесы и приподнятые перемычки проходов не достраиваются вниз. Здания разрезаются по той же сетке с сохранением фасадных текстур. Деревья и кустарники используют общие меши и BVH: каждое растение принадлежит одному тайлу по корню, крона на границе не обрезается. Обзорный вариант пока не упрощает форму поверхности; геометрический LOD будет следующим этапом. Высоты получены по данным карты, не по геодезической съёмке.</p></details>
+<div class="downloads"><a id="fence-library-link" hidden target="_blank">Библиотека ограждений · 7 типов и общий вариант</a><a id="vegetation-library-link" hidden target="_blank">Библиотека растительности · 20 моделей</a><a id="catalog-link" href="assets/tileset.json" target="_blank">Каталог тайлов · JSON</a><a id="validation-link" href="assets/validation.json" target="_blank">Проверки геометрии · JSON</a><a id="model-link" href="assets/canonical/full/model.glb" download>Общий участок · GLB</a></div>
+</aside></main><script>
+(() => {
+  if (location.protocol === 'file:') {
+    document.getElementById('region-subtitle').textContent = 'Откройте сцену через локальный сервер';
+    document.getElementById('loading').hidden = true;
+    document.querySelector('.stage-hud').hidden = true;
+    document.querySelector('.caption').hidden = true;
+    const notice = document.getElementById('error');
+    notice.hidden = false;
+    const description = document.createElement('p');
+    description.textContent = 'Этот файл открыт напрямую с диска. Для загрузки модели нужен HTTP-сервер. Откройте вьюер по ссылке ниже; локальный сервер должен быть запущен.';
+    const link = document.createElement('a');
+    link.href = 'http://127.0.0.1:8776/prototype/tiles/' + location.search + location.hash;
+    link.textContent = 'Открыть локальный вьюер';
+    notice.replaceChildren(description, link);
+    document.getElementById('activity').textContent = 'Ожидаем открытия через HTTP';
+    return;
+  }
+  import('./app.js?v=moscow-defaults-1').catch(error => {
+    const notice = document.getElementById('error');
+    notice.hidden = false; notice.textContent = error.message;
+    document.getElementById('loading').hidden = true;
+    document.getElementById('retry').hidden = false;
+    console.error(error);
+  });
+})();
+</script>
+</body>
+</html>

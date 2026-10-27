@@ -1,0 +1,47 @@
+{
+  "variant": "growth-approved-01",
+  "folder": "growth-approved-01",
+  "label": "Лиственная поросль · утверждённая форма",
+  "description": "Выбранная в мастерской форма: общий размер 104%, X/Y/Z 100/114/100%, повороты X/Y/Z 0/70/0%. Boolean, упрощение 360%, сглаживание 68°. Форма, цвет и материалы утверждены пользователем.",
+  "triangles": 404,
+  "foliageTriangles": 206,
+  "woodTriangles": 198,
+  "baseFoliageTriangles": 752,
+  "bounds": {
+    "min": [
+      -2.086167812347412,
+      4.76837158203125e-07,
+      -2.304234027862549
+    ],
+    "max": [
+      2.1454291343688965,
+      10.518288612365723,
+      1.7915798425674438
+    ]
+  },
+  "settings": {
+    "optimize": 360,
+    "rx": 0,
+    "ry": 70,
+    "rz": 0,
+    "scale": 104,
+    "scaleX": 100,
+    "scaleY": 114,
+    "scaleZ": 100
+  },
+  "mode": "boolean",
+  "smoothingAngle": 68,
+  "sourceGeometrySha256": "0feaa7090e37ca416c8196bfe9eb83161c9ee6b63974b8b0103d2064c829b91c",
+  "geometrySha256": "e5626cf71d2c27b881c589450de9d80b58d2c4b068ba30afecc02e97018f380f",
+  "glbSha256": "88af1fb3f71a3d7ccb888601acde1fdb9a6553d3abf5609f1dcd3a5632ee13fe",
+  "inputGlbSha256": "88af1fb3f71a3d7ccb888601acde1fdb9a6553d3abf5609f1dcd3a5632ee13fe",
+  "selectedBy": "user",
+  "date": "2026-10-13",
+  "integrated": true,
+  "provenance": "Exact live workshop export; no regeneration or simplification on approval.",
+  "engines": {
+    "manifold": "3.5.4",
+    "meshoptimizer": "1.3.0"
+  },
+  "integratedRelease": "assets-km1-approved-plants-01"
+}

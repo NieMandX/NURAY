@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "catalog": "assets-moscow-style-20261024-r14/tileset.json",
+  "merged": "assets-moscow-style-20261024-r14/merged/model.glb",
+  "materialsMatched": [
+    "recessed-flat-roof",
+    "pitched-roof",
+    "generated-facade-storeys",
+    "pedestrian-asphalt",
+    "pedestrian-stone",
+    "pedestrian-gravel",
+    "pedestrian-sand",
+    "pedestrian-wood",
+    "waterfront-granite",
+    "parking-asphalt",
+    "Кладбище · зелёное покрытие"
+  ],
+  "mergedStats": {
+    "passed": true,
+    "staticCityObjects": 1,
+    "sharedTemplateObjects": 32,
+    "objects": 33,
+    "gpuBatches": 49,
+    "uniqueTriangles": 31820119,
+    "expandedTriangles": 71048807,
+    "sourceVertices": 62225259,
+    "vertices": 62131145,
+    "geometryBytes": 2373952516,
+    "sharedInstances": 81550,
+    "allVertexAttributesBitIdentical": true,
+    "instanceMatricesPreserved": true,
+    "sourceValidationSha256": "9b5f5f22226d77c40844bc12c17e847b2d0418a6a4e3b0b7d7b83949edcebced"
+  },
+  "glbBytes": 3138583992,
+  "defaultSamples": 64,
+  "lightingModels": [
+    "classic",
+    "hosek"
+  ],
+  "waterModel": "ocean"
+}

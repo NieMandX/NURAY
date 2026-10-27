@@ -1,0 +1,42 @@
+{
+  "variant": "birch-approved-01",
+  "folder": "birch-approved-01",
+  "label": "Берёза · утверждённая форма",
+  "description": "Выбранная в лаборатории берёза: размер листвы 100%, повороты X 0%, Y 82%, Z 0%; Boolean-оболочка с упрощением 1000%. Ствол и ветви сохранены.",
+  "triangles": 478,
+  "foliageTriangles": 202,
+  "woodTriangles": 276,
+  "baseFoliageTriangles": 2054,
+  "bounds": {
+    "min": [
+      -5.353388786315918,
+      0.0,
+      -4.707566261291504
+    ],
+    "max": [
+      5.809922218322754,
+      21.487123489379883,
+      4.530797004699707
+    ]
+  },
+  "settings": {
+    "scale": 100,
+    "rx": 0,
+    "ry": 82,
+    "rz": 0,
+    "optimize": 1000
+  },
+  "mode": "boolean",
+  "sourceGeometrySha256": "376a269400ed854744def1b7a5d5f538e2710cfe7c10d6c16e87736dee21f2f3",
+  "geometrySha256": "d22e61741eddb18baa2a694c554a7481591aa50df7c95ea3af1e8976be32b323",
+  "glbSha256": "422351776045fceb53f825427b4a741c9c7a30a1315aede122cb304d199dd2da",
+  "selectedBy": "user",
+  "date": "2026-10-11",
+  "integrated": true,
+  "provenance": "Exact GLB exported from the live workshop state approved by the user; not regenerated.",
+  "engines": {
+    "manifold": "3.5.4",
+    "meshoptimizer": "1.3.0"
+  },
+  "integratedRelease": "assets-km1-approved-plants-01"
+}

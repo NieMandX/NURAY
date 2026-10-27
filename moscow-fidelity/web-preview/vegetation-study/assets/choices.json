@@ -1,0 +1,512 @@
+{
+  "compact": {
+    "variant": "compact-step-3",
+    "triangles": 680,
+    "geometrySha256": "55c3aefb78a4cfc7fa36db5e24811d1244d68a17f02a95af32636ffb63070a01",
+    "selectedBy": "user",
+    "date": "2026-10-11",
+    "integrated": true,
+    "smoothingAngle": 75,
+    "library": {
+      "file": "library/compact/model.glb",
+      "source": "library/compact/approved-a8953b8f212d.glb",
+      "sourceSha256": "a8953b8f212db86ae4739ac7875247d744759634df29ed6c9c2e22ac3512c3cf",
+      "glbSha256": "a8953b8f212db86ae4739ac7875247d744759634df29ed6c9c2e22ac3512c3cf"
+    },
+    "integratedRelease": "assets-km1-approved-plants-01"
+  },
+  "birch": {
+    "variant": "birch-approved-01",
+    "folder": "birch-approved-01",
+    "label": "Берёза · утверждённая форма",
+    "description": "Выбранная в лаборатории берёза: размер листвы 100%, повороты X 0%, Y 82%, Z 0%; Boolean-оболочка с упрощением 1000%. Ствол и ветви сохранены.",
+    "triangles": 478,
+    "foliageTriangles": 202,
+    "woodTriangles": 276,
+    "baseFoliageTriangles": 2054,
+    "bounds": {
+      "min": [
+        -5.353388786315918,
+        0,
+        -4.707566261291504
+      ],
+      "max": [
+        5.809922218322754,
+        21.487123489379883,
+        4.530797004699707
+      ]
+    },
+    "settings": {
+      "scale": 100,
+      "rx": 0,
+      "ry": 82,
+      "rz": 0,
+      "optimize": 1000
+    },
+    "mode": "boolean",
+    "sourceGeometrySha256": "376a269400ed854744def1b7a5d5f538e2710cfe7c10d6c16e87736dee21f2f3",
+    "geometrySha256": "d22e61741eddb18baa2a694c554a7481591aa50df7c95ea3af1e8976be32b323",
+    "glbSha256": "422351776045fceb53f825427b4a741c9c7a30a1315aede122cb304d199dd2da",
+    "selectedBy": "user",
+    "date": "2026-10-11",
+    "integrated": true,
+    "provenance": "Exact GLB exported from the live workshop state approved by the user; not regenerated.",
+    "engines": {
+      "manifold": "3.5.4",
+      "meshoptimizer": "1.3.0"
+    },
+    "smoothingAngle": 73,
+    "library": {
+      "file": "library/birch/model.glb",
+      "source": "library/birch/approved-9a44047b74d0.glb",
+      "sourceSha256": "9a44047b74d09cdd76ec93f75ac35ebdcce2485404af47a39125467ab30fea2f",
+      "glbSha256": "9a44047b74d09cdd76ec93f75ac35ebdcce2485404af47a39125467ab30fea2f"
+    },
+    "integratedRelease": "assets-km1-approved-plants-01"
+  },
+  "open": {
+    "variant": "open-approved-01",
+    "folder": "open-approved-01",
+    "label": "Сквозистое · выбранная форма",
+    "description": "Выбранная в мастерской крона: общий размер 100%, X и Y 200%, Z 100%, повороты 0%, Boolean и упрощение 683%. Центральный ствол сужен до круглых сечений.",
+    "triangles": 684,
+    "foliageTriangles": 372,
+    "woodTriangles": 312,
+    "baseFoliageTriangles": 2574,
+    "bounds": {
+      "min": [
+        -9.906189918518066,
+        0,
+        -7.813530445098877
+      ],
+      "max": [
+        10.20814037322998,
+        22.509868621826172,
+        9.289708137512207
+      ]
+    },
+    "settings": {
+      "scale": 100,
+      "scaleX": 200,
+      "scaleY": 200,
+      "scaleZ": 100,
+      "rx": 0,
+      "ry": 0,
+      "rz": 0,
+      "optimize": 683
+    },
+    "mode": "boolean",
+    "sourceGeometrySha256": "fac6bc70f2549236a44891620cd427c851da319aeabda0cde781498d773a608d",
+    "geometrySha256": "d7ce5ef3147a41bf7acf725555091c60dd9552dc40401cda8fb4ef4d52353f1b",
+    "glbSha256": "e8a11380fb2cf825e1089fa7e7fb6503b6d7e1d85a7d46f0a074f9e42c776b7c",
+    "inputGlbSha256": "f4cbad390e80d7569fd00c2f0a011dc87943d169b4a7bc56cde6dfa1fac84eab",
+    "selectedBy": "user",
+    "date": "2026-10-11",
+    "integrated": true,
+    "trunkCorrection": {
+      "method": "Inscribed circular sections after envelope fitting; thin long principal axis",
+      "changedTriangles": 56,
+      "sections": [
+        {
+          "center": [
+            0,
+            0.058856427030745125,
+            0
+          ],
+          "beforeRadii": [
+            0.8676183456767983,
+            0.48933055144620125
+          ],
+          "radius": 0.4571987347475875,
+          "rootAnchorShiftY": -0.004474738432370402,
+          "maxFitResidual": 0.0998368883823649
+        },
+        {
+          "center": [
+            -0.40776245061401406,
+            3.357561359139489,
+            -0.32944012637240505
+          ],
+          "beforeRadii": [
+            0.6716500025287172,
+            0.3809059590549761
+          ],
+          "radius": 0.3809059590549761,
+          "rootAnchorShiftY": 0,
+          "maxFitResidual": 0.0421790242239255
+        },
+        {
+          "center": [
+            0.2782222652374274,
+            6.6517915528158635,
+            0.2421305174297153
+          ],
+          "beforeRadii": [
+            0.6109297218430312,
+            0.34360850340941823
+          ],
+          "radius": 0.33863652072391154,
+          "rootAnchorShiftY": 0,
+          "maxFitResidual": 0.04267779570209316
+        },
+        {
+          "center": [
+            -0.35883095654033237,
+            9.946021746492235,
+            -0.4941601895586076
+          ],
+          "beforeRadii": [
+            0.38567550474532997,
+            0.22929750531735596
+          ],
+          "radius": 0.22929750531735596,
+          "rootAnchorShiftY": 0,
+          "maxFitResidual": 1.280526763372576e-15
+        },
+        {
+          "center": [
+            0.6491852855539972,
+            13.587013013187176,
+            -0.2745334386436709
+          ],
+          "beforeRadii": [
+            0.2574406658353165,
+            0.17443423303308075
+          ],
+          "radius": 0.17443423303308075,
+          "rootAnchorShiftY": 0,
+          "maxFitResidual": 1.6078070023069653e-15
+        },
+        {
+          "center": [
+            0.18548151015828493,
+            17.054623743372833,
+            0.864751847963269
+          ],
+          "beforeRadii": [
+            0.16283588684322392,
+            0.08820330164247836
+          ],
+          "radius": 0.08820330164247836,
+          "rootAnchorShiftY": 0,
+          "maxFitResidual": 5.367925139848482e-16
+        }
+      ],
+      "rootAnchored": true,
+      "unchangedFoliageAndBranches": true
+    },
+    "provenance": "Exact live GLB foliage and branches; only the 56 central-trunk triangles and their normals replaced by the corrected generator.",
+    "engines": {
+      "manifold": "3.5.4",
+      "meshoptimizer": "1.3.0"
+    },
+    "smoothingAngle": 65,
+    "library": {
+      "file": "library/open/model.glb",
+      "source": "library/open/approved-837eb24704c5.glb",
+      "sourceSha256": "837eb24704c52e6737a4f17bbda790c37e31fe5d4b73483b7a412e6203cf6b5e",
+      "glbSha256": "837eb24704c52e6737a4f17bbda790c37e31fe5d4b73483b7a412e6203cf6b5e"
+    },
+    "integratedRelease": "assets-km1-approved-plants-01"
+  },
+  "pine": {
+    "variant": "pine-approved-01",
+    "folder": "pine-approved-01",
+    "label": "Сосна · утверждённая форма",
+    "description": "Хвоя сдвинута к оси ствола на 30%. Высоты, размеры объёмов, ствол и ветви сохранены. Форма и оформление выбраны пользователем.",
+    "triangles": 1210,
+    "foliageTriangles": 1008,
+    "woodTriangles": 202,
+    "bounds": {
+      "min": [
+        -6.108467102050781,
+        0,
+        -5.07974100112915
+      ],
+      "max": [
+        7.199113368988037,
+        26.787578582763672,
+        5.701792240142822
+      ]
+    },
+    "crownRadialFactor": 0.7,
+    "geometrySha256": "b389dd89264d6bd7c0add02e51d617ce4654aae9f3d8ca54654d8ec59611f6f2",
+    "selectedBy": "user",
+    "date": "2026-10-12",
+    "integrated": true,
+    "smoothingAngle": 86,
+    "provenance": "Exact live workshop export; first 30% inward crown translation, no regeneration or simplification on approval.",
+    "library": {
+      "file": "library/pine/model.glb",
+      "source": "library/pine/approved-d2c84997f528.glb",
+      "sourceSha256": "d2c84997f528e173713e18aaa793daf3de8b6b94eed02c9eaf540d600dc1b76f",
+      "glbSha256": "d2c84997f528e173713e18aaa793daf3de8b6b94eed02c9eaf540d600dc1b76f"
+    },
+    "integratedRelease": "assets-km1-approved-plants-01"
+  },
+  "spruce": {
+    "variant": "spruce-approved-01",
+    "folder": "spruce-approved-01",
+    "label": "Ель · утверждённая форма",
+    "description": "Выбранная в мастерской хвоя: размер 105%, X 100%, Y 125%, Z 104%, случайный поворот Y 85%. Boolean-оболочка упрощена в 10 раз, сглаживание 52°. Форма, цвет и оформление утверждены пользователем.",
+    "triangles": 778,
+    "foliageTriangles": 262,
+    "woodTriangles": 516,
+    "baseFoliageTriangles": 2618,
+    "bounds": {
+      "min": [
+        -6.977382659912109,
+        -0.7500700950622559,
+        -9.05704116821289
+      ],
+      "max": [
+        9.509337425231934,
+        19.639062881469727,
+        9.49795913696289
+      ]
+    },
+    "settings": {
+      "optimize": 1000,
+      "rx": 0,
+      "ry": 85,
+      "rz": 0,
+      "scale": 105,
+      "scaleX": 100,
+      "scaleY": 125,
+      "scaleZ": 104
+    },
+    "mode": "boolean",
+    "smoothingAngle": 52,
+    "sourceGeometrySha256": "6f8ad64053c2c4ab403e8e33657943008030b3ae9061c3cf3788fecc1ffba478",
+    "geometrySha256": "be0f1c5efbfe8e56b88747a76e1c422a15f22af2a86198ee0866c82ef15bd6fe",
+    "glbSha256": "e0f6e132a38f65d2c5d649009cac4982fe5530057130b6695f268c9926c4ff70",
+    "inputGlbSha256": "e0f6e132a38f65d2c5d649009cac4982fe5530057130b6695f268c9926c4ff70",
+    "selectedBy": "user",
+    "date": "2026-10-13",
+    "integrated": true,
+    "provenance": "Exact live workshop export; no regeneration or simplification on approval.",
+    "engines": {
+      "manifold": "3.5.4",
+      "meshoptimizer": "1.3.0"
+    },
+    "library": {
+      "file": "library/spruce/model.glb",
+      "source": "library/spruce/approved-e0f6e132a38f.glb",
+      "sourceSha256": "e0f6e132a38f65d2c5d649009cac4982fe5530057130b6695f268c9926c4ff70",
+      "glbSha256": "e0f6e132a38f65d2c5d649009cac4982fe5530057130b6695f268c9926c4ff70"
+    },
+    "integratedRelease": "assets-km1-approved-plants-01"
+  },
+  "thuja": {
+    "variant": "thuja-approved-01",
+    "folder": "thuja-approved-01",
+    "label": "Туя · утверждённая форма",
+    "description": "Выбранная в мастерской форма: общий размер 100%, X/Y/Z 100/100/100%, повороты X/Y/Z 0/0/0%. Boolean, упрощение 331%, сглаживание 58°. Форма, цвет и материалы утверждены пользователем.",
+    "triangles": 540,
+    "foliageTriangles": 314,
+    "woodTriangles": 226,
+    "baseFoliageTriangles": 1038,
+    "bounds": {
+      "min": [
+        -2.334821939468384,
+        0,
+        -2.262639045715332
+      ],
+      "max": [
+        2.375502109527588,
+        20.591821670532227,
+        2.438028573989868
+      ]
+    },
+    "settings": {
+      "optimize": 331,
+      "rx": 0,
+      "ry": 0,
+      "rz": 0,
+      "scale": 100,
+      "scaleX": 100,
+      "scaleY": 100,
+      "scaleZ": 100
+    },
+    "mode": "boolean",
+    "smoothingAngle": 58,
+    "sourceGeometrySha256": "1e44681369426044a89f7ac52362cc3b89d793e8ca16da11b7f51c471190b075",
+    "geometrySha256": "0a408e5018edd00fba8e6427e0d04f28806d7ec216d95099003d23c0dfd1ec94",
+    "glbSha256": "fd57abf17aca536d2e268d36d9088be9ef207429efcf609be344138ca83e5539",
+    "inputGlbSha256": "fd57abf17aca536d2e268d36d9088be9ef207429efcf609be344138ca83e5539",
+    "selectedBy": "user",
+    "date": "2026-10-13",
+    "integrated": true,
+    "provenance": "Exact live workshop export; no regeneration or simplification on approval.",
+    "engines": {
+      "manifold": "3.5.4",
+      "meshoptimizer": "1.3.0"
+    },
+    "library": {
+      "file": "library/thuja/model.glb",
+      "source": "library/thuja/approved-fd57abf17aca.glb",
+      "sourceSha256": "fd57abf17aca536d2e268d36d9088be9ef207429efcf609be344138ca83e5539",
+      "glbSha256": "fd57abf17aca536d2e268d36d9088be9ef207429efcf609be344138ca83e5539"
+    },
+    "integratedRelease": "assets-km1-approved-plants-01"
+  },
+  "growth": {
+    "variant": "growth-approved-01",
+    "folder": "growth-approved-01",
+    "label": "Лиственная поросль · утверждённая форма",
+    "description": "Выбранная в мастерской форма: общий размер 104%, X/Y/Z 100/114/100%, повороты X/Y/Z 0/70/0%. Boolean, упрощение 360%, сглаживание 68°. Форма, цвет и материалы утверждены пользователем.",
+    "triangles": 404,
+    "foliageTriangles": 206,
+    "woodTriangles": 198,
+    "baseFoliageTriangles": 752,
+    "bounds": {
+      "min": [
+        -2.086167812347412,
+        4.76837158203125e-07,
+        -2.304234027862549
+      ],
+      "max": [
+        2.1454291343688965,
+        10.518288612365723,
+        1.7915798425674438
+      ]
+    },
+    "settings": {
+      "optimize": 360,
+      "rx": 0,
+      "ry": 70,
+      "rz": 0,
+      "scale": 104,
+      "scaleX": 100,
+      "scaleY": 114,
+      "scaleZ": 100
+    },
+    "mode": "boolean",
+    "smoothingAngle": 68,
+    "sourceGeometrySha256": "0feaa7090e37ca416c8196bfe9eb83161c9ee6b63974b8b0103d2064c829b91c",
+    "geometrySha256": "e5626cf71d2c27b881c589450de9d80b58d2c4b068ba30afecc02e97018f380f",
+    "glbSha256": "88af1fb3f71a3d7ccb888601acde1fdb9a6553d3abf5609f1dcd3a5632ee13fe",
+    "inputGlbSha256": "88af1fb3f71a3d7ccb888601acde1fdb9a6553d3abf5609f1dcd3a5632ee13fe",
+    "selectedBy": "user",
+    "date": "2026-10-13",
+    "integrated": true,
+    "provenance": "Exact live workshop export; no regeneration or simplification on approval.",
+    "engines": {
+      "manifold": "3.5.4",
+      "meshoptimizer": "1.3.0"
+    },
+    "library": {
+      "file": "library/growth/model.glb",
+      "source": "library/growth/approved-88af1fb3f71a.glb",
+      "sourceSha256": "88af1fb3f71a3d7ccb888601acde1fdb9a6553d3abf5609f1dcd3a5632ee13fe",
+      "glbSha256": "88af1fb3f71a3d7ccb888601acde1fdb9a6553d3abf5609f1dcd3a5632ee13fe"
+    },
+    "integratedRelease": "assets-km1-approved-plants-01"
+  },
+  "low": {
+    "variant": "low-approved-01",
+    "folder": "low-approved-01",
+    "label": "Низкое лиственное · утверждённая форма",
+    "description": "Выбранная в мастерской форма: общий размер 106%, X/Y/Z 100/100/100%, повороты X/Y/Z 0/17/0%. Boolean, упрощение 436%, сглаживание 70°. Форма, цвет и материалы утверждены пользователем.",
+    "triangles": 474,
+    "foliageTriangles": 220,
+    "woodTriangles": 254,
+    "baseFoliageTriangles": 958,
+    "bounds": {
+      "min": [
+        -4.894486904144287,
+        0,
+        -4.918895244598389
+      ],
+      "max": [
+        5.773108959197998,
+        16.021724700927734,
+        5.167095184326172
+      ]
+    },
+    "settings": {
+      "optimize": 436,
+      "rx": 0,
+      "ry": 17,
+      "rz": 0,
+      "scale": 106,
+      "scaleX": 100,
+      "scaleY": 100,
+      "scaleZ": 100
+    },
+    "mode": "boolean",
+    "smoothingAngle": 70,
+    "sourceGeometrySha256": "cd27002d95d99f797069fdd374234c6d3db599e414bf47ceef302ffd26365f08",
+    "geometrySha256": "fdd5ad8eeced8eb3266e27882a1b21782c9bf5b6d762ad33530c9996aa3d347d",
+    "glbSha256": "fde9db9c557796f544f8b9fc2487584f53a4731a448a437fd9b638eaec2c9e62",
+    "inputGlbSha256": "fde9db9c557796f544f8b9fc2487584f53a4731a448a437fd9b638eaec2c9e62",
+    "selectedBy": "user",
+    "date": "2026-10-13",
+    "integrated": true,
+    "provenance": "Exact live workshop export; no regeneration or simplification on approval.",
+    "engines": {
+      "manifold": "3.5.4",
+      "meshoptimizer": "1.3.0"
+    },
+    "library": {
+      "file": "library/low/model.glb",
+      "source": "library/low/approved-fde9db9c5577.glb",
+      "sourceSha256": "fde9db9c557796f544f8b9fc2487584f53a4731a448a437fd9b638eaec2c9e62",
+      "glbSha256": "fde9db9c557796f544f8b9fc2487584f53a4731a448a437fd9b638eaec2c9e62"
+    },
+    "integratedRelease": "assets-km1-approved-plants-01"
+  },
+  "bush": {
+    "variant": "bush-approved-01",
+    "folder": "bush-approved-01",
+    "label": "Кустарник · утверждённая форма",
+    "description": "Выбранная в мастерской форма: размер 128%, поворот Y 76%, Boolean и упрощение ×10, сглаживание 48°. Геометрия, зелёный цвет и материалы утверждены пользователем.",
+    "triangles": 356,
+    "foliageTriangles": 174,
+    "woodTriangles": 182,
+    "baseFoliageTriangles": 1746,
+    "bounds": {
+      "min": [
+        -2.947840929031372,
+        -0.28520795702934265,
+        -2.800300359725952
+      ],
+      "max": [
+        3.34891676902771,
+        3.9793882369995117,
+        3.23020601272583
+      ]
+    },
+    "settings": {
+      "optimize": 1000,
+      "rx": 0,
+      "ry": 76,
+      "rz": 0,
+      "scale": 128,
+      "scaleX": 100,
+      "scaleY": 100,
+      "scaleZ": 100
+    },
+    "mode": "boolean",
+    "smoothingAngle": 48,
+    "sourceGeometrySha256": "965a4ba782d8801d658aef5ea1d27e1318ff3821555b9f17cdbda3a8daff5d90",
+    "geometrySha256": "26d5b4987c59000224488048594905f177baf67175733062507c5bde163cb596",
+    "glbSha256": "429e1fdc815cef7f33d6f163a7507c9b9379d9b19bd8e93d2c1d4b6d468e4dd1",
+    "inputGlbSha256": "429e1fdc815cef7f33d6f163a7507c9b9379d9b19bd8e93d2c1d4b6d468e4dd1",
+    "selectedBy": "user",
+    "date": "2026-10-13",
+    "integrated": true,
+    "provenance": "Exact live workshop export; no regeneration or simplification on approval.",
+    "engines": {
+      "manifold": "3.5.4",
+      "meshoptimizer": "1.3.0"
+    },
+    "library": {
+      "file": "library/bush/model.glb",
+      "source": "library/bush/approved-429e1fdc815c.glb",
+      "sourceSha256": "429e1fdc815cef7f33d6f163a7507c9b9379d9b19bd8e93d2c1d4b6d468e4dd1",
+      "glbSha256": "429e1fdc815cef7f33d6f163a7507c9b9379d9b19bd8e93d2c1d4b6d468e4dd1"
+    },
+    "integratedRelease": "assets-km1-approved-plants-01"
+  }
+}
