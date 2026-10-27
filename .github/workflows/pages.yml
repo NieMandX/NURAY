@@ -21,8 +21,8 @@ jobs:
       - name: Check viewer presets, water and tile transport
         working-directory: moscow-fidelity/web-preview
         run: node --test tests/regional-defaults.test.mjs tests/water-settings.test.mjs tests/water-optics.test.mjs tests/packed-mesh.test.mjs
-      - name: Check offline restoration
-        run: python3 scripts/test_restore_assets.py
+      - name: Check transfer integrity and offline restoration
+        run: python3 -m unittest discover -s scripts -p 'test_*.py'
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
