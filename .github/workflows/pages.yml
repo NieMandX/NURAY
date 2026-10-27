@@ -18,6 +18,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v6
+      - name: Check viewer presets, water and tile transport
+        working-directory: moscow-fidelity/web-preview
+        run: node --test tests/regional-defaults.test.mjs tests/water-settings.test.mjs tests/water-optics.test.mjs tests/packed-mesh.test.mjs
+      - name: Check offline restoration
+        run: python3 scripts/test_restore_assets.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

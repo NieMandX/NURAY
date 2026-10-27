@@ -165,6 +165,11 @@ try{
     $('samples').closest('label').hidden=true;
   }
   bindCameraInput(canvas,()=>renderer,()=>initialized,moved);
+  if(!mergedMode&&config.meshPacks?.[config.catalog]){
+    const p=await fetch(new URL(config.meshPacks[config.catalog],configURL));
+    if(!p.ok)throw Error('Не найден индекс контейнера тайлов');
+    renderer.meshPack=await p.json();
+  }
   await renderer.open(catalogURL);
   if(config.surfaceEffects?.[config.catalog])await renderer.loadSurfaceEffects(new URL(config.surfaceEffects[config.catalog],assetBase));
   const sourceGeo=sceneGeography(renderer.tileset,config.geography?.[config.catalog]);

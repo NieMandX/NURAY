@@ -1,3 +1,4 @@
+import {meshBytes} from './packed-mesh.js?v=moscow-defaults-1';
 import {DistrictRenderer} from '../../src/district/renderer.js?v=moscow-defaults-1';
 import {REGION_GPU_PAGE_BYTES} from '../../src/district/gpu-limits.js?v=moscow-defaults-1';
 import {orthographic,lookAt,perspective,multiply,visible} from '../../src/district/math.js?v=moscow-defaults-1';
@@ -68,8 +69,8 @@ export class TileRenderer extends DistrictRenderer {
   async mesh(id){
     let entry=this.meshCache.get(id);
     if(entry){entry.used=performance.now();this.streamStats.cacheHits++;return entry.mesh;}
-    const c=this.assets.get(id),r=await fetch(new URL(c.file,this.base));if(!r.ok)throw Error('Не найден блок '+id);
-    const compressed=await r.arrayBuffer();this.streamStats.downloadBytes+=compressed.byteLength;this.streamStats.requests++;
+    const c=this.assets.get(id);
+    const compressed=await meshBytes(c.file,this.base,this.meshPack);this.streamStats.downloadBytes+=compressed.byteLength;this.streamStats.requests++;
     const raw=await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
     const total=c.vertexBytes+c.indexBytes+c.nodeBytes+c.lineageBytes;
     if(raw.byteLength!==total||c.format!=='nuray-tile-mesh-v1')throw Error('Повреждён блок '+id);

@@ -33,6 +33,6 @@ python3 -m http.server 8776 --bind 127.0.0.1 --directory moscow-fidelity/web-pre
 python3 scripts/restore_assets.py --mode merged
 ```
 
-Полный набор с тайлами: `--mode all`. Затем уберите `assetBase` из локального `moscow-fidelity/web-preview/prototype/tiles/config.json`. Сборка геометрии для просмотра готовой сцены не требуется.
+Полный набор с тайлами: `--mode all`. Затем уберите `assetBase` и `meshPacks` из локального `moscow-fidelity/web-preview/prototype/tiles/config.json`. Скрипт восстановит исходные файлы из контейнера тайлов и проверит SHA-256. Сборка геометрии для просмотра готовой сцены не требуется.
 
 ![Московская сцена с сохранёнными настройками](docs/proof/moscow-defaults.png)

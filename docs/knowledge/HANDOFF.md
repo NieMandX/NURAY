@@ -5,7 +5,7 @@
 1. Клонировать `NieMandX/NURAY`, перейти в корень.
 2. Запустить `python3 scripts/serve.py`.
 3. Открыть `http://127.0.0.1:8776/`. Сцена берётся с Cloud.ru; сборка не нужна.
-4. Для сохранения локальных моделей: `python3 scripts/restore_assets.py --mode all`. Удалить `assetBase` из локального `moscow-fidelity/web-preview/prototype/tiles/config.json` — тогда файлы будут читаться рядом с viewer.
+4. Для сохранения локальных моделей: `python3 scripts/restore_assets.py --mode all`. Удалить `assetBase` и `meshPacks` из локального `moscow-fidelity/web-preview/prototype/tiles/config.json` — тогда распакованные файлы будут читаться рядом с viewer.
 5. Проверить сохранённую копию: `python3 scripts/restore_assets.py --mode all --check-only`.
 
 WebGPU + raster — московский default. Полный GLB требует достаточно GPU-памяти; для мобильных устройств используйте WebGL2 и загрузку по камере. Трассировка требует WebGPU. Её default — 64 сэмпла, вода заморожена. В режиме freeze смена параметров перерисовывает результат.
@@ -17,7 +17,7 @@ WebGPU + raster — московский default. Полный GLB требуе�
 Нужен современный Node.js. Из `moscow-fidelity/web-preview`:
 
 ```sh
-node --test tests/regional-defaults.test.mjs tests/water-settings.test.mjs tests/water-optics.test.mjs
+node --test tests/regional-defaults.test.mjs tests/water-settings.test.mjs tests/water-optics.test.mjs tests/packed-mesh.test.mjs
 ```
 
 Перед публикацией проверить свежий профиль/URL без старых параметров камеры и солнца; URL имеет приоритет над default. Визуально проверить WebGPU raster, trace и WebGL2 tiles. Убедиться, что нет 404, CORS и несовпадающего trace-кэша.
