@@ -85,6 +85,7 @@ def main():
     p.add_argument('--part-mib', type=int, default=8)
     p.add_argument('--workers', type=int, default=2)
     p.add_argument('--content-type', default='application/octet-stream')
+    p.add_argument('--cache-control', help='For a new immutable delivery object: public,max-age=31536000,immutable')
     p.add_argument('--sha256', help='Expected local checksum, if already recorded')
     args = p.parse_args()
     if not 5 <= args.part_mib <= 64 or not 1 <= args.workers <= 64:
@@ -118,12 +119,16 @@ def main():
             raise
     else:
         verify(client, path, args.bucket, args.key, size, digest)
+        if args.cache_control and client.head_object(Bucket=args.bucket, Key=args.key).get('CacheControl') != args.cache_control:
+            raise ValueError('Existing object has a different Cache-Control; refusing to overwrite')
         print('Already uploaded and verified:', args.key, flush=True)
         return
 
     part_size = args.part_mib * 1024 * 1024
     identity = {'endpoint': args.endpoint, 'bucket': args.bucket, 'key': args.key,
                 'bytes': size, 'sha256': digest, 'partSize': part_size}
+    if args.cache_control:
+        identity['cacheControl'] = args.cache_control
     state_path = args.state_dir / (hashlib.sha256((args.bucket + '/' + args.key).encode()).hexdigest() + '.json')
     if state_path.exists():
         state = json.loads(state_path.read_text())
@@ -131,7 +136,8 @@ def main():
             raise ValueError('Upload state belongs to a different file or configuration')
     else:
         result = client.create_multipart_upload(Bucket=args.bucket, Key=args.key,
-            ContentType=args.content_type, StorageClass='SINGLE', Metadata={'sha256': digest})
+            ContentType=args.content_type, StorageClass='SINGLE', Metadata={'sha256': digest},
+            **({'CacheControl': args.cache_control} if args.cache_control else {}))
         state = {**identity, 'uploadId': result['UploadId']}
         save_state(state_path, state)
     upload_id = state['uploadId']
@@ -180,6 +186,8 @@ def main():
     client.complete_multipart_upload(Bucket=args.bucket, Key=args.key, UploadId=upload_id,
         MultipartUpload={'Parts': [{'PartNumber': n, 'ETag': completed[n]['ETag']} for n in range(1, count + 1)]})
     verify(client, path, args.bucket, args.key, size, digest)
+    if args.cache_control and client.head_object(Bucket=args.bucket, Key=args.key).get('CacheControl') != args.cache_control:
+        raise ValueError('Cache-Control verification failed')
     state_path.unlink()
     print('Uploaded and verified:', args.key, flush=True)
 

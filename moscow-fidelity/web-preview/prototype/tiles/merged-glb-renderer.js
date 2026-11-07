@@ -1,6 +1,7 @@
 import {MergedFenceVisibility,validateVisibility} from './merged-visibility.js?v=scene-layers-1';
-import {TileRenderer} from './tile-renderer.js?v=dry-ground-1';
-import {loadCityMaterials} from '../../src/district/city-materials.js?v=dry-ground-1';
+import {TileRenderer} from './tile-renderer.js?v=asset-delivery-1';
+import {loadCityMaterials} from '../../src/district/city-materials.js?v=asset-delivery-1';
+import {openAsset} from '../../src/district/asset-fetch.js?v=asset-delivery-1';
 import {orthographic,lookAt,multiply} from '../../src/district/math.js?v=moscow-defaults-1';
 import {planMergedTrace,mergedInstances,sha256} from './merged-trace.js?v=moscow-defaults-1';
 import {traceScene} from './tile-scene.js?v=moscow-defaults-1';
@@ -18,15 +19,20 @@ export class GlbStream {
     }
     return out;
   }
+  async finish(){
+    if(this.offset!==this.chunk.length||!(await this.reader.read()).done)throw Error('Лишние данные после GLB');
+  }
 }
 export class MergedGlbRenderer extends TileRenderer {
   constructor(...args){super(...args);this.merged=true;this.objectURLs=[];}
   async open(catalogURL){
     const start=performance.now();this.ready=false;this.loading=true;this.phase='Читаем единый GLB';this.progress=0;this.publish(true);
     this.base=new URL('.',catalogURL);this.modelURL=new URL('merged/model.glb',catalogURL);
-    const response=await fetch(this.modelURL);if(!response.ok)throw Error('Пробный объединённый GLB ещё не подготовлен');
-    let length=Number(response.headers.get('Content-Length'))||1,last=0;
-    const reader=new GlbStream(response.body.getReader(),bytes=>{this.streamStats.downloadBytes=bytes;this.progress=bytes/length;if(performance.now()-last>200){last=performance.now();this.publish(true);}});
+    let length=this.assetDelivery?.merged?.decodedBytes??0,last=0,previous=0;
+    const stream=await openAsset(this.assetDelivery?.merged??{url:this.modelURL.href},catalogURL,bytes=>{
+      this.streamStats.downloadBytes+=bytes-previous;previous=bytes;
+    });
+    const reader=new GlbStream(stream.getReader(),bytes=>{this.progress=length>0?Math.min(1,bytes/length):0;if(performance.now()-last>200){last=performance.now();this.publish(true);}});
     this.streamStats.requests=1;
     try{
       const head=new DataView((await reader.take(20)).buffer);
@@ -84,6 +90,7 @@ export class MergedGlbRenderer extends TileRenderer {
       }
       await reader.take(binHead.getUint32(0,true)-position,false);
       if(reader.bytes!==length)throw Error('Размер GLB не совпадает с заголовком');
+      await reader.finish();
       await this.device.queue.onSubmittedWorkDone();
       this.chunks=[...this.rasterMeshes.values()];
       if(this.visibilityMetadata){this.fenceVisibility=new MergedFenceVisibility(this);await this.fenceVisibility.init(this.visibilityMetadata);}

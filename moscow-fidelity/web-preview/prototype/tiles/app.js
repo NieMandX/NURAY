@@ -1,12 +1,13 @@
 import {installSceneLayers} from './scene-layers.js?v=scene-layers-1';
 import {installWaterPanel} from './water-panel.js?v=shore-water-1';
 import {installHeliodon,sceneGeography} from './heliodon.js?v=moscow-defaults-1';
-import {MergedGlbRenderer} from './merged-glb-renderer.js?v=dry-ground-1';
-import {TileRenderer} from './tile-renderer.js?v=dry-ground-1';
-import {WebGLTileRenderer} from './webgl-renderer.js?v=dry-ground-1';
+import {MergedGlbRenderer} from './merged-glb-renderer.js?v=asset-delivery-1';
+import {TileRenderer} from './tile-renderer.js?v=asset-delivery-1';
+import {WebGLTileRenderer} from './webgl-renderer.js?v=asset-delivery-1';
 import {bindCameraInput} from './camera-input.js?v=moscow-defaults-1';
 import {createStatsPanel} from './viewer-stats.js?v=moscow-defaults-1';
 import {viewerDefaults,catalogKey,defaultSunPreset} from '../../src/district/viewer-defaults.js?v=moscow-preset-2';
+import {readAssetJSON} from '../../src/district/asset-fetch.js?v=asset-delivery-1';
 const $=id=>document.getElementById(id),showStats=createStatsPanel();
 const mergedMode=new URLSearchParams(location.search).get('layout')==='merged';
 let canvas=$('scene'),renderer;
@@ -124,13 +125,13 @@ try{
   $('catalog-link').href=catalogURL.href;$('validation-link').href=validationURL.href;
   if(mergedMode)config.canonicalModel=config.catalog.replace('tileset.json','merged/model.glb');
   if(config.canonicalModel)$('model-link').href=new URL(config.canonicalModel,assetBase).href;else $('model-link').hidden=true;
-  fetch(validationURL,{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Проверка сборки ещё не завершена');return r.json();}).then(r=>{
+  readAssetJSON((!mergedMode&&config.assetDelivery?.[config.catalog]?.validation)||{url:validationURL.href,cache:'no-cache'},catalogURL).then(r=>{
     if(mergedMode){$('validation').textContent=r.passed?`Единый GLB проверен: ${r.objects} объекта, ${r.gpuBatches} групп отрисовки. Атрибуты вершин и матрицы инстансов сохранены; геометрия не упрощена.`:'Проверка GLB выявила расхождения';return;}
     $('validation').textContent=r.passed?`Границы и BVH проверены. Максимальное расхождение шва: ${(r.seams.maxGapM*1000).toFixed(4)} мм. Все ${r.meshes} блоков сохраняют происхождение граней.${r.roadInterfaces?.passed?` Проверены ${r.roadInterfaces.interfaces} стыков дорожных и пешеходных поверхностей: поперечных бетонных препятствий нет.`:''}${r.roadSeams?.passed?` Проверены ${r.roadSeams.passages} сшитых дорожных проходов: поперечных бордюров и поднятой земли нет.`:''}`:'Проверка выявила расхождения — см. JSON';
     if(r.roadPaint?.passed)$('validation').textContent+=` Разметка проверена по полотну: ${r.roadPaint.trianglesChecked.toLocaleString('ru-RU')} граней, заступов на недорожные поверхности нет.`;
     if(r.transportClearance?.fullWidth?.passed){
       const t=r.transportClearance;
-      $('validation').textContent+=` Проверена полная ширина ${t.source.interfaces} примыканий и ${t.source.corridors.length} открытых спусков: заступов бордюров, стенок и газонов нет.`;
+      $('validation').textContent+=` Проверена полная ширина ${t.source.interfaces} примыканий и ${t.source.corridorCount??t.source.corridors.length} открытых спусков: заступов бордюров, стенок и газонов нет.`;
     }
     if(r.tunnelWalls){
       const groups=r.tunnelWalls.groups??[],confirmed=groups.reduce((n,g)=>n+g.sourceMatchedBoundaryM,0),inferred=groups.reduce((n,g)=>n+g.fallbackBoundaryM,0);
@@ -179,6 +180,7 @@ try{
     renderer.meshPack=await p.json();
   }
   if(mergedMode&&config.visibilityMetadata?.[config.catalog])renderer.visibilityURL=new URL(config.visibilityMetadata[config.catalog],configURL);
+  renderer.assetDelivery=config.assetDelivery?.[config.catalog];
   await renderer.open(catalogURL);
   if(config.surfaceEffects?.[config.catalog])await renderer.loadSurfaceEffects(new URL(config.surfaceEffects[config.catalog],assetBase));
   const sourceGeo=sceneGeography(renderer.tileset,config.geography?.[config.catalog]);

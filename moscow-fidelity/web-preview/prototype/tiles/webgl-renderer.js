@@ -6,7 +6,8 @@ import {installSurfaceField,isRoad} from '../../src/district/surface-effects.js?
 import {sunCascades,shadowUniform,inverseMatrix} from '../../src/district/sun-shadows.js?v=moscow-defaults-1';
 import {isFacade,facadePixels} from '../../src/district/facade-relief.js?v=moscow-defaults-1';
 import {contactVertex,contactFragment,contactComposite} from './webgl-contact-ao.js?v=moscow-defaults-1';
-import {TileRenderer} from './tile-renderer.js?v=dry-ground-1';
+import {TileRenderer} from './tile-renderer.js?v=asset-delivery-1';
+import {mapConcurrent} from '../../src/district/asset-fetch.js?v=asset-delivery-1';
 import {activeChunkIds,sceneInstances,rasterLayout} from './tile-scene.js?v=moscow-defaults-1';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from '../../src/district/math.js?v=moscow-defaults-1';
 import {budgetTiles,overviewDistance} from './webgl-budget.js?v=moscow-defaults-1';
@@ -65,8 +66,7 @@ export class WebGLTileRenderer extends TileRenderer {
     this.running=true;this.raf=requestAnimationFrame(t=>this.frame(t));
   }
   async open(url){
-    const r=await fetch(url,{cache:'no-cache'});if(!r.ok)throw Error('Не найден каталог тайлов');
-    this.tileset=await r.json();this.city=this.tileset;this.base=new URL('.',url);this.sceneName='moscow';
+    this.tileset=await this.readCatalog(url);this.city=this.tileset;this.base=new URL('.',url);this.sceneName='moscow';
     this.assets=new Map(this.tileset.chunks.map(c=>[c.id,c]));this.state.exposure=.85;
     this.loading=true;this.phase='Загружаем PBR-материалы';this.progress=0;this.publish(true);
     await this.loadMaterials();this.loading=false;
@@ -88,17 +88,19 @@ export class WebGLTileRenderer extends TileRenderer {
     gl.texSubImage3D(gl.TEXTURE_2D_ARRAY,0,0,0,0,size,size,1,gl.RGBA,gl.UNSIGNED_BYTE,white);
     const scratch=document.createElement('canvas');scratch.width=scratch.height=size;const ctx=scratch.getContext('2d');
     const facadeImages=new Set(materials.filter(isFacade).map(m=>m.texture));
-    for(let i=1;i<images.length;i++){
-      if(facadeImages.has(images[i])){gl.bindTexture(gl.TEXTURE_2D_ARRAY,this.albedo);gl.texSubImage3D(gl.TEXTURE_2D_ARRAY,0,0,0,i,size,size,1,gl.RGBA,gl.UNSIGNED_BYTE,facadePixels(size,size));continue;}
+    let loaded=0;
+    await mapConcurrent(images.slice(1),async(_,j)=>{const i=j+1;
+      if(facadeImages.has(images[i])){gl.bindTexture(gl.TEXTURE_2D_ARRAY,this.albedo);gl.texSubImage3D(gl.TEXTURE_2D_ARRAY,0,0,0,i,size,size,1,gl.RGBA,gl.UNSIGNED_BYTE,facadePixels(size,size));loaded++;return;}
       const r=await fetch(new URL(images[i],this.base));if(!r.ok)throw Error('Не найдена текстура '+images[i]);
       // Canvas resizing also works in Safari, where createImageBitmap resize
       // options have varied between versions. Preserve the source UV origin.
-      const bitmap=await createImageBitmap(await r.blob(),{premultiplyAlpha:'none',colorSpaceConversion:'none'});
+      const blob=await r.blob();this.streamStats.downloadBytes+=blob.size;this.streamStats.requests++;
+      const bitmap=await createImageBitmap(blob,{premultiplyAlpha:'none',colorSpaceConversion:'none'});
       ctx.clearRect(0,0,size,size);ctx.drawImage(bitmap,0,0,size,size);bitmap.close();
       gl.bindTexture(gl.TEXTURE_2D_ARRAY,this.albedo);
       gl.texSubImage3D(gl.TEXTURE_2D_ARRAY,0,0,0,i,size,size,1,gl.RGBA,gl.UNSIGNED_BYTE,scratch);
-      this.progress=i/(images.length-1);this.publish();
-    }
+      this.progress=++loaded/(images.length-1);this.publish();
+    });
     gl.generateMipmap(gl.TEXTURE_2D_ARRAY);
     const data=new Float32Array(materials.length*12);
     materials.forEach((m,i)=>data.set([...m.color,m.roughness,m.metallic,m.ior,m.kind,m.alphaCutoff,layers.get(m.texture)||0,isFacade(m)?1:groundMaterialRole(m),isRoad(m)?1:0,0],i*12));
@@ -175,15 +177,12 @@ export class WebGLTileRenderer extends TileRenderer {
     const started=performance.now();this.ready=false;this.loading=true;this.phase='Подгружаем участки';this.progress=0;this.publish(true);
     const active=activeChunkIds(this.tileset,modes);
     for(const [id,c] of this.rasterMeshes)if(!active.has(id)){this.releaseMesh(c);this.rasterMeshes.delete(id);}
-    let upload=0,done=0;
-    for(const id of active){
-      if(!this.rasterMeshes.has(id)){
-        const c=await this.mesh(id);if(!this.running)return;
+    let upload=0;
+    await this.loadMeshes([...active].filter(id=>!this.rasterMeshes.has(id)),(id,c)=>{
+        if(!this.running)throw Error('Загрузка остановлена: графический контекст закрыт');
         const t=performance.now();this.rasterMeshes.set(id,this.uploadMesh(c));upload+=performance.now()-t;
         this.trimCache(active);
-      }
-      this.progress=++done/active.size;this.publish();
-    }
+    });
     const layout=rasterLayout(sceneInstances(this.tileset,modes),this.assets),gl=this.gl,t=performance.now();
     gl.bindBuffer(gl.ARRAY_BUFFER,this.instanceBuffer);gl.bufferData(gl.ARRAY_BUFFER,layout.transforms,gl.STATIC_DRAW);
     this.streamStats.releasedGpuBytes+=this.rasterInstanceBytes??0;this.rasterInstanceBytes=layout.transforms.byteLength;

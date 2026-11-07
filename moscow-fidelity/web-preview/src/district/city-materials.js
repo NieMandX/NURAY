@@ -2,6 +2,7 @@ import {groundMaterialRole} from './ground-surfaces.js?v=dry-ground-1';
 import {isRoad} from './surface-effects.js?v=moscow-defaults-1';
 import {isFacade,facadePixels} from './facade-relief.js?v=moscow-defaults-1';
 import {cityBase} from './city-config.js?v=moscow-defaults-1';
+import {mapConcurrent} from './asset-fetch.js?v=asset-delivery-1';
 export async function loadCityMaterials(owner,scene,assetBase=cityBase){
   const d=owner.device,count=scene.materials.length,size=512,levels=10;
   if(count>d.limits.maxTextureArrayLayers)throw new Error('Недостаточно слоёв текстур для материалов сцены.');
@@ -16,19 +17,29 @@ export async function loadCityMaterials(owner,scene,assetBase=cityBase){
     d.createTexture({size:[1,1,count],format:'rgba8unorm',usage:GPUTextureUsage.COPY_DST|GPUTextureUsage.TEXTURE_BINDING})];
   const source=d.createTexture({size:[size,size,count],format:'rgba8unorm-srgb',usage:GPUTextureUsage.COPY_DST|GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.RENDER_ATTACHMENT});
   try{
-    const white=new Uint8Array(size*size*4).fill(255);
+    const white=new Uint8Array(size*size*4).fill(255),images=new Map();
     for(let i=0;i<count;i++){
       const m=scene.materials[i];
       if(isFacade(m)){d.queue.writeTexture({texture:source,origin:[0,0,i]},facadePixels(size,size),{bytesPerRow:size*4},[size,size]);}
       else if(m.texture){
-        const r=await fetch(new URL(m.texture,assetBase));if(!r.ok)throw new Error('Не найдена текстура '+m.texture);
-        const image=await createImageBitmap(await r.blob(),{resizeWidth:size,resizeHeight:size,premultiplyAlpha:'none',colorSpaceConversion:'none'});
-        d.queue.copyExternalImageToTexture({source:image},{texture:source,origin:[0,0,i],premultipliedAlpha:false},[size,size]);image.close();
+        if(!images.has(m.texture))images.set(m.texture,[]);images.get(m.texture).push(i);
       }else d.queue.writeTexture({texture:source,origin:[0,0,i]},white,{bytesPerRow:size*4},[size,size]);
       const normal=isFacade(m)?facadePixels(8,512,true):new Uint8Array(8*512*4);if(!isFacade(m))for(let j=0;j<normal.length;j+=4)normal.set([128,128,255,255],j);
       d.queue.writeTexture({texture:owner.textures[1],origin:[0,0,i]},normal,{bytesPerRow:32},[8,512]);
       d.queue.writeTexture({texture:owner.textures[2],origin:[0,0,i]},Uint8Array.of(255,Math.round(m.roughness*255),Math.round(m.metallic*255),255),{},[1,1]);
     }
+    let loaded=0;
+    if(owner.streamStats){owner.phase='Загружаем материалы';owner.progress=0;owner.publish(true);}
+    await mapConcurrent([...images],async([texture,layers])=>{
+      const url=new URL(texture,assetBase),r=await fetch(url);if(!r.ok)throw new Error('Не найдена текстура '+texture);
+      const blob=await r.blob();
+      // Embedded GLB images have already been counted by the streamed transfer.
+      if(owner.streamStats&&url.protocol!=='blob:'){owner.streamStats.downloadBytes+=blob.size;owner.streamStats.requests++;}
+      const image=await createImageBitmap(blob,{resizeWidth:size,resizeHeight:size,premultiplyAlpha:'none',colorSpaceConversion:'none'});
+      try{for(const i of layers)d.queue.copyExternalImageToTexture({source:image},{texture:source,origin:[0,0,i],premultipliedAlpha:false},[size,size]);}
+      finally{image.close();}
+      if(owner.streamStats){owner.progress=++loaded/images.size;owner.publish();}
+    });
     const r=await fetch(new URL('./city-textures.wgsl',import.meta.url));const module=d.createShaderModule({code:await r.text()});
     const errors=(await module.getCompilationInfo()).messages.filter(m=>m.type==='error');if(errors.length)throw new Error(errors.map(e=>e.message).join('\n'));
     const pipeline=await d.createComputePipelineAsync({layout:'auto',compute:{module,entryPoint:'main'}}),encoder=d.createCommandEncoder();

@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "sourceCatalogSha256": "8f4233510e53d33393e1e193f37e2e8756b73f2a6bf927f178aa7acaadd1d661",
+  "excludedBuildFields": [
+    "geometryRevision",
+    "sourceChunks"
+  ],
+  "catalog": {
+    "url": "delivery-20261107-v1/tileset-runtime.json.gz",
+    "encoding": "gzip",
+    "bytes": 10033389,
+    "sha256": "f2277b6ecaa7ef07d3b5fead26edaad2a66aff25c32cad7d1abc09c20121559c",
+    "decodedBytes": 42083205,
+    "decodedSha256": "223a71c954cf3438f13c32e182d13204566b1ad42a247c2e02683645b1fd77dc",
+    "rangeProofs": [
+      {
+        "offset": 0,
+        "bytes": 65536,
+        "sha256": "008a85b8dd13c5ebf8daf24462f2c8fd483c63d26444de2e3ad67c06118efc85"
+      },
+      {
+        "offset": 4983926,
+        "bytes": 65536,
+        "sha256": "db6694252d9e18e8cb4715df4deeddd7b656452b11c90b16bdfe37816509c1dc"
+      },
+      {
+        "offset": 9967853,
+        "bytes": 65536,
+        "sha256": "eeea540c9f2ac9da2e6648936431688174fd29f7e60fed8d52052b64ebfb37d4"
+      }
+    ]
+  },
+  "validation": {
+    "url": "delivery-20261107-v1/validation-summary.json.gz",
+    "encoding": "gzip",
+    "bytes": 31607,
+    "sha256": "b887042cac480480020cfafb7c34a3619ba5a1272b30c27560ad26a793e82216",
+    "decodedBytes": 83710,
+    "decodedSha256": "d5c88ec3213f82f0753dee643ad32c4725184db3c91fc69fa89beb03f562a33f",
+    "rangeProofs": [
+      {
+        "offset": 0,
+        "bytes": 31607,
+        "sha256": "b887042cac480480020cfafb7c34a3619ba5a1272b30c27560ad26a793e82216"
+      }
+    ]
+  },
+  "merged": {
+    "url": "delivery-20261107-v1/model.glb.gz",
+    "encoding": "gzip",
+    "bytes": 1029129637,
+    "sha256": "cfbd45fa5008b94de066ea2d2355e3cc9d6d5fe5193d94cef9c1caedb7384ad4",
+    "decodedBytes": 3138583992,
+    "decodedSha256": "d289b350f319970045c9620f6ae5aab94ea37fb0f363657b572f3784c40b1deb",
+    "rangeProofs": [
+      {
+        "offset": 0,
+        "bytes": 65536,
+        "sha256": "5f48b3170b834cce99ee0a40cd66446fbf76dd5fba250c8656ac80677ca55afc"
+      },
+      {
+        "offset": 514532050,
+        "bytes": 65536,
+        "sha256": "550ee09ea5b8be20c981823d06e4c8e8641e8ba63ebb8418c69b05d8742b49c5"
+      },
+      {
+        "offset": 1029064101,
+        "bytes": 65536,
+        "sha256": "c41c647637e20fb682e6694c77bc1ca750c69d0566c44072547308ea1df12f21"
+      }
+    ]
+  }
+}

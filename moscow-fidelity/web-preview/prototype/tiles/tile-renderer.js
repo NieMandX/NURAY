@@ -1,9 +1,10 @@
 import {layerDefaults,normalizeLayers,layerVisible} from './scene-layers.js?v=scene-layers-1';
-import {meshBytes} from './packed-mesh.js?v=moscow-defaults-1';
+import {meshBytes,visitMeshBatches} from './packed-mesh.js?v=asset-delivery-1';
+import {readAssetJSON} from '../../src/district/asset-fetch.js?v=asset-delivery-1';
 import {DistrictRenderer} from '../../src/district/renderer.js?v=dry-ground-1';
 import {REGION_GPU_PAGE_BYTES} from '../../src/district/gpu-limits.js?v=moscow-defaults-1';
 import {orthographic,lookAt,perspective,multiply,visible} from '../../src/district/math.js?v=moscow-defaults-1';
-import {loadCityMaterials} from '../../src/district/city-materials.js?v=dry-ground-1';
+import {loadCityMaterials} from '../../src/district/city-materials.js?v=asset-delivery-1';
 import {planGpuPages} from './gpu-pages.js?v=moscow-defaults-1';
 import {activeChunkIds,pageChunkIds,sceneInstances,rasterLayout,traceScene} from './tile-scene.js?v=moscow-defaults-1';
 
@@ -28,11 +29,18 @@ export class TileRenderer extends DistrictRenderer {
       this.updateCounts();this.revision++;this.gpu=null;this.shadowDirty=true;this.tracer.cache.invalidate();this.tracer.reset();
     }finally{this.ready=wasReady;this.publish(true);}
   }
-  async open(url){
+  async readCatalog(url){
     // A mutable catalog may publish new content hashes at the same URL. Always
     // revalidate metadata; immutable hash-named mesh files keep normal caching.
-    const r=await fetch(url,{cache:'no-cache'});if(!r.ok)throw Error('Не найден каталог тайлов');
-    this.tileset=await r.json();this.base=new URL('.',url);this.city=this.tileset;this.sceneName='moscow';
+    this.loading=true;this.phase='Загружаем каталог';this.progress=0;this.publish(true);
+    let previous=0;this.streamStats.requests++;
+    const data=await readAssetJSON(this.assetDelivery?.catalog??{url:url.href,cache:'no-cache'},url,(bytes,total)=>{
+      this.streamStats.downloadBytes+=bytes-previous;previous=bytes;this.progress=total>0?Math.min(1,bytes/total):0;this.publish();
+    });
+    return data;
+  }
+  async open(url){
+    this.tileset=await this.readCatalog(url);this.base=new URL('.',url);this.city=this.tileset;this.sceneName='moscow';
     this.tracePagePlan=this.tileset.extentMetres>1500?[]:planGpuPages(this.tileset,this.pageLimit);
     await loadCityMaterials(this,this.tileset,this.base);
     const span=this.tileset.extentMetres;
@@ -80,11 +88,11 @@ export class TileRenderer extends DistrictRenderer {
     if(!lo&&tiles.length)throw Error('Ближайший тайл превышает бюджет рейтрейса');
     this.streamStats.budgetLimited=lo<tiles.length;return select(lo);
   }
-  async mesh(id){
+  async mesh(id,compressed){
     let entry=this.meshCache.get(id);
     if(entry){entry.used=performance.now();this.streamStats.cacheHits++;return entry.mesh;}
     const c=this.assets.get(id);
-    const compressed=await meshBytes(c.file,this.base,this.meshPack);this.streamStats.downloadBytes+=compressed.byteLength;this.streamStats.requests++;
+    if(compressed===undefined){compressed=await meshBytes(c.file,this.base,this.meshPack);this.streamStats.downloadBytes+=compressed.byteLength;this.streamStats.requests++;}
     const raw=await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
     const total=c.vertexBytes+c.indexBytes+c.nodeBytes+c.lineageBytes;
     if(raw.byteLength!==total||c.format!=='nuray-tile-mesh-v1')throw Error('Повреждён блок '+id);
@@ -96,6 +104,18 @@ export class TileRenderer extends DistrictRenderer {
     this.waterHeights.add(id,mesh.vertices,this.tileset.materials,c.instanced);
     this.groundHeights.add(id,mesh.vertices,this.tileset.materials,c.instanced);
     this.meshCache.set(id,{mesh,bytes:c.vertexBytes+c.indexBytes+c.nodeBytes,used:performance.now()});return mesh;
+  }
+  async loadMeshes(ids,consume){
+    const byFile=new Map();let completed=0;
+    const accept=async(id,bytes)=>{await consume(id,await this.mesh(id,bytes));this.progress=++completed/ids.length;this.publish();};
+    for(const id of ids){
+      if(this.meshCache.has(id)){await accept(id);continue;}
+      const file=this.assets.get(id).file;
+      if(!byFile.has(file))byFile.set(file,[]);byFile.get(file).push(id);
+    }
+    await visitMeshBatches([...byFile.keys()],this.base,this.meshPack,async(file,bytes)=>{
+      for(const id of byFile.get(file))await accept(id,bytes);
+    },{onTransfer:bytes=>{this.streamStats.downloadBytes+=bytes;this.streamStats.requests++;},concurrency:4});
   }
   trimCache(active){
     let bytes=[...this.meshCache.values()].reduce((n,c)=>n+c.bytes,0);
@@ -120,7 +140,7 @@ export class TileRenderer extends DistrictRenderer {
       // full-detail tile. Re-plan before allocating or destroying any GPU data.
       this.tracePagePlan=planGpuPages(this.tileset,this.pageLimit,4,modes);
     }
-    const meshData=new Map();let completed=0;
+    const meshData=new Map();
     // At most four network/decompression operations in flight, independently
     // of how many render chunks a tile contains.
     // Geometry already in an unchanged GPU allocation needs no CPU copy.
@@ -133,10 +153,7 @@ export class TileRenderer extends DistrictRenderer {
       const ids=pageChunkIds(allocation,this.tileset,modes);
       if(this.tilePages.get(page)?.key!==ids.join('|'))for(const id of ids)required.add(id);
     });
-    const ids=[...required];let next=0;
-    await Promise.all(Array.from({length:Math.min(4,ids.length)},async()=>{
-      while(next<ids.length){const id=ids[next++];meshData.set(id,await this.mesh(id));this.progress=++completed/ids.length;this.publish();}
-    }));
+    await this.loadMeshes([...required],(id,mesh)=>meshData.set(id,mesh));
     this.ready=false;await this.device.queue.onSubmittedWorkDone();
     const commitStarted=performance.now();this.stats.bvhBuildMs=0;
     if(this.state.engine==='raster')this.commitRaster(active,meshData,instances);
