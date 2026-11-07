@@ -317,5 +317,13 @@
         ]
       }
     }
+  },
+  "mergedMirrors": {
+    "assets-moscow-style-20261024-r14/tileset.json": {
+      "yandex": {
+        "label": "Яндекс Cloud · пробное",
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/moscow-r14-mirror-20261107/model.glb.gz"
+      }
+    }
   }
 }

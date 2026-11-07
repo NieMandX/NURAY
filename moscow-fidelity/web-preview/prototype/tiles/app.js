@@ -120,6 +120,11 @@ try{
     if(!/^assets[-a-z0-9]+\/tileset\.json$/.test(preview))throw Error('Неверный адрес локального каталога');
     config.catalog=preview;config.canonicalModel=preview.replace('tileset.json','canonical/full/model.glb');
   }
+  // Mirrors are opt-in and replace only the compressed GLB, keeping the same
+  // catalog identity, materials, visibility, presets and integrity checks.
+  const mirrorKey=mergedMode?params.get('mirror'):null;
+  const mirror=mirrorKey?config.mergedMirrors?.[config.catalog]?.[mirrorKey]:null;
+  if(mirrorKey&&(!mirror||!config.assetDelivery?.[config.catalog]?.merged))throw Error('Для этой сцены зеркало GLB не настроено');
   const assetBase=config.assetBase?new URL(config.assetBase,configURL):configURL;
   const catalogURL=new URL(config.catalog,assetBase),validationURL=new URL(mergedMode?'merged/validation.json':'validation.json',catalogURL);
   $('catalog-link').href=catalogURL.href;$('validation-link').href=validationURL.href;
@@ -181,6 +186,7 @@ try{
   }
   if(mergedMode&&config.visibilityMetadata?.[config.catalog])renderer.visibilityURL=new URL(config.visibilityMetadata[config.catalog],configURL);
   renderer.assetDelivery=config.assetDelivery?.[config.catalog];
+  if(mirror)renderer.assetDelivery={...renderer.assetDelivery,merged:{...renderer.assetDelivery.merged,url:new URL(mirror.url,configURL).href}};
   await renderer.open(catalogURL);
   if(config.surfaceEffects?.[config.catalog])await renderer.loadSurfaceEffects(new URL(config.surfaceEffects[config.catalog],assetBase));
   const sourceGeo=sceneGeography(renderer.tileset,config.geography?.[config.catalog]);
@@ -195,6 +201,7 @@ try{
   document.title=title;$('region-title').textContent=title;
   const regionName=data.regionName||'Кутузовская',isMoscow=regionName==='Кутузовская';
   $('region-subtitle').textContent=mergedMode?`${regionName} · единый GLB · ${data.nodes} объекта`:`${regionName} · ${data.tiles.length} тайлов по ${data.tileSizeM} м`;
+  if(mirror)$('region-subtitle').textContent+=` · зеркало: ${mirror.label}`;
   if(mergedMode){$('streaming').disabled=true;$('streaming').value='full';$('streaming').selectedOptions[0].textContent='Вся карта · единый GLB';$('streaming-note').textContent='Вся карта загружается из одного файла. Деревья и городские предметы сохраняют общие модели и инстансы.';$('backend-note').textContent='WebGPU · вся карта из GLB. Растр, рейтрейс и каскады используют включённые объекты всей карты, включая объекты вне кадра.';$('objects-summary').textContent=`Статическая геометрия: 1 объект · общие модели: ${data.nodes-1} · инстансов: ${data.stats.sharedInstances.toLocaleString('ru-RU')}`;}
   canvas.setAttribute('aria-label',`Трёхмерная модель · ${regionName}`);
   if(!isMoscow){
