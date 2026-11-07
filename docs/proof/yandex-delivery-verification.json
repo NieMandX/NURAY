@@ -1,0 +1,22 @@
+{
+  "verified": [
+    {
+      "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-style-20261024-r14/delivery-20261107-v1/tileset-runtime.json.gz",
+      "bytes": 10033389,
+      "ranges": 3,
+      "cacheControl": "public,max-age=31536000,immutable"
+    },
+    {
+      "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-style-20261024-r14/delivery-20261107-v1/validation-summary.json.gz",
+      "bytes": 31607,
+      "ranges": 1,
+      "cacheControl": "public,max-age=31536000,immutable"
+    },
+    {
+      "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-style-20261024-r14/delivery-20261107-v1/model.glb.gz",
+      "bytes": 1029129637,
+      "ranges": 3,
+      "cacheControl": "public,max-age=31536000,immutable"
+    }
+  ]
+}

@@ -1,0 +1,1243 @@
+{
+  "checkedAt": "2026-11-07T21:46:43Z",
+  "baseURL": "https://storage.yandexcloud.net/nuray-assets-niemandx/",
+  "sourceCommit": "834b4a58d641c1196cdaa35ae0070cb7c0347d0c",
+  "expectedObjects": 205,
+  "verifiedObjects": 205,
+  "bytes": 5611539842,
+  "fullSHA256Verified": true,
+  "passed": true,
+  "objects": [
+    {
+      "path": "assets-moscow-style-20261024-r14/cemetery-material-proof.json",
+      "bytes": 633,
+      "sha256": "aeef0107c62bfcc379c62571d6453f83b63d8280e57321a7df1aa29afafcf2d6",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/delivery-20261107-v1/model.glb.gz",
+      "bytes": 1029129637,
+      "sha256": "cfbd45fa5008b94de066ea2d2355e3cc9d6d5fe5193d94cef9c1caedb7384ad4",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/delivery-20261107-v1/tileset-runtime.json.gz",
+      "bytes": 10033389,
+      "sha256": "f2277b6ecaa7ef07d3b5fead26edaad2a66aff25c32cad7d1abc09c20121559c",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/delivery-20261107-v1/validation-summary.json.gz",
+      "bytes": 31607,
+      "sha256": "b887042cac480480020cfafb7c34a3619ba5a1272b30c27560ad26a793e82216",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/facade-proof.json",
+      "bytes": 775,
+      "sha256": "aaee3150cb9e5f19a51c2f97c9928d8611784233d2e118300b363eb5e2d883ad",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/flat-roof-proof.json",
+      "bytes": 690,
+      "sha256": "7fccc6dbe736c19386231eba051f5d747ad2794e6f7e543f1d00c5c8f1c6a525",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/metadata.json",
+      "bytes": 79084,
+      "sha256": "d9b61b6b6ee481ea9f677f123c131f1a5539bcf7c020f8a23acbc5a80581ae00",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/model.glb",
+      "bytes": 3138583992,
+      "sha256": "d289b350f319970045c9620f6ae5aab94ea37fb0f363657b572f3784c40b1deb",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/0cdcded7de16b28979ea.bin.gz",
+      "bytes": 21081910,
+      "sha256": "4832baddce5cfd7f356c4b017b1133f13ead2e5bb0467b79a6000687f611733c",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/0ed42325a4145a4dc159.bin.gz",
+      "bytes": 27543799,
+      "sha256": "f5c2e5c1cf2b4fafc642f28dc0ae3a98412d6b6286d630c177b6984d10655a7e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/19f4534a94062d8757c3.bin.gz",
+      "bytes": 13265,
+      "sha256": "49fc1b40ec51b3e0742bd29824d5abcb53650124f766103cba74c7f31c341de6",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/326317aa49b5bdf72a9a.bin.gz",
+      "bytes": 16404189,
+      "sha256": "1614e4f59240146519c09493378ed3dbade6c52dfda72c3702cd704726e21a11",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/32b8edff391cd180bd52.bin.gz",
+      "bytes": 6235,
+      "sha256": "c6a33b35826364db7623589be497140dc883ef1efc077b84345b67f3d941e9c4",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/35c12c3556b5ab8226ad.bin.gz",
+      "bytes": 15742521,
+      "sha256": "6732af4c1128b7dec273b104e0030e9736881339346a7e215fde63f1b35fdd63",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/39da0f7c24b9903775ed.bin.gz",
+      "bytes": 15142398,
+      "sha256": "0804fab04e2dc1b875fdceebb5c9e4425214cc4933a5565a152605a42b73a637",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/407520a3d6af95b7094c.bin.gz",
+      "bytes": 14692654,
+      "sha256": "9601cf8dbd84ddab7b4923368deeba574ae02e8e3704b50e1ab8f66d1cac2e07",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/43dd1a459b31f9981145.bin.gz",
+      "bytes": 688,
+      "sha256": "8b27118a4a405c236f6f57f8ad5ea711f59f33d52ef4794c4f04710852bf7a0e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/453db67688c26a8e15c9.bin.gz",
+      "bytes": 8138,
+      "sha256": "fd16d39c5a255a010028f7b171e3e1d029f50bc205bf69492ca73c75c421b145",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/4a49b1a2f080ad0f0c0b.bin.gz",
+      "bytes": 5600,
+      "sha256": "217ed896a25d5c17eca566d0ae58f68cfc43bbeab22de3c61be3d09a6f97399e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/5bee93b08b8c0dcdf52d.bin.gz",
+      "bytes": 894,
+      "sha256": "269fe9e1a1c3ac7863d6c9a3ca29de8be238adc4cc76e6abdea2935df98abdcd",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/5ddee31f2f51ddbffd96.bin.gz",
+      "bytes": 2020,
+      "sha256": "803a90cd721025dc9a69edebb79d104ff2d5f8e0850526928ffe51bc8416f141",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/601860bb8daef11d19f8.bin.gz",
+      "bytes": 4405,
+      "sha256": "f08616771a27edeb8a69e251c4f87de1f22dc1c85034bbc1f2ffbd1bbf9629af",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/61cfa0e78a9fe351c09d.bin.gz",
+      "bytes": 28347606,
+      "sha256": "a3a5705a4691286f1182aab17a4007e846f8f76e08eacb893cdda4397454d898",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/62029f9f27ad3b89ace9.bin.gz",
+      "bytes": 2414,
+      "sha256": "ba5c9389fa0c8d2329ce0de315372cc63708574145caf5158f9ce702efd920e5",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/62483b0b0043aca9ebf6.bin.gz",
+      "bytes": 1989,
+      "sha256": "07980ba843dc562d1bf5e9b3301f2cbd0cc3853b41855ada0b07b14ccca02568",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/673fd52d0f40cbacaa12.bin.gz",
+      "bytes": 1711,
+      "sha256": "87c86c246ee83967e7456c43aa482308459c4754fdab71cc029e1c99f91d9b02",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/6b04cdaba5cbcc37741e.bin.gz",
+      "bytes": 15846046,
+      "sha256": "b71be6774807ef1b7a647a1f5e9a4b52bb25313340194a9ac53eafdb17445de3",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/76d8bf22c53fc423d060.bin.gz",
+      "bytes": 8157,
+      "sha256": "8f8a1a647da94b42efa5de58e0e163acfec8a2b530c06a6329f77591288fcf03",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/7c68346fa1795199402b.bin.gz",
+      "bytes": 5177,
+      "sha256": "b2963cf35cae3e759c673fa9a0c02c1859681b0d333315e34083d70f1bb5db78",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/7f2ef2e8a284bee33bbf.bin.gz",
+      "bytes": 4955,
+      "sha256": "e992f02d5aa754a1a862ada178b843f5c402708c847263ea69a6bda6791183a6",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/8623835ac5ee1abc20a0.bin.gz",
+      "bytes": 1563,
+      "sha256": "dc2ddef0033ccca03dc7cefb1152932e005f1b003a26c6a3331c961b9b763ac7",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/871b9f69fedd91621224.bin.gz",
+      "bytes": 16924237,
+      "sha256": "dfe7f8af8a2ef9f812c9ec2a709fd0312f6b688e53e0c2146370b329bf034d45",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/8ef4242cf813d7510450.bin.gz",
+      "bytes": 1100,
+      "sha256": "f4311aa8747c91c60894781159c3c4aee568cc3eb5aabe1444e08f127e4f1551",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/922899cf85bd9c478f15.bin.gz",
+      "bytes": 37388235,
+      "sha256": "14e00eb12168697641bb99fbb3f13e5535ec7f7dde8b75a82e0aa875c0bd9edb",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/948b76c306a0bdd219cd.bin.gz",
+      "bytes": 1834,
+      "sha256": "23c66fcee54e4d0d2748c2c0171ce6b784082d9cf95a1c648bc39c57f1620de9",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/95d1ed440d6167a20b40.bin.gz",
+      "bytes": 23231200,
+      "sha256": "7d4ca262adfce889ca2b7f767ce6251a5d454681eb441dd19b9ff60148a6d1c1",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/9c059e51b130ff0eb880.bin.gz",
+      "bytes": 5866,
+      "sha256": "fd6fc5f7644580315064fcdfbbfcee33e8864f5e6385f799c4d225250e63a216",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/9ee76e5777abe0a60a4d.bin.gz",
+      "bytes": 16226209,
+      "sha256": "670b0f7f4678b4ac6f9d946926c2803aae873cfc9df9efea1df08f3086068bc4",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/a7223b741f44e1a98c9f.bin.gz",
+      "bytes": 986,
+      "sha256": "a6e619a08cad150612b564a132f61170c2e2d7aaa18ebea955664ffe343f29da",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/a9e5fb702c8624d225e0.bin.gz",
+      "bytes": 14655182,
+      "sha256": "edc6dd17dd4e5849c0130de0f312a70adca2d546f7729ee8c5287c6f6fb36df3",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/acbf1dc9085082ecd5f9.bin.gz",
+      "bytes": 15816978,
+      "sha256": "3bfe07d890ced9ad13229114469555e9578a064521df69d412497c3a7563f544",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/aec0f57f7d1cc2d0a04b.bin.gz",
+      "bytes": 475,
+      "sha256": "46cd3c520cde63f76fdb1c95aef16c5410fd2f7ec2bbefa7db5861ce4b47693b",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/b3cf21f9a0ea9d5dfb7f.bin.gz",
+      "bytes": 1511,
+      "sha256": "9cdb6b75e867381adbd1455e9bd727923156f18a070ef106f4292da597a77c27",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/b816dab47ba66cb23dce.bin.gz",
+      "bytes": 3351,
+      "sha256": "c4d08ea7d33ee6eab46583c14542b368dcfb8489e9dc9cda265e27d2ef4313c2",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/b96f838a8aba07bd116f.bin.gz",
+      "bytes": 22414916,
+      "sha256": "c559ed125168152d3bf6eff8e1ecc454247ca24a75e361b5c24c3274ab80b95b",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/b9769350272b56a63e0b.bin.gz",
+      "bytes": 16013733,
+      "sha256": "6bd8b89fb350f74055ed6582073a12468c67a9f3de154bdce29fd0d91978f6d2",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/bc13f330d34fbd47a8f9.bin.gz",
+      "bytes": 96,
+      "sha256": "e3848ab5e7114fb911437b69d2487b323b0a5950cbf350736c29fad89121f165",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/c30e1df80ab04538e4c9.bin.gz",
+      "bytes": 2556,
+      "sha256": "bd047a48476e02e2935c9b76dce5c0bf78458cbffe0cc895ca32c7d3fdf2d634",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/c5ac8fe62b111d1444d9.bin.gz",
+      "bytes": 1573,
+      "sha256": "49da82037a8b198ca8272f58d525e29573884e0417031f7a4750df46e07290b6",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/d28d9c403375607a1e4e.bin.gz",
+      "bytes": 2617,
+      "sha256": "aa616d53982d5b8346a6dc0acec687d54be6a5b4a9476e171e8c0e9b268b71a1",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/da1e887df15648ea9f68.bin.gz",
+      "bytes": 792,
+      "sha256": "f1023d69f815b7be6f692f2319a4d311f41c569710135a3fa07d3599372ab0da",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/dc0b8320ebfcef5d52af.bin.gz",
+      "bytes": 9239,
+      "sha256": "11eaa6ae147665c36fbd68aa0da0ccd139fc04bb52f18abd1e61ed14c4675374",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/f3638d74a229ccc30c38.bin.gz",
+      "bytes": 310,
+      "sha256": "9f1e9b461764adb85ea9417de2fccefb23c8a66b05aebec24b41239c917fc26b",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/f537a6d98abcb37a5ebc.bin.gz",
+      "bytes": 15850052,
+      "sha256": "6087b80537e03e449a6a4ac2a8ecc728f85e8f2340dd6556d8206d224d888637",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/f6cd2effb2da76f81871.bin.gz",
+      "bytes": 1565,
+      "sha256": "79819a9477c0eb3b4fe174c372d6137610e10c60b89a3891e70827441857897e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/ff4858a0863144c7deb7.bin.gz",
+      "bytes": 4724,
+      "sha256": "2783539fc3615f43b63e46093a6a3720fdaaf8b0389a96407a5c57abb1ad2175",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/trace/manifest.json",
+      "bytes": 25514,
+      "sha256": "18496b2d4b4b574185751697f57627f317dfa2fa542b2388b63dfe6b98400d85",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/merged/validation.json",
+      "bytes": 10426,
+      "sha256": "5a92f2c5973011db54f550684553e55fec64daa32d0fa2cfb06d864d741cc477",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/meshes.pack",
+      "bytes": 848079153,
+      "sha256": "c85b1b60d4eb63eb574d4a3b2b98d6e8273fad743e355df728fd4bbaef9facb5",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/moscow-style-proof.json",
+      "bytes": 4302,
+      "sha256": "5fcb782a0d290c07d6e9461e687e70518e21a20ad072a9c959729d230b77e5bb",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/parking-material-proof.json",
+      "bytes": 729,
+      "sha256": "09c770a7ea8f168045d522175fa0c5b70f23013f45d81b7b3b34f5c3710d250c",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/pedestrian-material-proof.json",
+      "bytes": 1088,
+      "sha256": "343c6fb24d01a59e232c941156a52c5ddfb81f0ff4dae10dad33b00e0f10eab5",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/pitched-roof-proof.json",
+      "bytes": 731,
+      "sha256": "1eef6691778f1ab6a05d493d74a0e72c85951dddbe245beb5b65b630330a0fac",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/surface-effects-aab66210a497.bin.gz",
+      "bytes": 4307880,
+      "sha256": "6148c45b90cd4f14efa4f3d9464265727768c69c6e4f7d7d9ee7d06a3f4c011d",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/surface-effects.json",
+      "bytes": 452,
+      "sha256": "8dff36039899f069dddb4933ad3ede9680e9ca3d0c1dc494420dae593fa71c83",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/facade-storey-bands-v1.png",
+      "bytes": 203,
+      "sha256": "01f848b76fec1af68931d22eca4d23db1932b10be37d0057d5007a5eb6f73a7c",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/granite-mooring-v2.png",
+      "bytes": 4262454,
+      "sha256": "ce8c0c0a4af21d19da39bfc1e14a11ba639fb0f187ded79c63afedbe4f995710",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/pedestrian-gravel-v1.png",
+      "bytes": 191075,
+      "sha256": "0dd598d684917f1dbde14e25cd486f942e271a2f34c8f7d9e87bbfe56c9186e1",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/pedestrian-sand-v1.png",
+      "bytes": 142207,
+      "sha256": "96e01449a546cc170fdec2558460840dc7613b01cbab9159d955603ce1719f0b",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/pedestrian-stone-v1.png",
+      "bytes": 137741,
+      "sha256": "b1d62fd7c11d3336d88f0f52391f059ef6aa090213c24d735aefdd9e692b423b",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/pedestrian-wood-v1.png",
+      "bytes": 121056,
+      "sha256": "aa059f6ccd43592fac6654be68e132e3a16b96681d25558fddb82fda697706b7",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/railway-repeat-v1.png",
+      "bytes": 99649,
+      "sha256": "1f3e50871ea2466bd864fd4592224255582f76cb1ddd78888a490a83e082207e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-01ad37ea664bec5d.png",
+      "bytes": 176237,
+      "sha256": "01ad37ea664bec5d3bde7ca34324896c68e79099c87bd0075f9f6a00531c4826",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-0540ed32f308a881.png",
+      "bytes": 169845,
+      "sha256": "0540ed32f308a8815d281ee2658313700b861a2fc0954fdd64cf4bf28a63101f",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-054da7c0b5982cf8.png",
+      "bytes": 4934,
+      "sha256": "054da7c0b5982cf8281bb2b48fd0930ad018bfe161536cf68b6979f2970a68c3",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-05eb54599b9fb253.png",
+      "bytes": 1513,
+      "sha256": "05eb54599b9fb2536f405ab3bcce763656618d514f22f4b191571b8bfdb67e6a",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-074ad732a505e4a6.png",
+      "bytes": 40703,
+      "sha256": "074ad732a505e4a6a157f5622d4a88d5726cbc8e4c45c5294c3b43a9d4a76698",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-088ec2f5de29f9d4.png",
+      "bytes": 3196,
+      "sha256": "088ec2f5de29f9d4af2d8d7316e1f970a5ba2a37fc4bee8c966727ea323a6c95",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-09bc5ff896a987f5.png",
+      "bytes": 186101,
+      "sha256": "09bc5ff896a987f50b62b1cab92bb13810965243cdea520260503af8038a3bee",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-0a27afa06f27bdad.png",
+      "bytes": 184049,
+      "sha256": "0a27afa06f27bdadaf58bcb7a0c7eed7196f4b5c082958c5ec4b70ec2cf64781",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-0b8325dd71bace05.png",
+      "bytes": 61502,
+      "sha256": "0b8325dd71bace050b2e5dfc54c7fdb224cedd416402eb00a77d70486a9a2ef4",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-0b8a61ecfc4ecd35.png",
+      "bytes": 37064,
+      "sha256": "0b8a61ecfc4ecd351edf0f6d220761bbbfd2459d85de23da1e641d4b97dbeb11",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-0c16706b56bb8b21.png",
+      "bytes": 243428,
+      "sha256": "0c16706b56bb8b21e70b3fddb74a1106526be37e9b24598d0f10e5ea0eecbbf5",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-0c796d93b5c6f725.png",
+      "bytes": 7479,
+      "sha256": "0c796d93b5c6f7256ce72df708dae1bca7ed7daf1e65add6fc773e8e24c28677",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-11b3fdd4834ffb3d.png",
+      "bytes": 9657,
+      "sha256": "11b3fdd4834ffb3d9366b0eacc64dde8682474a2351c528984bdbd8b48ba96b4",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-132a8a938fcf7dbd.png",
+      "bytes": 36690,
+      "sha256": "132a8a938fcf7dbdb50a0dd6c3b85958aa371341149612929f1f9b752d62abdb",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-162be4c173754cdc.png",
+      "bytes": 38557,
+      "sha256": "162be4c173754cdc1c35caec6267f308508fc926ef8a3e41528625a7b2b0913b",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-16f2c886f35dfc55.png",
+      "bytes": 4894,
+      "sha256": "16f2c886f35dfc55cb5527279270e0655ff8cbb623cbfe09fe2caa209e6ddb88",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-17772d1eb44a17d8.png",
+      "bytes": 1186,
+      "sha256": "17772d1eb44a17d82def1f7085d41491beea8376cf1ea457a52a82bd13280d9c",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-1b6d4820d1750456.png",
+      "bytes": 13026,
+      "sha256": "1b6d4820d17504560d7a154f77738067b67ca2dcd9a0402bcb86e3a6e838731e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-219cb7709a81c3d6.png",
+      "bytes": 36290,
+      "sha256": "219cb7709a81c3d6ce5ac179d6db152d8155149cf7cb31e6a21abf487860b528",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-2348629616cd9472.png",
+      "bytes": 190762,
+      "sha256": "2348629616cd9472b9ef5022d0f892a9b8fab3c1556da7df3e04731fc1eefb88",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-2442622dd30cb20a.png",
+      "bytes": 8334,
+      "sha256": "2442622dd30cb20a00259927666813e81c1607721aec8538bce0f010f5cd264a",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-26472238c067a764.png",
+      "bytes": 39953,
+      "sha256": "26472238c067a764de71a933b8ef782dc8147276ea73386e6899026f80cbacc4",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-2724d12f5150e81c.png",
+      "bytes": 34327,
+      "sha256": "2724d12f5150e81cd5b4197e253c31578e76ce20f3def8ddaafcc664a620749e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-27578ad811272876.png",
+      "bytes": 2385,
+      "sha256": "27578ad811272876fbf122d6df42e1cbd00e645bf1b082242e6af602b9c7d0d7",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-28465c0964985fcb.png",
+      "bytes": 217400,
+      "sha256": "28465c0964985fcb4696b72c3009be8977b7a108c85b871c81b045e450cb23bc",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-2878f51cfd03f0e5.png",
+      "bytes": 37984,
+      "sha256": "2878f51cfd03f0e54932969a1eb31d3a8f653aa44651925b2d1087572750caae",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-2892a39b0330d2d4.png",
+      "bytes": 85445,
+      "sha256": "2892a39b0330d2d429ead29ead5f32efc706917eb94bcf347b76d4fa6aa2a00f",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-29623ac0a7d1a6bf.png",
+      "bytes": 18454,
+      "sha256": "29623ac0a7d1a6bf55cb42619f6cf21acd1baf6404a1819174a7cd8317662177",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-2b56cf75e984c159.png",
+      "bytes": 8986,
+      "sha256": "2b56cf75e984c15999c9c260ef7275313a23b1827ee019359cc0f15a94456b6e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-2ce70f841280f826.png",
+      "bytes": 130159,
+      "sha256": "2ce70f841280f826df0d51d4eee0671edd758cbb396d8c6557b7432bca643aef",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-32c47d990b0bb586.png",
+      "bytes": 5012,
+      "sha256": "32c47d990b0bb586251fd305579e7b67a1196e5ec628adec784949abeedf7178",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-34704928bc834c4c.png",
+      "bytes": 45352,
+      "sha256": "34704928bc834c4c47fb8f5ec8301793b804b5160d8d33e2f8ae7c8d68afb443",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-36af950863085efb.png",
+      "bytes": 6379,
+      "sha256": "36af950863085efb46beab94f6d5dd688ca2d4033128503c6cbaa144b354b6f5",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-37dd004d275b7206.png",
+      "bytes": 19772,
+      "sha256": "37dd004d275b7206b21c799421778831428549bc3d5a38d6219c7028e81296f5",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-380220355727ed38.png",
+      "bytes": 83317,
+      "sha256": "380220355727ed38f6e02b6076afa1a110be11fd187e86ea78808109f929ca0f",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-3b08b084ae0082de.png",
+      "bytes": 7374,
+      "sha256": "3b08b084ae0082def3195ebb40de8c246f0e496496d13512c2c4825508ebb954",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-3c1af85f3b1f7fa4.png",
+      "bytes": 190617,
+      "sha256": "3c1af85f3b1f7fa4564d4a0a8cf9201e0b3ff2fd992ab69abd74956ec49ad44e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-3e89e16981611781.png",
+      "bytes": 146286,
+      "sha256": "3e89e16981611781a33fb0cbbd370895198ddba6a3abac198fe4972d741ff552",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-4089acfe91b279ba.png",
+      "bytes": 8036,
+      "sha256": "4089acfe91b279ba302e445ddfea1423ec264ca8535a4c2aeafc4d0313f64fad",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-4099c93fa724e49f.png",
+      "bytes": 9585,
+      "sha256": "4099c93fa724e49f9f0d29f4632f0b8ebfe1e3c18c1fb51362c2a8c7d91ff7dc",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-4304ed001bdcf0a0.png",
+      "bytes": 37677,
+      "sha256": "4304ed001bdcf0a0a3778536a487c669773e54efcee0c88e7e860b81c3673db4",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-43ffd183c15ee6ca.png",
+      "bytes": 45316,
+      "sha256": "43ffd183c15ee6ca05c2673212ac2e955570a0a7e0cd5641790cc2a25b96e76c",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-47d03cc9a714b221.png",
+      "bytes": 35436,
+      "sha256": "47d03cc9a714b221014a20c6b17ebc28a2d6e076167d7e4a55b57f63791e6e26",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-4d6045f186572f21.png",
+      "bytes": 3710,
+      "sha256": "4d6045f186572f2191cba5f11931baed6150f32a19126564c883ced5edd56a3b",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-5346ab6b26680f2c.png",
+      "bytes": 219362,
+      "sha256": "5346ab6b26680f2c77d133d66e8b572354516d4499d079cb7c2a987189bd6072",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-5393281b313f86ae.png",
+      "bytes": 128349,
+      "sha256": "5393281b313f86aeb780723392cfcad090bf76a7787edcdd652d013caace2ed4",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-54f58d770acde0fd.png",
+      "bytes": 8202,
+      "sha256": "54f58d770acde0fde50e07a466576b0f1bbf1e55d684fe912fb2de952693e508",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-55930908c728d12a.png",
+      "bytes": 171360,
+      "sha256": "55930908c728d12a74ed906dc2aec138e7e5273eb7ba3fb28314f507f2263821",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-58c05feeb7dcbde8.png",
+      "bytes": 79288,
+      "sha256": "58c05feeb7dcbde81bf36567a9046b7b97729d148a8bb2aa6e0e3e55c37fcce9",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-58e293eec4650d5e.png",
+      "bytes": 3279,
+      "sha256": "58e293eec4650d5ebac5bd8967df5c7f8828d25ed837cdbeb39a7901dbf403c9",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-5ac03419ca97360c.png",
+      "bytes": 246352,
+      "sha256": "5ac03419ca97360c1e1a1f65f4fde250580cc497c41dff728837fef8a6beaf61",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-5edd1ca63553921a.png",
+      "bytes": 949,
+      "sha256": "5edd1ca63553921a2763a9a36cb9421ac9b81d912fe9004a1f686576545343f3",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-6211707a8ce58fee.png",
+      "bytes": 124472,
+      "sha256": "6211707a8ce58fee7322f7657e45dee53b824842852bd6219a3bbea55774dea9",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-63b92169bac4ac4d.png",
+      "bytes": 1253,
+      "sha256": "63b92169bac4ac4d1cd57c7316262bb7572184fce3d42d20609e4e8e5a9a6823",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-653d231e059ed2ef.png",
+      "bytes": 189021,
+      "sha256": "653d231e059ed2ef4cc8f69ad3046e75ef4441d928a0ee3497e521d86162a8c5",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-680563bbb60ef4d0.png",
+      "bytes": 103381,
+      "sha256": "680563bbb60ef4d0135f64f7e310c93b856004a245d150cc59f52774bf9bfa28",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-69abdde97aaa4a04.png",
+      "bytes": 146249,
+      "sha256": "69abdde97aaa4a0405f326f64463cb380f0df924954c3bbf7afb9be4113732ff",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-6a13d6ebfa993710.png",
+      "bytes": 17264,
+      "sha256": "6a13d6ebfa9937108437d5e86a7a9789a161777c377df5e1a61df89837430c9b",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-6c75378e84a1132a.png",
+      "bytes": 233184,
+      "sha256": "6c75378e84a1132aff42873b2272416e5a57479f5bb7005fdc132cc23b284c15",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-6d3bd8287e991f31.png",
+      "bytes": 2496,
+      "sha256": "6d3bd8287e991f31c2cc27a4b5d18822ec5c895aa6973d8b52b19c4a37483715",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-6f34fd8af00b6f81.png",
+      "bytes": 164371,
+      "sha256": "6f34fd8af00b6f813e8ed9a04b7371c3039bfc4de3dfe773079f952ecc18456f",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-6f4766022879c05a.png",
+      "bytes": 16802,
+      "sha256": "6f4766022879c05a13f0c1454765837d01bfe6829fc82b2fde46f9bc0acf45d3",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-7086be99d15f5914.png",
+      "bytes": 9944,
+      "sha256": "7086be99d15f5914286b5ebbd064281c1adb42db13748a6b3bc420283ca1bee9",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-7149060ad2150f5e.png",
+      "bytes": 9698,
+      "sha256": "7149060ad2150f5e51c9752a21fcd6bcb64243b7d3910ddc5f9babed3f989d43",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-75799c201f5004d1.png",
+      "bytes": 45515,
+      "sha256": "75799c201f5004d113344f619184fdcb21061e66851800436cc01631ed2aca74",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-761fa85c4c480ec2.png",
+      "bytes": 2932,
+      "sha256": "761fa85c4c480ec29b9b62ae968b3a363753967f0ae83a98c1a253caec59a7f3",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-76cc76fd8c1e7813.png",
+      "bytes": 40357,
+      "sha256": "76cc76fd8c1e7813f215a8dd34ae124908362df8d05d17c1421042a7bc234315",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-77679591ae7e7053.png",
+      "bytes": 216067,
+      "sha256": "77679591ae7e70532d2f6e0c966edf2d772753c69469b063586ad6f56321879e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-797933c16fdd66cc.png",
+      "bytes": 238271,
+      "sha256": "797933c16fdd66cc83a209d3d387e5b9e57bbccc4094b50b2462ee446e72f64e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-79eee51a9db4f2b4.png",
+      "bytes": 189466,
+      "sha256": "79eee51a9db4f2b4d28174c3576a469aa71ce3e460cf7ff2ea92aa93ed8bf376",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-7c0c60103104750f.png",
+      "bytes": 37658,
+      "sha256": "7c0c60103104750fb2851b60a89f3f1e342af2cad481f5ef747fb759c85e4195",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-7c788022e4365600.png",
+      "bytes": 2425,
+      "sha256": "7c788022e43656008e0de9ca36f036dd549b1eb30c1ec2035d46767f0526b654",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-7cb9baaf9443f689.png",
+      "bytes": 3976,
+      "sha256": "7cb9baaf9443f6898afac8474fec7dfdfa971eced0cb497e85d5ebe3c4bfdce1",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-7e103636189ca3af.png",
+      "bytes": 36493,
+      "sha256": "7e103636189ca3af3cd4f4b28ab79fadb2bb837e4fc54126eff78c4020bb77df",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-7ea4bf2bb31bb5c7.png",
+      "bytes": 8785,
+      "sha256": "7ea4bf2bb31bb5c76ce342dbac2c713f06af242a207004edf7a39a2d1716b6d7",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-7ec742d0903dac62.png",
+      "bytes": 219594,
+      "sha256": "7ec742d0903dac62999cd1284f174acebc9a19755e671be19599a4cf9bddb245",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-7ee4ad77ee206d0c.png",
+      "bytes": 7374,
+      "sha256": "7ee4ad77ee206d0c855ec4d6e7b19fd71dc384d2184fb51e02a6e17360afa536",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-809042451a9421a4.png",
+      "bytes": 37917,
+      "sha256": "809042451a9421a4668fa0f47205116dfd5d90e909a68e8cc96e95df562f25fa",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-80acd63ac665ee42.png",
+      "bytes": 227145,
+      "sha256": "80acd63ac665ee42546da6e648b714546e54c8113979726f4f031732c2a15a1d",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-80c716f061ceefe9.png",
+      "bytes": 179559,
+      "sha256": "80c716f061ceefe90810c9ce5703db24c107a80d2376b4a74f06d529563d42e3",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-843217b0a6beb41d.png",
+      "bytes": 227121,
+      "sha256": "843217b0a6beb41dcc9356df6619c0716f4152f372d5d188e1dada7750b1bb43",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-87e9b335e7031124.png",
+      "bytes": 9030,
+      "sha256": "87e9b335e7031124ee13cd4039768c81553b50434349b031e18bdf9a79692bb3",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-8a16b27ee5a534a7.png",
+      "bytes": 181633,
+      "sha256": "8a16b27ee5a534a7e71bcbbf2cedc89040be952272c8799fa2b67756ab6a64e0",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-8d44e020c9440f4a.png",
+      "bytes": 165830,
+      "sha256": "8d44e020c9440f4ac108957cb3432ebeab3b9fa516b7ad51a2f6d2a14942149e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-8d6ba2b1c5ddd61d.png",
+      "bytes": 172331,
+      "sha256": "8d6ba2b1c5ddd61d92bbdb74643c2b310511b4779061f0d406b3ac2ff0e74753",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-8def752e65a9596e.png",
+      "bytes": 70106,
+      "sha256": "8def752e65a9596e37f427623ca79b6743d3be7320ab3099ca0e8c9b604875ef",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-8f2b277ad5a30f13.png",
+      "bytes": 16521,
+      "sha256": "8f2b277ad5a30f13878428aca82f2cbdc03fb4d352f5207cadb92da4b51c2fcb",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-90de25d254e98870.png",
+      "bytes": 147655,
+      "sha256": "90de25d254e988703dc7381a1b8a8506324eca7da4793c3282acb2a12307d206",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-90f18baf30b66830.png",
+      "bytes": 292024,
+      "sha256": "90f18baf30b668302550bdc9aeb26860d40e676453ae1e70b16f4c30fbe9dfe2",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-917ae68e4e4102c7.png",
+      "bytes": 196874,
+      "sha256": "917ae68e4e4102c7e37597614b680ed2d12f29e07b673900f37df243e9ba22a5",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-93cdd01f437a8a32.png",
+      "bytes": 36696,
+      "sha256": "93cdd01f437a8a321c2a92035704f8b42e00beadcbec7163a579c1aac838e851",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-96bbd55e2eb85052.png",
+      "bytes": 232907,
+      "sha256": "96bbd55e2eb85052e79d46abf36c1b300f11df8c508914ed18780c4c23d6b2f7",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-96cf65679ec1dc74.png",
+      "bytes": 12014,
+      "sha256": "96cf65679ec1dc741233516c74886aae7e298ebb922000b355c6e7f621e75dbd",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-9c5267c3ae2c0632.png",
+      "bytes": 3988,
+      "sha256": "9c5267c3ae2c0632e59183a0d7675f228e627fdac656cdc17a2cb78cd6305216",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-9f1cb7a0c9f3db93.png",
+      "bytes": 38858,
+      "sha256": "9f1cb7a0c9f3db93eda2d2b3b35f95e1efc91bfe7a196ca3526f0d825f215833",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-9fcb9c6d94ccfac0.png",
+      "bytes": 26027,
+      "sha256": "9fcb9c6d94ccfac0ac2911a80e535691f6dc0a41bb43f4fd2dd1d3675417be01",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-a15c6b0afb7c1005.png",
+      "bytes": 33793,
+      "sha256": "a15c6b0afb7c1005266335d68aa046fdd6421bc0af888ea16ad211dd61ef385f",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-a2f37e88ef213084.png",
+      "bytes": 2456,
+      "sha256": "a2f37e88ef213084f25f452d2733552eb5ee1a01b11a006f8d39dd4fbae0d8d8",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-a52f94912115c021.png",
+      "bytes": 164396,
+      "sha256": "a52f94912115c0210d167c7d9328fa62617c5138cbe61e23965775ac60df3dc0",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-a746d562b15cd737.png",
+      "bytes": 10232,
+      "sha256": "a746d562b15cd7372b7ad9a94fdf41d96613c0442fa5296d403b9567fd9a1e64",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-a75913de5c4594d3.png",
+      "bytes": 207736,
+      "sha256": "a75913de5c4594d3be95a98822a07b99cb07d492c6aed29dd7c5994aea73ce1c",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-a8abccc868d34b31.png",
+      "bytes": 4386,
+      "sha256": "a8abccc868d34b313027cf98f4dfc3c55a0e64dd39c72a028ba384fc30e20435",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-aad9856a89a3f438.png",
+      "bytes": 175020,
+      "sha256": "aad9856a89a3f438a79a3d6d972f07ae6567e5677a1a87cc925e7d83a466bef7",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-abf6e5a221a1b5fe.png",
+      "bytes": 144345,
+      "sha256": "abf6e5a221a1b5fefc70c4a5adb338b8460ebd5ea96e73dd119d2dce6a062ba0",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-ad46d617aeaf0589.png",
+      "bytes": 106095,
+      "sha256": "ad46d617aeaf0589a77357b21fa080de386d9de7ca67f14d395d8330d2b52b8a",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-b10f2b1176eec6a6.png",
+      "bytes": 48921,
+      "sha256": "b10f2b1176eec6a67ef88220601cb840a5b3d157d7a88d493d778d55931870c1",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-b1b8fba948781b79.png",
+      "bytes": 13812,
+      "sha256": "b1b8fba948781b7929fbdac77a9d8112119114d6077001c904850033e68dfa2d",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-b63ad40bc425f38c.png",
+      "bytes": 137781,
+      "sha256": "b63ad40bc425f38ca31b3b5c4d92d52a6a51879d2a02599728edeb3c3d4abbe6",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-c1f32a9ed46578c5.png",
+      "bytes": 195839,
+      "sha256": "c1f32a9ed46578c5e7fc82ac0ee52d5a40f46bc279685540b6aaf16a42bddcc5",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-c2275dfbad6d6ebb.png",
+      "bytes": 67637,
+      "sha256": "c2275dfbad6d6ebbad537ec42de864a2b481c81825efb89f10f2edcdd2e103a4",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-cbc2df610e6072b2.png",
+      "bytes": 9098,
+      "sha256": "cbc2df610e6072b2c6dc1db180035955eed6d37a9ae1c9a34b1220ab22bb78bc",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-cd4707d2554df857.png",
+      "bytes": 5364,
+      "sha256": "cd4707d2554df857a991b591698c49bb276002175316985b26973d5da657c066",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-d69c76418f0b7fec.png",
+      "bytes": 101135,
+      "sha256": "d69c76418f0b7fec8765fefc7fb6d6c24db0bc7e1c6b1617d600dc1521e23cc1",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-d6f64e514da8fdde.png",
+      "bytes": 36514,
+      "sha256": "d6f64e514da8fddef86c019921dd089aaa32d803438c8ce7b6dc73334adf893a",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-d8604442438bf691.png",
+      "bytes": 166622,
+      "sha256": "d8604442438bf691b0dc414e860c4ae9c2bc9ce679a4c6a79a4e3c8ef1552c22",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-da8aefc0369574d4.png",
+      "bytes": 23965,
+      "sha256": "da8aefc0369574d445be0ef346dd73a59d52261d324260f9daafe613d7d6f286",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-db72fe932564f9c6.png",
+      "bytes": 37361,
+      "sha256": "db72fe932564f9c62507d780c3f6cbda84f98d207b5da227a8319a06435a5862",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-dd106e6788aacf72.png",
+      "bytes": 8343,
+      "sha256": "dd106e6788aacf722f93c7822f8f8a1b88c3763ae362a98f219f68843a37fc18",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-e1859b1955ca725f.png",
+      "bytes": 139908,
+      "sha256": "e1859b1955ca725f803554aed17c31bd02e52df2d8911ff38fa7f2bc5b7b3184",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-e75dcd75a6ecac6b.png",
+      "bytes": 1020,
+      "sha256": "e75dcd75a6ecac6bf75ba3c235064fa694c4070672d627f27a03e5eb48433f60",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-e88a50ef9727f685.png",
+      "bytes": 280219,
+      "sha256": "e88a50ef9727f68528fc4bf06c82e6e900d23ecb2760666626df49c628863020",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-e930b5c9a493901b.png",
+      "bytes": 8631,
+      "sha256": "e930b5c9a493901bae418361fde96929957d19f26c38a4a823eb4fab54c1f1de",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-e976b58350b863d3.png",
+      "bytes": 107657,
+      "sha256": "e976b58350b863d34802618396e389a45267cd4685417d49b49b0e3815371737",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-ea063c2acce9b5c7.png",
+      "bytes": 8400,
+      "sha256": "ea063c2acce9b5c752ed6a0c6631749d9ddc25d5bfcffd078e3201f3da06dd05",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-f18f65ea7a7b82f9.png",
+      "bytes": 143590,
+      "sha256": "f18f65ea7a7b82f96b916211ea6896babdc721c28439248f8174baf1cd93f6e5",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-f66a1a6b15daf197.png",
+      "bytes": 153224,
+      "sha256": "f66a1a6b15daf197eaa16660aad89c11f6bfea6794797c9fef22ec48a0fda744",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-f99cfc34d30101a5.png",
+      "bytes": 7449,
+      "sha256": "f99cfc34d30101a593afd7b8db6df9d8467f502a841f9932bae448a9669add8e",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/textures/texture-fdc9f4d7aab9aa90.png",
+      "bytes": 36355,
+      "sha256": "fdc9f4d7aab9aa9040b0193e7b2f4ec87bc4abcd78315bdcf91f03c2e06b57a9",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/tileset.json",
+      "bytes": 198427395,
+      "sha256": "8f4233510e53d33393e1e193f37e2e8756b73f2a6bf927f178aa7acaadd1d661",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/validation.json",
+      "bytes": 33977370,
+      "sha256": "9b5f5f22226d77c40844bc12c17e847b2d0418a6a4e3b0b7d7b83949edcebced",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/water-selection-proof.json",
+      "bytes": 483,
+      "sha256": "3fc715b3dc3b9e46303d8b94a4863ddb6bfb9a104ee77406f88dbd58d5f7d9eb",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/waterfront-parapet-proof.json",
+      "bytes": 1059,
+      "sha256": "6d76453ecb39e12a990e57befdc99d4b17703efa2bb31df99aad1c4df2122345",
+      "status": "copied-verified"
+    },
+    {
+      "path": "assets-moscow-style-20261024-r14/waterfront-proof.json",
+      "bytes": 1259,
+      "sha256": "2ac37b3077505471999526bf8c80591de79a0adacaed0d2cf74f2f2eaf20a9f6",
+      "status": "copied-verified"
+    }
+  ],
+  "errors": []
+}

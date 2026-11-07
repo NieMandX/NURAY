@@ -26,7 +26,7 @@ jobs:
       - name: Verify published scene objects and byte ranges
         run: |
           python3 scripts/verify_cloud.py
-          python3 scripts/verify_delivery.py
+          python3 scripts/verify_delivery.py --require-cache
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

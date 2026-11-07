@@ -76,8 +76,9 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('file', type=Path)
     p.add_argument('--key', required=True)
-    p.add_argument('--bucket', default='nuray-scenes')
-    p.add_argument('--endpoint', default='https://s3.cloud.ru')
+    p.add_argument('--bucket', default='nuray-assets-niemandx')
+    p.add_argument('--endpoint', default='https://storage.yandexcloud.net')
+    p.add_argument('--storage-class', default='STANDARD')
     p.add_argument('--region', default='ru-central-1')
     p.add_argument('--addressing-style', choices=('path', 'virtual'), default='path')
     p.add_argument('--credentials-file', type=Path)
@@ -103,7 +104,7 @@ def main():
             raise ValueError('Credentials file must be private (chmod 600)')
         secret = json.loads(args.credentials_file.read_text())
         key_id = secret['accessKeyId']
-        if secret.get('tenantId') and not key_id.startswith(secret['tenantId']):
+        if args.endpoint.endswith('s3.cloud.ru') and secret.get('tenantId') and not key_id.startswith(secret['tenantId']):
             key_id = secret['tenantId'] + ':' + key_id
         credentials = {'aws_access_key_id': key_id, 'aws_secret_access_key': secret['secretAccessKey']}
     client = boto3.client('s3', endpoint_url=args.endpoint, region_name=args.region,
@@ -126,7 +127,7 @@ def main():
 
     part_size = args.part_mib * 1024 * 1024
     identity = {'endpoint': args.endpoint, 'bucket': args.bucket, 'key': args.key,
-                'bytes': size, 'sha256': digest, 'partSize': part_size}
+                'bytes': size, 'sha256': digest, 'partSize': part_size, 'storageClass': args.storage_class}
     if args.cache_control:
         identity['cacheControl'] = args.cache_control
     state_path = args.state_dir / (hashlib.sha256((args.bucket + '/' + args.key).encode()).hexdigest() + '.json')
@@ -136,7 +137,7 @@ def main():
             raise ValueError('Upload state belongs to a different file or configuration')
     else:
         result = client.create_multipart_upload(Bucket=args.bucket, Key=args.key,
-            ContentType=args.content_type, StorageClass='SINGLE', Metadata={'sha256': digest},
+            ContentType=args.content_type, StorageClass=args.storage_class, Metadata={'sha256': digest},
             **({'CacheControl': args.cache_control} if args.cache_control else {}))
         state = {**identity, 'uploadId': result['UploadId']}
         save_state(state_path, state)

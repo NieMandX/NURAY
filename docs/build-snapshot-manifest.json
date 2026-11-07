@@ -25854,5 +25854,7 @@
       "bytes": 57953132
     }
   ],
-  "note": "Runtime meshes/textures/GLB restored separately from assets-manifest.json; source query credentials redacted."
+  "note": "Runtime meshes/textures/GLB restored separately from assets-manifest.json; source query credentials redacted.",
+  "bucket": "nuray-backups-niemandx",
+  "endpoint": "https://storage.yandexcloud.net"
 }

@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {VIEWER_DEFAULTS,MOSCOW_DEFAULTS,viewerDefaults,catalogKey,defaultSunPreset} from '../src/district/viewer-defaults.js';
 import {cleanWaterSettings} from '../src/district/ocean/settings.js';
 test('Moscow preset survives hosting prefixes without changing Petersburg',()=>{
- for(const path of ['assets-moscow-style-20261024-r14/tileset.json','https://nuray-scenes.s3.cloud.ru/releases/20261027/assets-moscow-style-20261024-r14/tileset.json?cache=1'])assert.equal(viewerDefaults(path),MOSCOW_DEFAULTS);
+ for(const path of ['assets-moscow-style-20261024-r14/tileset.json','https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-style-20261024-r14/tileset.json','https://nuray-scenes.s3.cloud.ru/releases/20261027/assets-moscow-style-20261024-r14/tileset.json?cache=1'])assert.equal(viewerDefaults(path),MOSCOW_DEFAULTS);
  for(const path of ['assets-hosek-check/tileset.json','assets-spb-10km-live-20261024-r13/tileset.json','assets-unknown/tileset.json'])assert.equal(viewerDefaults(path),VIEWER_DEFAULTS);
  assert.equal(catalogKey('https://test/a/assets-hosek-check/tileset.json'),'assets-hosek-check/tileset.json');
 });

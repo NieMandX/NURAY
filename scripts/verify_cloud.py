@@ -11,7 +11,7 @@ def check_once(row,base):
             size=int(r.headers.get('Content-Length',-1))
             if size!=row['bytes']:return {'path':row['path'],'error':f'size {size} != {row["bytes"]}'}
             if r.headers.get('Access-Control-Allow-Origin') not in ['*','https://niemandx.github.io']:return {'path':row['path'],'error':'CORS missing'}
-            if row['path'].endswith(('.bin.gz','.pack')) and r.headers.get('Content-Encoding'):return {'path':row['path'],'error':'Unexpected Content-Encoding; viewer decompresses explicitly'}
+            if row['path'].endswith(('.gz','.pack')) and r.headers.get('Content-Encoding'):return {'path':row['path'],'error':'Unexpected Content-Encoding; viewer decompresses explicitly'}
         return None
     except Exception as e:return {'path':row['path'],'error':str(e)}
 def check(row,base):
@@ -45,7 +45,7 @@ def main():
             if v:bad.append(v)
             if i%50==0:print(i,'checked,',len(bad),'pending/errors',flush=True)
     bad.extend(check_ranges(m))
-    result={'checkedAt':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'logicalFiles':len(m['files']),'storageObjects':len(objects),'rangeSamples':3*len(m.get('packs',[])),'passed':not bad,'errors':bad}
+    result={'checkedAt':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'baseURL':m['baseURL'],'logicalFiles':len(m['files']),'storageObjects':len(objects),'rangeSamples':3*len(m.get('packs',[])),'passed':not bad,'errors':bad}
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n');print('RESULT',len(objects),len(bad),flush=True)
     raise SystemExit(bool(bad))
 if __name__=='__main__':main()

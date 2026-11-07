@@ -1,0 +1,34 @@
+{
+  "checkedAtLocal": "2026-11-08",
+  "origin": "http://127.0.0.1:8776",
+  "assetBase": "https://storage.yandexcloud.net/nuray-assets-niemandx/",
+  "geometryChanged": false,
+  "presetsChanged": false,
+  "webgpuMergedRaster": {
+    "passed": true,
+    "consoleErrors": 0,
+    "cloudRuRequests": 0,
+    "instances": 81550
+  },
+  "webgpuMergedTrace": {
+    "passed": true,
+    "samples": 64,
+    "traceResourceRequests": 50,
+    "consoleErrors": 0,
+    "cloudRuRequests": 0
+  },
+  "webgl2Tiles": {
+    "passed": true,
+    "streaming": "camera",
+    "consoleErrors": 0,
+    "cloudRuRequests": 0,
+    "yandexRequests": 703,
+    "packRequests": 564,
+    "geometryBudgetMiB": 192
+  },
+  "tests": {
+    "javascript": 40,
+    "python": 5
+  },
+  "note": "WebGL2 checked in Chrome, not native Safari/iPad. Network timings are not a controlled cold-cache benchmark."
+}

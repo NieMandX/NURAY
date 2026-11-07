@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-11-07T21:44:52Z",
+  "bucket": "nuray-backups-niemandx",
+  "archiveBytes": 1896346877,
+  "archiveSha256": "2e444c6a911f16f191b46a56083c09a8b70460096ddeeebb67d31a2be84b6e52",
+  "manifestSha256": "0b1ab0fc387c7731c8434f8d98ab6df4a940913b61ad6df918e5ebad71862f46",
+  "fullDownloadVerified": true,
+  "anonymousAccess": {
+    "read": false,
+    "list": false,
+    "config_read": false
+  },
+  "checks": [
+    {
+      "key": "backups/nuray-moscow-build-20261027.tar.gz",
+      "anonymousHead": 403
+    },
+    {
+      "key": "backups/build-snapshot-manifest.json",
+      "anonymousHead": 403
+    }
+  ],
+  "passed": true
+}

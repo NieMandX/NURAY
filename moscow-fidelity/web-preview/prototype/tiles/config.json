@@ -234,7 +234,7 @@
       "label": "Москва"
     }
   },
-  "assetBase": "https://nuray-scenes.s3.cloud.ru/",
+  "assetBase": "https://storage.yandexcloud.net/nuray-assets-niemandx/",
   "libraryPreview": "library/preview.png",
   "fenceLibraryPreview": "fence-library/preview.png",
   "meshPacks": {
@@ -321,8 +321,8 @@
   "mergedMirrors": {
     "assets-moscow-style-20261024-r14/tileset.json": {
       "yandex": {
-        "label": "Яндекс Cloud · пробное",
-        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/moscow-r14-mirror-20261107/model.glb.gz"
+        "label": "Яндекс Cloud",
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-style-20261024-r14/delivery-20261107-v1/model.glb.gz"
       }
     }
   }

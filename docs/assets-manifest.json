@@ -1,8 +1,8 @@
 {
   "version": 1,
   "release": "20261027",
-  "bucket": "nuray-scenes",
-  "baseURL": "https://nuray-scenes.s3.cloud.ru/",
+  "bucket": "nuray-assets-niemandx",
+  "baseURL": "https://storage.yandexcloud.net/nuray-assets-niemandx/",
   "files": [
     {
       "path": "assets-moscow-style-20261024-r14/cemetery-material-proof.json",
