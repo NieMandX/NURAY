@@ -14,7 +14,7 @@ def verify(config, require_cache=False):
     results = []
     for catalog, delivery in config.get('assetDelivery', {}).items():
         base = urljoin(config['assetBase'], catalog)
-        for kind in ('catalog', 'validation', 'merged'):
+        for kind in ('catalog', 'validation', 'merged', 'mergedBuffer'):
             spec = delivery.get(kind)
             if not spec:
                 continue

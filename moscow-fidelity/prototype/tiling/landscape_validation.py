@@ -12,6 +12,53 @@ from line_coverage import side_lines as projected_side_lines,uncovered_linework
 from spatial_mask import SpatialMask
 from canonical_parent import load_parent
 from pedestrian_materials import is_paving,paving_material_ids
+from validation_geometry import footprint_unions
+
+
+def cached_footprints(root,name,groups):
+    """Cache exact union geometry, never a validation verdict or tolerance."""
+    folder=root/'.validation-cache';folder.mkdir(exist_ok=True)
+    return footprint_unions(groups,sh.union_all,0,folder/(name+'-union-v1.pkl'))
+
+
+def verify_preserved_non_lawn(before,before_bytes,after,after_bytes,green_ids,*,batch_size=100000):
+    """Check untouched packed corners independently of the landscape writer."""
+    if batch_size<1:raise ValueError('Positive audit batch size required')
+    lawn_seen=False
+    def corners(data,vertex_bytes,excluded,source=False):
+        nonlocal lawn_seen
+        words=np.frombuffer(data,'<u4',count=vertex_bytes//4).reshape(-1,8)
+        indices=np.frombuffer(data,'<u4',offset=vertex_bytes).reshape(-1,3)
+        for start in range(0,len(indices),batch_size):
+            values=words[indices[start:start+batch_size]]
+            material=values[:,:,6]&0x7fffffff
+            assert np.all(material==material[:,0,None]), 'Mixed material within a ground triangle'
+            if source:lawn_seen|=bool(np.any(material[:,0]==2))
+            retained=values[~np.isin(material[:,0],excluded)]
+            if len(retained):yield retained
+    left=iter(corners(before,before_bytes,[2],True));right=iter(corners(after,after_bytes,list(green_ids)))
+    a=next(left,None);b=next(right,None);ai=bi=total=0
+    while a is not None and b is not None:
+        count=min(len(a)-ai,len(b)-bi)
+        assert np.array_equal(a[ai:ai+count],b[bi:bi+count]), 'Landscape changed non-lawn corners'
+        total+=count;ai+=count;bi+=count
+        if ai==len(a):a=next(left,None);ai=0
+        if bi==len(b):b=next(right,None);bi=0
+    assert lawn_seen, 'Green revision has no source lawn'
+    assert a is None and b is None, 'Landscape changed non-lawn corners'
+    return total
+
+
+def terrain_height_error(points,planes,tree,expected,*,batch_size=100000):
+    """Audit every point with the original DEM tree and exact arithmetic."""
+    if batch_size<1:raise ValueError('Positive audit batch size required')
+    error=0.
+    for start in range(0,len(points),batch_size):
+        batch=points[start:start+batch_size]
+        ids=tree.nearest(sh.points(batch[:,:2]))
+        base=(planes[ids,:2]*batch[:,:2]).sum(1)+planes[ids,2]
+        error=float(np.maximum(error,np.abs(batch[:,2]-base-expected).max(initial=0)))
+    return error
 
 def changed_since_base(revision):
     if not revision:return set()
@@ -46,8 +93,8 @@ def verify_revision(root,city,manifest):
         if r['reason']=='retaining-guard':
             assert c['name'] in {'inferred-walls','tunnel_wall_top','tunnel_wall_bottom','tunnel_wall_side','portal_guard_top','portal_guard_bottom','portal_guard_side'}
         elif r['reason']=='green-partition':
-            assert c['name']=='land';u=np.frombuffer(before[:c['vertexBytes']],'<u4').reshape(-1,8)
-            assert np.all((u[:,6]&0x7fffffff)==2)
+            assert c['name']=='land'
+            verify_preserved_non_lawn(before,c['vertexBytes'],after,new['vertexBytes'],set(city['landscape']['materials'].values()))
         elif r['reason']=='rail-material':
             assert c['name'] in {'roadbed_overpass','roadbed_tunnel_descent','roadbed_tunnel'}
             u=np.frombuffer(before[:c['vertexBytes']],'<u4').reshape(-1,8).copy()
@@ -72,6 +119,7 @@ def verify_revision(root,city,manifest):
                 hits=rt.query(sh.Point(centre[j,:2]),predicate='covered_by')
                 assert any(abs(np.r_[centre[j,:2],1]@np.asarray(rr[k]['heightPlane'])-centre[j,2])<.003 for k in hits)
         else:raise AssertionError(('Unexpected revision scope',r))
+    before=after=None  # Release the final (possibly multi-GB) preserved chunk.
     instance_changes={r['id']:r for r in revision['instanceChanges']}
     assert len(instance_changes)==len(revision['instanceChanges'])
     for before,after in zip(old['instances'],manifest['instances']):
@@ -79,23 +127,25 @@ def verify_revision(root,city,manifest):
         r=instance_changes[before['id']];expected={**before,'matrix':list(before['matrix'])};expected['matrix'][7]+=GREEN_RAISE
         assert expected==after and before['matrix']==r['before'] and after['matrix']==r['after']
     assert len(manifest['instances'])-len(old['instances'])==len(revision['newChunks'])
-    terrain=np.load(root/'canonical/terrain.npz');polys=sh.from_wkb(terrain['polygons']);tree=sh.STRtree(polys);planes=terrain['planes']
+    from terrain_store import read_terrain_arrays
+    polys,planes=read_terrain_arrays(root/'canonical/terrain.npz');tree=sh.STRtree(polys)
     terrain_error=0.;green_error=0.;guard_error=0.
     green_ids=set(city['landscape']['materials'].values())
     for c in manifest['chunks']:
         if c['id'] not in changes and c['id'] not in revision['newChunks']:continue
         print('VERIFY LANDSCAPE CHUNK',c['id'],c['name'],flush=True)
-        data=raw(root,c);v=np.frombuffer(data[:c['vertexBytes']],'<f4').reshape(-1,8);u=v.view('<u4');ix=np.frombuffer(data[c['vertexBytes']:],'<u4').reshape(-1,3)
+        data=raw(root,c);v=np.frombuffer(data,'<f4',count=c['vertexBytes']//4).reshape(-1,8);u=v.view('<u4');ix=np.frombuffer(data,'<u4',offset=c['vertexBytes']).reshape(-1,3)
         world=v[:,:3][:,[0,2,1]]*[1,-1,1]+origin;mat=u[:,6]&0x7fffffff
+        green_faces=np.isin(mat[ix[:,0]],list(green_ids)) if c['name']=='land' else None
         if c['name'] in {'land','green_curb_top','pedestrian_path','railway_apron','tunnel_wall_top','portal_guard_top'}:
-            ids=tree.nearest(sh.points(world[:,:2]));base=(planes[ids,:2]*world[:,:2]).sum(1)+planes[ids,2]
+            points=world[np.unique(ix[green_faces])] if c['name']=='land' else world
             expected=.2 if c['name'] in {'land','green_curb_top'} else .1 if c['name'] in {'pedestrian_path','railway_apron'} else 1.1
-            error=float(np.abs(world[:,2]-base-expected).max())
+            error=terrain_height_error(points,planes,tree,expected)
             assert error<.003,(c['id'],c['name'],'height mismatch',error)
             if c['name'] in {'tunnel_wall_top','portal_guard_top'}:guard_error=max(guard_error,error);assert np.all(mat==6)
             else:green_error=max(green_error,error)
         if c['name']=='land':
-            assert set(mat)<=green_ids;raised.extend(sh.polygons(world[ix,:2]))
+            raised.extend(sh.polygons(world[ix[green_faces],:2]))
         if c['name']=='green_curb_top':assert np.all(mat==9);raised.extend(sh.polygons(world[ix,:2]))
         if c['name']=='pedestrian_path':assert np.all(mat==7);converted.extend(sh.polygons(world[ix,:2]))
         if c['name']=='railway_apron':assert np.all(mat==revision['railMaterial']);converted.extend(sh.polygons(world[ix,:2]))
@@ -107,7 +157,11 @@ def verify_revision(root,city,manifest):
                 assert not np.any(np.max(np.abs(ts[:,:,axis]-edge),axis=1)<.00001)
             sides=ts
     print('VERIFY LANDSCAPE COVERAGE',flush=True)
-    actual_green=sh.union_all(raised);actual_path=sh.union_all(converted)
+    footprints=cached_footprints(root,'serialized-cover',dict(green=raised,path=converted))
+    actual_green=footprints['green'];actual_path=footprints['path'];footprints=None
+    # The unions own their GEOS geometry. Millions of per-triangle witnesses
+    # are no longer read and need not coexist with subsequent source contours.
+    raised=converted=None
     expected_green=sh.geometry.shape(city['landscape']['raisedGeometry'])
     expected_path=sh.geometry.shape(city['landscape']['convertedGeometry'])
     from railway_landscape import railway_reserve,green_intrusion,low_slab
@@ -128,17 +182,19 @@ def verify_revision(root,city,manifest):
     # the preserved, serialized paving triangles in the coverage witness.
     existing_paving=[]
     for c in manifest['chunks']:
-        if c['id'] not in preserved or c['name']!='land':continue
-        data=raw(root,c);v=np.frombuffer(data[:c['vertexBytes']],'<f4').reshape(-1,8)
-        ix=np.frombuffer(data[c['vertexBytes']:],'<u4').reshape(-1,3)
+        if c['name']!='land' or (c['id'] not in preserved and changes.get(c['id'],{}).get('reason')!='green-partition'):continue
+        data=raw(root,c);v=np.frombuffer(data,'<f4',count=c['vertexBytes']//4).reshape(-1,8)
+        ix=np.frombuffer(data,'<u4',offset=c['vertexBytes']).reshape(-1,3)
         selected=np.isin(v.view('<u4')[ix[:,0],6]&0x7fffffff,list(paving_material_ids(manifest)))
         if selected.any():
             world=v[:,:3][:,[0,2,1]]*[1,-1,1]+origin
             existing_paving.extend(sh.polygons(world[ix[selected],:2]))
-    all_paving=sh.union_all([actual_path,*existing_paving])
+    all_paving=cached_footprints(root,'serialized-paving',dict(paving=[actual_path,*existing_paving]))['paving']
+    existing_paving=data=v=ix=world=None
     paving_check=paving_coverage(expected_path,all_paving)
     missing_paving=paving_check['uncoveredPavingAreaM2']
     assert paving_check['passed'],('Missing serialized paving',paving_check)
+    all_paving=None
     overlap=actual_green.intersection(actual_path)
     # Float32 triangle clipping can accumulate a nonzero total area along many
     # kilometres of perimeter. Bound its WIDTH at the shared boundary instead
@@ -153,11 +209,15 @@ def verify_revision(root,city,manifest):
     physical=expected_green.boundary.difference(sh.box(*city['boundsMSK']).boundary.buffer(.0001))
     missing_sides=uncovered_linework(physical,side_lines,.001).length
     assert missing_sides<.01,('Missing green curb side',missing_sides)
+    sides=side_lines=ts=None
     # Coverage test is independent of source path-width synthesis: every retained
     # ground centreline inside the original lawn must be in serialized paving.
     print('VERIFY LANDSCAPE SOURCE PATHS',flush=True)
-    source_green=sh.union_all([sh.geometry.shape(s['geometry']) for s in parent_city['surfaces'] if s['kind']=='land' and s['material']==2])
-    missing=0.;checked=0;old_walk=None
+    source_green=cached_footprints(root,'source-green',dict(green=[sh.geometry.shape(s['geometry'])
+        for s in parent_city['surfaces'] if s['kind']=='land' and s['material']==2]))['green']
+    from landscape_source_paths import SourceGreenPrecision
+    source_precision=SourceGreenPrecision(source_green,actual_green,origin)
+    missing=0.;checked=0;old_walk=None;path_failures=[]
     green_mask=SpatialMask(source_green);path_mask=SpatialMask(actual_path.buffer(.003))
     for f in city['features']:
         if not ground_path(f):continue
@@ -165,21 +225,36 @@ def verify_revision(root,city,manifest):
         line=line.intersection(green_mask.near(line))
         if line.length<.001:continue
         path_cover=path_mask.near(line)
-        absent=line.difference(path_cover).length
+        absent_geometry=line.difference(path_cover)
+        absent=absent_geometry.length
         # Lines already represented by detailed paving were clipped before
         # synthesis; allow their original 5 cm boundary tolerance explicitly.
         if absent>.001:
             if old_walk is None:
-                old_walk=SpatialMask(sh.union_all([sh.geometry.shape(s['geometry']) for s in parent_city['surfaces'] if is_paving(s)]).buffer(.051))
-            absent=line.difference(path_cover).difference(old_walk.near(line)).length
-        assert absent<.01,(f['id'],'pedestrian line still covered by grass',absent)
+                old_walk=SpatialMask(cached_footprints(root,'source-paving',dict(paving=[sh.geometry.shape(s['geometry'])
+                    for s in parent_city['surfaces'] if is_paving(s)]))['paving'].buffer(.051))
+            absent_geometry=absent_geometry.difference(old_walk.near(line))
+            absent=absent_geometry.length
+        if absent>=.01:
+            absent_geometry=source_precision.filter(absent_geometry)
+            absent=absent_geometry.length
+        if absent>=.01:
+            path_failures.append(dict(source=f['id'],uncoveredLengthM=absent,
+                uncoveredGeometry=sh.geometry.mapping(absent_geometry)))
         missing+=absent;checked+=1
+    # Report every failing witness in one audit, without relaxing any check.
+    # This avoids rereading the whole city merely to discover the next defect.
+    if path_failures:
+        (root/'landscape-path-failures.json').write_text(json.dumps(dict(
+            passed=False,checked=checked,failures=path_failures),separators=(',',':')))
+    assert not path_failures,('pedestrian lines still covered by grass',len(path_failures),path_failures[:3])
     assert rail_proof==revision['railProof']
     assert manifest['materials'][revision['railMaterial']]['color']==RAIL_COLOR
     assert all(g['guardAboveLandM']==1. for g in city['tunnelWalls']['groups'])
-    header_check=verify_headers(root,city,manifest)
+    header_check=verify_headers(root,city,manifest,terrain=(polys,planes,tree))
     return dict(passed=True,type='landscape',preservedChunks=len(preserved),changedChunks=len(changes),newChunks=len(revision['newChunks']),
         sourcePathsChecked=checked,uncoveredPathLengthM=missing,uncoveredGreenBorderM=missing_sides,
+        collapsedSourceGreen=source_precision.report(),
         greenPathInteriorOverlapM2=interior_overlap,uncoveredPavingAreaM2=missing_paving,pavingCoverage=paving_check,
         raisedGreenInRailwayApproachM2=rail_green['resolvedOverlapM2'],railwayApproachBoundary=rail_green,
         raisedGreenOnLowRailDeckM2=low_green['resolvedOverlapM2'],lowRailDeckBoundary=low_green,railBridgeSlabsChecked=len(bridge_ids),

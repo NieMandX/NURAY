@@ -61,11 +61,11 @@ def recover(rows,features):
         recoveredAreaM2=claimed.area,recoveredGeometry=sh.geometry.mapping(claimed),
         sourceOwners=[owner for owner,_ in patches])
 
-def protected_ground(city):
+def protected_ground(city, *, walking=None):
     from passage_space import walking_reserve
     from railway_landscape import railway_reserve
     protected=[]
-    protected.append(walking_reserve(city['gradeConnections']))
+    protected.append(walking_reserve(city['gradeConnections']) if walking is None else walking)
     protected.append(railway_reserve(city))
     for g in city['tunnelWalls']['groups']:
         protected.extend(sh.geometry.shape(g[k]['bandGeometry']).buffer(.15) if k else sh.geometry.shape(g['bandGeometry']).buffer(.15)

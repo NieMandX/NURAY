@@ -9,6 +9,7 @@ test('Moscow preset survives hosting prefixes without changing Petersburg',()=>{
  assert.equal(catalogKey('https://test/a/assets-hosek-check/tileset.json'),'assets-hosek-check/tileset.json');
 });
 test('fresh Moscow visit preserves the approved complete optical and rendering state',()=>{
+ assert.equal(viewerDefaults('assets-moscow-10km-20261108-r1/tileset.json'),MOSCOW_DEFAULTS);
  assert.deepEqual(cleanWaterSettings({},MOSCOW_DEFAULTS.water),MOSCOW_DEFAULTS.water);
  assert.equal(MOSCOW_DEFAULTS.display.engine,'raster');assert.equal(MOSCOW_DEFAULTS.display.renderer,'webgpu');assert.equal(MOSCOW_DEFAULTS.display.samples,64);
  assert.equal(MOSCOW_DEFAULTS.water.hwExposure,3.3);assert.equal(MOSCOW_DEFAULTS.water.attenuationDistance,15.7);

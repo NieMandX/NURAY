@@ -71,7 +71,13 @@ class Mesh:
             a=i*2*math.pi/n;b=(i+1)*2*math.pi/n
             pts=[[q*math.cos(t),yy,q*math.sin(t)] for yy in [y,y+h] for q in [r,inner] for t in [a,b]]
             for ids in [(4,5,1,0),(3,7,6,2),(6,7,5,4),(1,3,2,0)]:self.quad(np.asarray(pts)[list(ids)],mat)
-    def arrays(self):return np.asarray(self.faces,float),np.asarray(self.materials,np.uint32)
+    def arrays(self,*,consume=False):
+        faces=np.asarray(self.faces,float);materials=np.asarray(self.materials,np.uint32)
+        if consume:
+            # These are independent dense arrays. Large fence meshes must not
+            # retain millions of per-face Python views during packing too.
+            self.faces.clear();self.materials.clear()
+        return faces,materials
 
 def bench(m,back=True):
     for x in [-.7,.7]:

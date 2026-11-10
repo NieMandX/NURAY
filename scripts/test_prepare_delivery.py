@@ -1,12 +1,31 @@
 import gzip
 import hashlib
+import json
+import contextlib
+import io
 import tempfile
 import unittest
 from pathlib import Path
-from prepare_delivery import runtime_catalog, validation_summary, compressed_file
+from prepare_delivery import runtime_catalog, validation_summary, compressed_file, prepare
 
 
 class DeliveryTests(unittest.TestCase):
+    def test_external_merged_scene_preserves_header_and_binary(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d); source = root / 'scene'; (source / 'merged').mkdir(parents=True)
+            (source / 'tileset.json').write_text('{"tiles":[]}')
+            (source / 'merged/metadata.json').write_text('{"asset":{"file":"model.gltf"}}')
+            header = b'{"buffers":[{"uri":"model.bin","byteLength":8}]}'
+            binary = b'geometry'
+            (source / 'merged/model.gltf').write_bytes(header)
+            (source / 'merged/model.bin').write_bytes(binary)
+            with contextlib.redirect_stdout(io.StringIO()):
+                result = prepare(source, root / 'delivery')
+            for key, expected in [('merged', header), ('mergedBuffer', binary)]:
+                spec = result[key]
+                self.assertEqual(gzip.decompress((root / spec['url']).read_bytes()), expected)
+                self.assertEqual(spec['decodedSha256'], hashlib.sha256(expected).hexdigest())
+
     def test_preserves_runtime_geometry_and_original_provenance(self):
         original = {'geometryRevision': {'previous': 'large history'}, 'sourceChunks': [1, 2],
                     'tiles': [{'instances': [{'id': 42, 'transform': [1, 2, 3]}]}],

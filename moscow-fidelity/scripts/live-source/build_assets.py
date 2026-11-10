@@ -25,7 +25,9 @@ def main():
     resume=parser.add_mutually_exclusive_group()
     resume.add_argument('--resume-packed',choices=('rail','street'),help='Resume at independent verification of an already packed artifact from this same capture')
     resume.add_argument('--resume-objects',action='store_true',help='Reuse the completed object stage from this same capture and regenerate only the railway stage onward')
+    parser.add_argument('--rail-input',type=Path,help='Separately repaired initial rail artifact; requires --resume-packed rail')
     args=parser.parse_args()
+    if args.rail_input and args.resume_packed!='rail':parser.error('--rail-input requires --resume-packed rail')
     repo=Path(__file__).resolve().parents[2]
     tiling=repo/'prototype/tiling'
     snapshot=args.snapshot.resolve();surface=args.surface.resolve();output=args.output.resolve()
@@ -40,7 +42,7 @@ def main():
         raise ValueError('Surface belongs to another source capture')
     archive_intermediate_glb(surface)
     objects=output.with_name(output.name+'-objects')
-    rail=output.with_name(output.name+'-rail')
+    rail=args.rail_input.resolve() if args.rail_input else output.with_name(output.name+'-rail')
     street=output.with_name(output.name+'-street')
     py=sys.executable;node=args.node;inventory=args.inventory.resolve()
     commands=[

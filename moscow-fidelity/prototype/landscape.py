@@ -60,7 +60,9 @@ def ground_path(f):
             and all(p.get(k, 0) == 0 for k in
                     ('db_segment_level', 'db_segment_begin_level', 'db_segment_end_level')))
 
-def plan(features, green, walk, extent, protected, precision=1e-5, rail_apron=None):
+def plan(features, green, walk, extent, protected, precision=1e-5, rail_apron=None, progress=None):
+    report=progress or (lambda phase:None)
+    report('normalize footprints')
     green=area_only(green,precision);walk=area_only(walk,precision)
     protected=area_only(protected,precision);extent=area_only(extent,precision)
     rail_apron=area_only(rail_apron if rail_apron is not None else sh.Polygon(),precision)
@@ -69,6 +71,7 @@ def plan(features, green, walk, extent, protected, precision=1e-5, rail_apron=No
     # Old independently intersected terrain cells contain a few micrometre
     # slits. A 15 cm border around such a slit creates a very visible false
     # concrete stripe. Close only sub-0.1 mm cracks, BEFORE real paths/cuts.
+    report('close numerical cracks')
     closed=green.buffer(NUMERIC_CRACK_WIDTH/2,join_style='mitre',mitre_limit=2).buffer(
         -NUMERIC_CRACK_WIDTH/2,join_style='mitre',mitre_limit=2)
     green=area_only(sh.union_all([green,closed]).intersection(extent).difference(walk),precision)
@@ -76,7 +79,9 @@ def plan(features, green, walk, extent, protected, precision=1e-5, rail_apron=No
     paths=[]; source=[]; skipped=Counter()
     # Existing detailed paving polygons have precedence over guessed widths.
     covered_walk=walk.buffer(.05)
+    report('index source paving and green cover')
     walk_mask=SpatialMask(covered_walk);green_mask=SpatialMask(green)
+    report('source pedestrian ribbons')
     for f in features:
         if f['layer'] not in PATH_WIDTHS: continue
         if not ground_path(f):
@@ -93,17 +98,21 @@ def plan(features, green, walk, extent, protected, precision=1e-5, rail_apron=No
                            sourceLengthM=line.intersection(extent).length,
                            alreadyPavedLengthM=line.intersection(local_walk).length,
                            convertedGreenAreaM2=ribbon.intersection(green_mask.near(ribbon)).area))
+    report('unite pedestrian ribbons')
     paths=area_only(sh.union_all(paths, grid_size=precision),precision)
     cut=area_only(sh.union_all([paths, protected], grid_size=precision),precision)
     raw_raised=area_only(sh.difference(green, cut, grid_size=precision),precision)
+    report('clean raised green footprint')
     raised=physical_green(raw_raised,precision)
     discarded=area_only(raw_raised.difference(raised),precision)
     # Inset into green: edging must not consume the pedestrian clear width.
     # One union prevents internal borders between green classes/features.
+    report('inset green borders')
     band=area_only(raised.difference(raised.buffer(-GREEN_CURB_WIDTH, join_style='mitre', mitre_limit=2)),precision)
     band=physical_green(band.difference(extent.boundary.buffer(GREEN_CURB_WIDTH+precision*5)),precision)
     raised_parts=parts(raised);band_parts=parts(band)
     for g in (raised,band,cut):sh.prepare(g)
+    report('index final footprint masks')
     return dict(raised=raised,band=band,paths=paths,cut=cut,precision=precision,filled=filled,discarded=discarded,
                 raisedPredicate=ComponentMask(raised),bandPredicate=ComponentMask(band),cutPredicate=ComponentMask(cut),
                 railApron=rail_apron,railApronMask=SpatialMask(rail_apron),

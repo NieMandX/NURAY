@@ -2,12 +2,15 @@ import json,struct,hashlib
 from pathlib import Path
 import numpy as np
 from export_merged_glb import weld
+from merged_asset import read_container
 
 def validate(path):
-    with path.open('rb') as f:
-        magic,version,length=struct.unpack('<4sII',f.read(12));assert (magic,version,length)==(b'glTF',2,path.stat().st_size)
-        n,tag=struct.unpack('<I4s',f.read(8));assert tag==b'JSON';doc=json.loads(f.read(n));n,tag=struct.unpack('<I4s',f.read(8));assert tag==b'BIN\0';offset=f.tell();assert offset+n==length
-    buf=np.memmap(path,dtype='u1',mode='r',offset=offset);meta=doc['extras']['nuray'];proof=json.loads((path.parent/'validation.json').read_text())
+    path=Path(path)
+    doc,binary,offset,header_sha,total=read_container(path)
+    n=binary.stat().st_size-offset
+    assert len(doc['buffers'])==1 and doc['buffers'][0]['byteLength']<=n<=doc['buffers'][0]['byteLength']+3
+    buf=np.memmap(binary,dtype='u1',mode='r',offset=offset);meta=doc['extras']['nuray'];proof=json.loads((path.parent/'validation.json').read_text())
+    assert proof['passed'] and len(meta['draws'])==len(proof['batches'])
     for v in doc['bufferViews']:assert 0<=v.get('byteOffset',0) and v.get('byteOffset',0)+v['byteLength']<=n
     def data(i):
         v=doc['bufferViews'][i];return buf[v['byteOffset']:v['byteOffset']+v['byteLength']]
@@ -21,8 +24,14 @@ def validate(path):
             a=doc['accessors'][p['indices']];assert a['count']%3==0 and a['byteOffset']+a['count']*4<=doc['bufferViews'][a['bufferView']]['byteLength']
     for node in doc['nodes'][1:]:
         attrs=node['extensions']['EXT_mesh_gpu_instancing']['attributes'];assert len({doc['accessors'][i]['count'] for i in attrs.values()})==1
-    assert len(doc['nodes'])==proof['objects']==meta['nodes'];assert not any('uri' in b for b in doc['buffers']);assert all('bufferView' in i for i in doc['images'])
-    print('GLB STRUCTURE, EMBEDDED RESOURCES, ALL PACKED GEOMETRY HASHES AND INSTANCING PASS')
+    assert len(doc['nodes'])==proof['objects']==meta['nodes']
+    if path.suffix=='.gltf':assert doc['buffers'][0]['uri']=='model.bin'
+    else:assert not any('uri' in b for b in doc['buffers'])
+    assert all('bufferView' in i for i in doc['images'])
+    result=dict(passed=True,format=path.suffix[1:],assetBytes=total,headerSha256=header_sha,
+                geometryBatches=len(meta['draws']),objects=len(doc['nodes']),packedGeometryHashesVerified=True)
+    print('MERGED STRUCTURE, RESOURCES, ALL PACKED GEOMETRY HASHES AND INSTANCING PASS',json.dumps(result),flush=True)
+    return result
 
 if __name__=='__main__':
     import sys

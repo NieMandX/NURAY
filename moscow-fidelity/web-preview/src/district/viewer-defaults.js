@@ -43,7 +43,7 @@ export const MOSCOW_DEFAULTS=Object.freeze({
   sun:Object.freeze({date:'2026-06-21',minute:1206}),
   display:Object.freeze({...VIEWER_DEFAULTS.display,engine:'raster'}),
   scene:Object.freeze({
-    catalogs:Object.freeze(['assets-moscow-style-20261024-r14/tileset.json']),layout:'merged',
+    catalogs:Object.freeze(['assets-moscow-style-20261024-r14/tileset.json','assets-moscow-10km-20261108-r1/tileset.json']),layout:'merged',
     camera:Object.freeze({"distance": 1540.6722721722172, "pitch": 0.548, "target": [754.9159720320167, 0, -1421.4774717587673], "yaw": -3.513093750000067}),
   }),
 });

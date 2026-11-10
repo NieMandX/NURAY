@@ -40,14 +40,14 @@ def shared_interfaces(candidates, extent, precision, z_at):
         if a['kind']==b['kind']=='roadbed_flat':continue
         common=sh.intersection(a['poly'].boundary,b['poly'].boundary,grid_size=precision)
         common=common.difference(extent.boundary.buffer(precision*5))
-        accepted=[]
+        accepted=[];support=[]
         for line in parts(common,'LineString'):
             # Node at every source height patch, not only the footprint corners.
             for i in a['tree'].query(line,predicate='intersects'):
-                ap,ac,_=a['patches'][int(i)]
+                ap,ac,aid=a['patches'][int(i)]
                 edge=sh.intersection(line,ap,grid_size=precision)
                 for j in b['tree'].query(edge,predicate='intersects'):
-                    bp,bc,_=b['patches'][int(j)]
+                    bp,bc,bid=b['patches'][int(j)]
                     for piece in parts(sh.intersection(edge,bp,grid_size=precision),'LineString'):
                         xy=np.asarray(piece.coords)[:,:2]
                         if np.max(abs(z_at(ac,xy)-z_at(bc,xy)))>ENTRY_HEIGHT_TOLERANCE:continue
@@ -61,19 +61,30 @@ def shared_interfaces(candidates, extent, precision, z_at):
                                    b['poly'].covers(left),b['poly'].covers(right))
                             if sides in [(True,False,False,True),(False,True,True,False)]:
                                 accepted.append(LineString([aa,bb]))
+                                support.append(((ac,aid),(bc,bid)))
         merged=sh.line_merge(union(accepted,precision)) if accepted else LineString()
+        support_tree=sh.STRtree(accepted)
         for line in parts(merged,'LineString'):
             if line.length<.25:continue
+            # Keep the height patches that actually established this shared
+            # edge. A nearby patch can touch its endpoint without continuing
+            # the mouth, and can have a different height (e.g. a tunnel flank).
+            # Re-querying every polygon around a vertex conflates those surfaces.
+            spans=[int(i) for i in support_tree.query(line,predicate='intersects')
+                   if accepted[int(i)].intersection(line).length>precision*5]
             heights=[];parents=[]
-            for group in [a,b]:
+            for side,group in enumerate([a,b]):
                 hs=[];ids=set()
                 for xy in np.asarray(line.coords)[:,:2]:
-                    indices=group['tree'].query(Point(xy).buffer(precision*5),predicate='intersects')
-                    vals=[float(z_at(group['patches'][int(i)][1],xy)) for i in indices]
+                    point=Point(xy)
+                    patches=[support[i][side] for i in spans if accepted[i].distance(point)<=precision*5]
+                    vals=[float(z_at(c,xy)) for c,owner in patches]
                     if not vals or max(vals)-min(vals)>ENTRY_HEIGHT_TOLERANCE:
-                        raise ValueError('Ambiguous source heights at road interface')
+                        raise ValueError(('Ambiguous source heights at road interface',
+                            dict(kind=group['kind'],level=group['level'],point=xy.tolist(),
+                                heights=vals,parents=[owner for c,owner in patches])))
                     hs.append(sum(vals)/len(vals))
-                    ids.update(group['patches'][int(i)][2] for i in indices)
+                    ids.update(owner for c,owner in patches)
                 heights.append(hs);parents.append(sorted(ids))
             height=(np.asarray(heights[0])+heights[1])/2
             result.append(dict(id=f'road-interface:{len(result)}',mouthGeometry=mapping(line),

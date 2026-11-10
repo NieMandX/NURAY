@@ -69,6 +69,7 @@ def volume_cells(poly,height,origin,lower=LOWER,upper=UPPER):
 
 def volumes(city,dem,demtree):
     ground,deep,components=inventory(city);result=[]
+    source_by_id={r['id']:r for r in source_candidates(city['features'],sh.box(*city['boundsMSK']))} if deep else {}
     floors=[s for s in city['surfaces'] if s['kind'] in ('roadbed_tunnel_descent','roadbed_tunnel')]
     polys=[shape(s['geometry']) for s in floors];tree=sh.STRtree(polys)
     all_descents=sh.union_all([r['poly'] for r in components])
@@ -84,6 +85,12 @@ def volumes(city,dem,demtree):
         line=shape(r['mouthGeometry']);line=substring(line,SIDE_INSET,line.length-SIDE_INSET)
         gate=line.buffer(APPROACH_DEPTH,cap_style='flat')
         parents={p for e in r['ends'] for p in e['parents']}
+        if r in deep:
+            # A bend or taper at the portal need not fill a rectangular strip.
+            # Derive its lateral boundary from immutable source slabs, never
+            # from the generated floors whose coverage we are about to test.
+            source=sh.union_all([source_by_id[p]['poly'] for p in parents],grid_size=PRECISION)
+            gate=shape(r['mouthGeometry']).buffer(APPROACH_DEPTH,cap_style='flat').intersection(source.buffer(-SIDE_INSET))
         cells,covered=floor_cells(gate,parents)
         if r in ground:
             outside=gate.difference(all_descents)

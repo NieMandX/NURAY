@@ -1,6 +1,7 @@
 import unittest,copy,json,tempfile,hashlib
 from pathlib import Path
 from prepare_passage_clearance import already_clear,preserve_clear_version
+from canonical_store import load_canonical
 
 
 class PassageNoop(unittest.TestCase):
@@ -52,7 +53,7 @@ class PassageNoop(unittest.TestCase):
             self.assertEqual((base/'canonical/urban-model.json').read_bytes(),source)
             self.assertEqual((out/'canonical/full/mesh.bin.gz').read_bytes(),mesh)
             self.assertEqual((out/'canonical/full/scene.json').read_bytes(),(base/'canonical/full/scene.json').read_bytes())
-            saved=json.loads((out/'canonical/urban-model.json').read_text())
+            saved=load_canonical(out/'canonical/urban-model.json')
             self.assertEqual(saved['geometryRevision']['parentValidationSha256'],hashlib.sha256(parent_proof).hexdigest())
             self.assertEqual(saved['geometryRevision']['changedChunks'],[])
             self.assertEqual(saved['geometryRevision']['previousRevision'],{'type':'prior'})

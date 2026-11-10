@@ -1,5 +1,5 @@
 import {WATER_CONTROLS,WATER_COLORS,cleanWaterSettings} from '../../src/district/ocean/settings.js?v=moscow-preset-2';
-import {viewerDefaults,catalogKey} from '../../src/district/viewer-defaults.js?v=moscow-preset-2';
+import {viewerDefaults,catalogKey} from '../../src/district/viewer-defaults.js?v=moscow-10km-1';
 export function installWaterPanel(renderer,catalog,onChange){
  // A new approved baseline must not be masked by old experimental browser settings.
  // Later edits are still remembered; earlier keys are retained, not deleted.

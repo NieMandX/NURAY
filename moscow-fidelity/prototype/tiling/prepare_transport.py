@@ -4,7 +4,7 @@ The canonical city can exceed V8's single-string limit. Mesh packing needs only
 region metadata; the full provenance registry is serialized with Python's
 incremental JSON encoder, without a giant intermediate JSON string.
 """
-import gzip,json,sys,os
+import gzip,json,sys,os,gc
 from pathlib import Path
 from canonical_store import load_canonical,dump_compact
 
@@ -12,12 +12,15 @@ def dump_registry(registry, stream, batch_size=4096):
     """A batch is a storage operation only, never a geometry cut."""
     dump_compact(registry,stream,batch_size)
 
-def prepare(root):
+def prepare(root,*,city=None,manifest=None,report=None):
     root=Path(root)
-    city=load_canonical(root/'canonical/urban-model.json')
-    with (root/'canonical/validation.json').open() as f:report=json.load(f)
+    if city is None:city=load_canonical(root/'canonical/urban-model.json')
+    gc.freeze()  # Retained acyclic registry; avoid rescanning it for each derived row.
+    if report is None:
+        with (root/'canonical/validation.json').open() as f:report=json.load(f)
     if not report['passed']:raise ValueError('Canonical validation failed')
-    with (root/'canonical/full/scene.json').open() as f:manifest=json.load(f)
+    if manifest is None:
+        with (root/'canonical/full/scene.json').open() as f:manifest=json.load(f)
     sources=[]
     for c in manifest['chunks']:
         row={k:c[k] for k in ('id','name','triangles')}

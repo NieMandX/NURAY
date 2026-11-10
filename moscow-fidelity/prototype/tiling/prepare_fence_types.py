@@ -20,6 +20,22 @@ def profile_ground(ground, profile, station):
     return rounded_ground_contact(ground,q,np.sqrt(2.)*16*np.spacing(scale),tuple(profile['ground']))
 
 
+def verify_mesh(raw, chunk, materials, *, batch_size=250_000):
+    """Check every fence face without expanding the whole city into float64."""
+    assert batch_size>0
+    words=np.frombuffer(raw,'<u4',count=chunk['vertexBytes']//4).reshape(-1,8)
+    indices=np.frombuffer(raw,'<u4',offset=chunk['vertexBytes']).reshape(-1,3)
+    for start in range(0,len(words),batch_size):
+        assert np.isin(words[start:start+batch_size,6]&0x7fffffff,materials).all()
+    for start in range(0,len(indices),batch_size):
+        ix=indices[start:start+batch_size]
+        p=words.view('<f4')[ix,:3].astype(float)
+        n=np.cross(p[:,1]-p[:,0],p[:,2]-p[:,0])
+        valid=np.linalg.norm(n,axis=1)>1e-9
+        normals=decode_normals(words[ix[valid,0],3])
+        assert np.all(np.sum(n[valid]*normals,axis=1)>0)
+
+
 def build(base,out,inventory):
     assert not out.exists() and base.parent==out.parent
     proof=json.loads((base/'validation.json').read_text());assert proof['passed']
@@ -28,6 +44,9 @@ def build(base,out,inventory):
     report=json.loads((base/'canonical/validation.json').read_text());catalog=json.loads(inventory.read_text())
     rules=[r for r in catalog['sourceRulesByLayer']['Fence'] if r['type']=='model' and r['style'].get('visibility','visible')=='visible']
     records=json.loads(gzip.decompress((base/'canonical/street-source-evidence.json.gz').read_bytes()))['records']
+    # All retained JSON is acyclic and live for this one-shot build, including
+    # the large validation report and source records, not just the city.
+    gc.freeze()
     ground=SurfaceSampler(base,scene,GROUND_NAMES);mesh,objects,account,views,stats=build_fences(records,city,ground,rules)
     out.mkdir()
     for name in ['canonical','textures','library']:
@@ -38,9 +57,11 @@ def build(base,out,inventory):
         scene['materials'].extend(EXTRA_MATERIALS)
     else:assert [scene['materials'][i] for i in layer['materials'][9:]]==EXTRA_MATERIALS
     chunks=[c for c in scene['chunks'] if c['name']=='street-fences'];assert len(chunks)==1
-    chunk=chunks[0];t,m=mesh.arrays();ox,oy,_=city['originMSK'];b=city['boundsMSK']
+    chunk=chunks[0];t,m=mesh.arrays(consume=True);ox,oy,_=city['originMSK'];b=city['boundsMSK']
+    del mesh,ground
     t,m=clip_triangles(t,m,[b[0]-ox,oy-b[3],b[2]-ox,oy-b[1]])
     meta=pack(t,np.array(layer['materials'])[m],out/'canonical/full'/Path(chunk['file']).name);assert meta
+    del t,m
     chunk.update(meta)
     layer['objects']=[o for o in layer['objects'] if o['layer']!='Fence']+objects
     ids={r['sourceRecordId'] for r in records if r['layer']=='Fence'}
@@ -55,7 +76,7 @@ def build(base,out,inventory):
         changedChunks=[chunk['id']],sourceRulesSha256=digest(out/'canonical/fence-source-rules.json'))
     city['geometryRevision']=revision;report['geometryRevision']=revision
     refresh_stats(scene,report,out);save(out/'canonical/full/scene.json',scene)
-    export_glb(scene,out/'canonical/full');report['export']['glbBytes']=(out/'canonical/full/model.glb').stat().st_size
+    report['export']['glbBytes']=export_glb(scene,out/'canonical/full')
     save_canonical(out/'canonical/urban-model.json',city);save(out/'canonical/validation.json',report);save(out/'street-objects.json',layer)
     print('FENCES',json.dumps(stats),flush=True)
 
@@ -84,9 +105,13 @@ def verify_revision(root,city,scene):
     rules=json.loads((root/'canonical/fence-source-rules.json').read_text())['rules']
     records={r['sourceRecordId']:r for r in json.loads(gzip.decompress((root/'canonical/street-source-evidence.json.gz').read_bytes()))['records']}
     assert len(b['accounting'])==len(records)==len({r['sourceRecordId'] for r in b['accounting']})
+    gc.freeze()
     ground=SurfaceSampler(root,scene,GROUND_NAMES);checks=0
+    verified_fences=0
     for o in b['objects']:
         if o['layer']!='Fence':continue
+        if verified_fences%500==0:print('VERIFY FENCES',verified_fences,'/',b['fences']['stats']['placed'],flush=True)
+        verified_fences+=1
         r=records[o['sourceRecordId']]
         assert o['source']==r['source'] and o['sourceCoordinates']==r['coordinatesMSK']
         assert o['classification']==resolve(r,rules)
@@ -101,10 +126,7 @@ def verify_revision(root,city,scene):
             offset=np.array(p['groundOffsetM']);assert np.linalg.norm(offset)<=.02500001
             hit=ground.ground(*(np.array(p['point'])+offset));assert hit and abs(hit['height']-p['height'])<1e-7
     c=scene['chunks'][rev['changedChunks'][0]];raw=gzip.decompress((root/'canonical/full'/Path(c['file']).name).read_bytes())
-    w=np.frombuffer(raw[:c['vertexBytes']],'<u4').reshape(-1,8);ix=np.frombuffer(raw[c['vertexBytes']:],'<u4').reshape(-1,3)
-    assert np.isin(w[:,6]&0x7fffffff,b['materials']).all()
-    p=w.view('<f4')[ix,:3].astype(float);n=np.cross(p[:,1]-p[:,0],p[:,2]-p[:,0]);valid=np.linalg.norm(n,axis=1)>1e-9
-    assert np.all(np.sum(n[valid]*decode_normals(w[:,3])[ix[valid,0]],axis=1)>0)
+    verify_mesh(raw,c,b['materials'])
     assert b['fences']['policy']==POLICY
     assert len([o for o in b['objects'] if o['layer']=='Fence'])==b['fences']['stats']['placed']
     return dict(passed=True,type=rev['type'],**b['fences']['stats'],groundProfileChecks=checks,unrelatedGeometryUnchanged=True,inherited=proof['geometryRevision'])

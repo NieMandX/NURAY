@@ -16,13 +16,40 @@ from railway_surfaces import confirmed_owners,RAIL_COLOR
 from tunnel_walls import build as build_walls
 from green_insets import protected_ground
 from railway_landscape import railway_reserve
-from spatial_mask import SpatialMask
+from spatial_mask import SpatialMask,intersecting_components
 from pedestrian_materials import is_paving
 from object_geometry import pack,export_glb,decode_normals
 from canonical_store import load_canonical, save_canonical, copy_asset
 
 WALLS={'tunnel_wall_top','tunnel_wall_bottom','tunnel_wall_side','inferred-walls',
        'portal_guard_top','portal_guard_bottom','portal_guard_side'}
+
+def lawn_remainder(data,vertex_bytes):
+    """Return the untouched non-lawn triangles, or None for a non-lawn batch."""
+    words=np.frombuffer(data[:vertex_bytes],'<u4').reshape(-1,8)
+    ix=np.frombuffer(data[vertex_bytes:],'<u4').reshape(-1,3)
+    material=words[ix[:,0],6]&0x7fffffff
+    lawn=material==2
+    if not lawn.any():return None
+    assert np.all((words[ix,6]&0x7fffffff)==material[:,None])
+    return words[ix[~lawn]]
+
+
+def append_unchanged_ground(path,chunk,triangles):
+    """Preserve every packed attribute when a grass batch also holds paving."""
+    if not len(triangles):return
+    data=gzip.decompress(path.read_bytes());size=chunk['vertexBytes'];count=chunk['vertexCount']
+    extra=np.asarray(triangles,dtype='<u4').reshape(-1,8)
+    ix=np.arange(count,count+len(extra),dtype='<u4')
+    temporary=path.with_suffix(path.suffix+'.tmp')
+    with gzip.GzipFile(filename=str(temporary),mode='wb',mtime=0,compresslevel=6) as f:
+        f.write(data[:size]);f.write(extra.tobytes());f.write(data[size:]);f.write(ix.tobytes())
+    temporary.replace(path)
+    points=extra.view('<f4')[:,:3]
+    chunk.update(vertexBytes=size+extra.nbytes,vertexCount=count+len(extra),
+        triangles=chunk['triangles']+len(triangles),bounds=dict(
+            min=np.minimum(chunk['bounds']['min'],points.min(0)).tolist(),
+            max=np.maximum(chunk['bounds']['max'],points.max(0)).tolist()))
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--base',type=Path,required=True);ap.add_argument('--output',type=Path,required=True)
@@ -39,25 +66,52 @@ def main():
     copy_support_assets(args.base,args.output)
     terrain=args.base/'canonical/terrain.npz'
     manifest=json.loads((folder/'scene.json').read_text());old_count=len(manifest['chunks']);origin=np.asarray(city['originMSK'])
-    cache=np.load(terrain);assert np.array_equal(cache['bounds'],city['boundsMSK'])
-    dem=list(zip(sh.from_wkb(cache['polygons']),cache['planes']));tree=sh.STRtree([p for p,c in dem]);extent=sh.box(*city['boundsMSK'])
-    rows=[{**s,'poly':sh.geometry.shape(s['geometry']),'plane':np.asarray(s['heightPlane'])} for s in city['surfaces']]
+    with np.load(terrain) as cache:assert np.array_equal(cache['bounds'],city['boundsMSK'])
+    from terrain_store import read_terrain
+    dem=read_terrain(terrain);tree=sh.STRtree([p for p,c in dem]);extent=sh.box(*city['boundsMSK'])
+    # Only these classes participate in landscape masks, retaining walls and
+    # railway restyling. Keep all other canonical records verbatim instead of
+    # duplicating millions of untouched polygons and dictionaries in memory.
+    rows=[{**s,'poly':sh.geometry.shape(s['geometry']),'plane':np.asarray(s['heightPlane'])}
+          for s in city['surfaces'] if s['kind'].startswith('roadbed') or s['material']==12
+          or (s['kind']=='land' and s.get('purpose')=='vegetation-cover') or is_paving(s)]
     green_rows=[r for r in rows if r['kind']=='land' and r.get('purpose')=='vegetation-cover']
     owners={f['id']:f for f in city['features']};green_ids={r['id'] for r in green_rows}
     print('LANDSCAPE INPUT',len(green_rows),'green terrain cells',flush=True)
-    green=sh.union_all([r['poly'] for r in green_rows],grid_size=1e-5)
-    walk=sh.union_all([r['poly'] for r in rows if is_paving(r)],grid_size=1e-5)
-    groups=defaultdict(list)
-    _,walls=build_walls(rows,city['features'],dem,tree,groups,extent,1e-5,city['gradeConnections'],city['sourceStyle'],triangulate,z_at,plane)
-    assert walls['passed'];print('GUARDS REBUILT',walls['ruleVersion'],flush=True)
-    reserve=protected_ground(dict(city,tunnelWalls=walls))
-    layout,landscape=plan(city['features'],green,walk,extent,reserve,rail_apron=railway_reserve(city))
+    from landscape_checkpoint import signature,load as load_layout,save as save_layout
+    layout_cache=args.output/'canonical/landscape-layout.pkl.gz'
+    layout_key=signature(args.base,Path(__file__).resolve().parents[1])
+    cached=load_layout(layout_cache,layout_key)
+    if cached is not None:
+        green,walk,groups,walls,layout,landscape=cached
+        print('LANDSCAPE GLOBAL LAYOUT RESTORED',flush=True)
+    else:
+        print('LANDSCAPE UNION GREEN',flush=True)
+        green=sh.union_all([r['poly'] for r in green_rows],grid_size=1e-5)
+        print('LANDSCAPE UNION PAVING',flush=True)
+        walk=sh.union_all([r['poly'] for r in rows if is_paving(r)],grid_size=1e-5)
+        groups=defaultdict(list)
+        _,walls=build_walls(rows,city['features'],dem,tree,groups,extent,1e-5,city['gradeConnections'],city['sourceStyle'],triangulate,z_at,plane)
+        assert walls['passed'];print('GUARDS REBUILT',walls['ruleVersion'],flush=True)
+        reserve=protected_ground(dict(city,tunnelWalls=walls))
+        layout,landscape=plan(city['features'],green,walk,extent,reserve,rail_apron=railway_reserve(city),
+            progress=lambda phase:print('LANDSCAPE PLAN',phase,flush=True))
+        try:
+            cache_proof=save_layout(layout_cache,layout_key,(green,walk,groups,walls,layout,landscape))
+            print('LANDSCAPE GLOBAL LAYOUT SAVED',cache_proof['bytes'],'bytes',flush=True)
+        except ValueError as error:
+            # This cache is optional. Keep the original in-memory geometry if
+            # GEOS cannot roundtrip its exact precision/coordinate encoding.
+            print('LANDSCAPE CACHE NOT USED',str(error),flush=True)
     print('NUMERIC GREEN CLEANUP',landscape['numericCleanup'],flush=True)
     # Fill the sub-grid repairs on the same terrain, with source ownership and
     # the neighbouring green class retained. This is not a floating overlay.
     green_tree=sh.STRtree([r['poly'] for r in green_rows]);original_green=list(green_rows)
     filled_mask=SpatialMask(layout['filled'])
-    for i in tree.query(layout['filled'],predicate='intersects'):
+    print('NUMERIC GREEN COMPONENTS',len(sh.get_parts(layout['filled'])),flush=True)
+    repair_cells=intersecting_components(tree,layout['filled'])
+    print('NUMERIC GREEN TERRAIN CANDIDATES',len(repair_cells),flush=True)
+    for i in repair_cells:
         for p in parts(filled_mask.near(dem[i][0]).intersection(dem[i][0])):
             if p.area<1e-9:continue
             parent=original_green[int(green_tree.nearest(p.representative_point()))]
@@ -121,14 +175,23 @@ def main():
         if not chunks and faces:append(name,faces,6);continue
         for c,part in zip(chunks,np.array_split(np.asarray(faces),len(chunks)) if chunks else []):
             record(c,'retaining-guard');write(c,part,6)
+    # Test the serialized headers before packing millions of landscape cells.
+    # This is repeated by the independent final audit after transport tiling.
+    from portal_validation import verify_headers
+    header_city=dict(originMSK=city['originMSK'],tunnelWalls=walls,
+        geometryRevision=dict(terrainSha256=hashlib.sha256(terrain.read_bytes()).hexdigest()))
+    verify_headers(args.output,header_city,manifest,
+        terrain=([p for p,c in dem],np.asarray([c for p,c in dem]),tree))
+    print('SERIALIZED PORTAL HEADERS PASSED',flush=True)
     lawn_chunks=[]
     for c in manifest['chunks'][:old_count]:
         if c['name']!='land':continue
-        data=raw(c);words=np.frombuffer(data[:c['vertexBytes']],'<u4').reshape(-1,8)
-        if np.all((words[:,6]&0x7fffffff)==2):lawn_chunks.append(c)
+        remainder=lawn_remainder(raw(c),c['vertexBytes'])
+        if remainder is not None:lawn_chunks.append((c,remainder))
     assert lawn_chunks,'Expected the source vegetation-cover mesh'
-    for c,idx in zip(lawn_chunks,np.array_split(np.arange(len(green_faces)),len(lawn_chunks))):
+    for (c,remainder),idx in zip(lawn_chunks,np.array_split(np.arange(len(green_faces)),len(lawn_chunks))):
         record(c,'green-partition');write(c,np.asarray(green_faces)[idx],np.asarray(green_mats,dtype=np.uint32)[idx])
+        append_unchanged_ground(folder/Path(c['file']).name,c,remainder)
     for (name,mat),faces in sorted(new_groups.items()):
         if faces:append(name,faces,mat)
     rail_proof=confirmed_owners(city['features']);rail_owners={r['source'] for r in rail_proof}
@@ -169,9 +232,12 @@ def main():
     changed_ids={r['id'] for r in changed}
     for c in manifest['chunks'][:old_count]:
         if c['id'] not in changed_ids:preserved.append(dict(id=c['id'],sha256=hashlib.sha256(raw(c)).hexdigest()))
-    rows=[r for r in rows if r['id'] not in green_ids]+new_rows
-    city['surfaces']=[{**{k:v for k,v in s.items() if k not in ('poly','plane','geometry','heightPlane')},
-                      'geometry':sh.geometry.mapping(s['poly']),'heightPlane':s['plane'].tolist()} for s in rows]
+    def serialized(s):
+        return {**{k:v for k,v in s.items() if k not in ('poly','plane','geometry','heightPlane')},
+                'geometry':sh.geometry.mapping(s['poly']),'heightPlane':s['plane'].tolist()}
+    replacements={r['id']:serialized(r) for r in restyled}
+    city['surfaces']=[replacements.get(s['id'],s) for s in city['surfaces'] if s['id'] not in green_ids]
+    city['surfaces'].extend(serialized(s) for s in new_rows)
     landscape.update(raisedGeometry=sh.geometry.mapping(layout['raised']),curbGeometry=sh.geometry.mapping(layout['band']),
         discardedNumericGeometry=sh.geometry.mapping(layout['discarded']),
         convertedGeometry=sh.geometry.mapping(sh.union_all([green,layout['filled']]).difference(layout['raised']).difference(layout['discarded'])),
@@ -190,8 +256,8 @@ def main():
     city['limitations'] += ['Ground path widths (2 m ordinary/stairs, 3 m park path, 1.2 m footpath), green edging and green albedos are project reconstruction defaults, not surveyed dimensions or source textures. Ground stair lines produce ramps, not detailed treads.']
     manifest['stats'].update(uniqueTriangles=sum(c['triangles'] for c in manifest['chunks']),expandedTriangles=sum(manifest['chunks'][i['mesh']]['triangles'] for i in manifest['instances']))
     report['export'].update(triangles=manifest['stats']['uniqueTriangles'],expandedTriangles=manifest['stats']['expandedTriangles'],chunks=len(manifest['chunks']),downloadBytes=sum((folder/Path(c['file']).name).stat().st_size for c in manifest['chunks']))
-    (folder/'scene.json').write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')));export_glb(manifest,folder)
-    report['export']['glbBytes']=(folder/'model.glb').stat().st_size
+    (folder/'scene.json').write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')))
+    report['export']['glbBytes']=export_glb(manifest,folder)
     save_canonical(args.output/'canonical/urban-model.json',city)
     (args.output/'canonical/validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
     # Catch planting/guard intrusions before spending time on transport tile

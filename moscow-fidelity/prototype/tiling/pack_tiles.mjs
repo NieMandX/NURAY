@@ -1,18 +1,24 @@
 // Transport tiles cut from the single validated canonical mesh. No new faces.
 import fs from 'node:fs/promises';
+import {constants} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {gzipSync,gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {buildMeshBvh,transformBounds} from '../../web-preview/src/district/bvh.js';
-import {packingKey,readPacked,savePacked} from './transport_cache.mjs';
+import {packingKey,readPacked,savePacked,sha} from './transport_cache.mjs';
+import {tileTriangleIndex} from './tile_triangle_index.mjs';
 const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(process.argv[2]??path.resolve(here,'../../web-preview/prototype/tiles/assets'));
 const patchFile=process.argv[3], incremental=patchFile?JSON.parse(await fs.readFile(patchFile)):null;
 const changed=incremental?new Set(incremental.changedChunks):null;
 const previous=incremental?JSON.parse(await fs.readFile(path.join(root,'tileset.json'))):null;
 if(!incremental)execFileSync(process.env.PYTHON??'python3',[path.join(here,'prepare_transport.py'),root],{stdio:'inherit'});
-const source=path.join(root,'canonical/full'),city=JSON.parse(await fs.readFile(path.join(root,'canonical/transport-metadata.json'))),report=JSON.parse(await fs.readFile(path.join(root,'canonical/validation.json')));
+const source=path.join(root,'canonical/full'),city=JSON.parse(await fs.readFile(path.join(root,'canonical/transport-metadata.json')));
+// Large reports retain all geometry witnesses and can exceed V8's string
+// limit. Read the current verdict with a complete streaming parse, including
+// incremental runs where prepare_transport is intentionally not executed.
+const report=JSON.parse(execFileSync(process.env.PYTHON??'python3',[path.join(here,'canonical_validation_status.py'),path.join(root,'canonical/validation.json')],{encoding:'utf8'}));
 if(!report.passed)throw Error('Canonical validation failed');
 const manifest=JSON.parse(await fs.readFile(path.join(source,'scene.json')));
 const tiles=[],tileSize=city.transportTileSizeM??250;
@@ -20,7 +26,7 @@ const [x0,y0,x1,y1]=city.boundsMSK,[ox,oy]=city.originMSK;
 const columns=Math.ceil((x1-x0)/tileSize),rows=Math.ceil((y1-y0)/tileSize);
 const cacheEnabled=city.sourceSnapshot?.freshAcquisition&&city.sourceSnapshot?.receiptSha256&&process.env.NURAY_DISABLE_PACK_CACHE!=='1';
 const codeHash=createHash('sha256');
-for(const file of [fileURLToPath(import.meta.url),path.join(here,'transport_cache.mjs'),path.join(here,'../../web-preview/src/district/bvh.js')])codeHash.update(await fs.readFile(file));
+for(const file of [fileURLToPath(import.meta.url),path.join(here,'transport_cache.mjs'),path.join(here,'tile_triangle_index.mjs'),path.join(here,'../../web-preview/src/district/bvh.js')])codeHash.update(await fs.readFile(file));
 const cacheFolder=cacheEnabled?path.join(root,'..','.transport-cache',city.sourceSnapshot.receiptSha256,codeHash.digest('hex')):null;
 const cacheContext={bounds:city.boundsMSK,origin:city.originMSK,tileSize,columns,rows};
 for(let north=0;north<rows;north++)for(let east=0;east<columns;east++){
@@ -79,16 +85,17 @@ for(const c of manifest.chunks){
  if(cached){
   await fs.mkdir(path.join(root,'meshes'),{recursive:true});
   originalTriangles+=c.triangles;sourceChunks.push({id:c.id,name:c.name,triangles:c.triangles,...(c.sourceObjectIds?{sourceObjectIds:c.sourceObjectIds}:{})});
-  for(const {row,bytes} of cached){
-   await fs.writeFile(path.join(root,row.file),bytes);assets.set(row.id,row);
+  for(const {row,source:cachedFile} of cached){
+   await fs.copyFile(cachedFile,path.join(root,row.file),constants.COPYFILE_FICLONE);assets.set(row.id,row);
    const tile=tiles.find(t=>t.id===row.tileId);if(!tile)throw Error('Cached tile is outside this exact grid');
    tile.chunks.push(row.id);tile.fullTriangles+=row.triangles;exportedTriangles+=row.triangles;
    if(!['paint','unbound-paint'].includes(c.name)){tile.coarseChunks.push(row.id);tile.coarseTriangles+=row.triangles;}
   }
   console.log('PACK REUSED',c.name,c.triangles);continue;
  }
- const buffer=data.buffer.slice(data.byteOffset,data.byteOffset+data.byteLength),u=new Uint32Array(buffer,0,c.vertexBytes/4),f=new Float32Array(buffer,0,c.vertexBytes/4),ix=new Uint32Array(buffer,c.vertexBytes);
+ const u=new Uint32Array(data.buffer,data.byteOffset,c.vertexBytes/4),f=new Float32Array(data.buffer,data.byteOffset,c.vertexBytes/4),ix=new Uint32Array(data.buffer,data.byteOffset+c.vertexBytes,(data.byteLength-c.vertexBytes)/4);
  if(c.instanced){
+  const buffer=data.buffer.slice(data.byteOffset,data.byteOffset+data.byteLength);
   const originalIx=new Uint32Array(ix),mesh=buildMeshBvh({vertices:buffer.slice(0,c.vertexBytes),indices:originalIx.buffer},'sah');
   const reordered=new Uint32Array(mesh.indices),queues=new Map();
   for(let i=0;i<originalIx.length;i+=3){const key=`${originalIx[i]},${originalIx[i+1]},${originalIx[i+2]}`;if(!queues.has(key))queues.set(key,[]);queues.get(key).push(i/3);}
@@ -104,8 +111,19 @@ for(const c of manifest.chunks){
   }
   console.log('PACK SHARED',c.name,c.triangles);continue;
  }
- const read=unpack.bind({f,u});const buckets=tiles.map(()=>({words:[],indices:[],lineage:[],seen:new Map()}));
- for(let i=0;i<ix.length;i+=3){
+ const read=unpack.bind({f,u});
+ const bounded=c.triangles>=Number(process.env.NURAY_PACK_TILE_INDEX_THRESHOLD??2000000);
+ const candidateIndex=bounded?tileTriangleIndex(f,ix,tiles,{columns,rows,tileSize,x0,y0,ox,oy}):null;
+ const emptyBucket=()=>({words:[],indices:[],lineage:[],seen:new Map()});
+ const buckets=bounded?null:tiles.map(emptyBucket);
+ function appendTriangle(bucket,tri,b,material,primitive){
+  for(const t of clip(tri,b)){
+   if(faceArea(t)<1e-9)continue;
+   const ids=t.map(v=>{const row=pack(v,material),key=row.join(',');let id=bucket.seen.get(key);if(id===undefined){id=bucket.words.length/8;bucket.words.push(...row);bucket.seen.set(key,id);}return id;});
+   bucket.indices.push(...ids);bucket.lineage.push(primitive);
+  }
+ }
+ if(!bounded)for(let i=0;i<ix.length;i+=3){
   const tri=[read(ix[i]),read(ix[i+1]),read(ix[i+2])];const material=u[ix[i]*8+6];
   const lo=[Math.min(...tri.map(v=>v[0])),Math.min(...tri.map(v=>v[2]))],hi=[Math.max(...tri.map(v=>v[0])),Math.max(...tri.map(v=>v[2]))];
   // Candidate ownership rectangles follow directly from the triangle AABB.
@@ -119,23 +137,23 @@ for(const c of manifest.chunks){
    // A face lying exactly on an internal cut has one deterministic owner.
    if(lo[0]===hi[0]&&lo[0]===b.max[0]&&tiles[j].east<columns-1)continue;
    if(lo[1]===hi[1]&&lo[1]===b.min[2]&&tiles[j].north<rows-1)continue;
-   const bucket=buckets[j];
-   for(const t of clip(tri,b)){
-    if(faceArea(t)<1e-9)continue;
-    const ids=t.map(v=>{const row=pack(v,material),key=row.join(',');let id=bucket.seen.get(key);if(id===undefined){id=bucket.words.length/8;bucket.words.push(...row);bucket.seen.set(key,id);}return id;});
-    bucket.indices.push(...ids);bucket.lineage.push(i/3);
-   }
+   appendTriangle(buckets[j],tri,b,material,i/3);
   }
  }
  originalTriangles+=c.triangles;sourceChunks.push({id:c.id,name:c.name,triangles:c.triangles,...(c.sourceObjectIds?{sourceObjectIds:c.sourceObjectIds}:{})});
  for(let j=0;j<tiles.length;j++){
-  const b=buckets[j];if(!b.indices.length)continue;
+  const b=bounded?emptyBucket():buckets[j];
+  if(bounded)for(let at=candidateIndex.offsets[j];at<candidateIndex.offsets[j+1];at++){
+   const primitive=candidateIndex.triangles[at],i=primitive*3;
+   appendTriangle(b,[read(ix[i]),read(ix[i+1]),read(ix[i+2])],tiles[j].bounds,u[ix[i]*8+6],primitive);
+  }
+  if(!b.indices.length)continue;
   const vertices=Uint32Array.from(b.words).buffer,originalIx=Uint32Array.from(b.indices),mesh=buildMeshBvh({vertices,indices:originalIx.buffer},'sah');
   const reordered=new Uint32Array(mesh.indices),queues=new Map();
   for(let i=0;i<originalIx.length;i+=3){const key=`${originalIx[i]},${originalIx[i+1]},${originalIx[i+2]}`;if(!queues.has(key))queues.set(key,[]);queues.get(key).push(i/3);}
   const lineage=new Uint32Array(reordered.length/3);
   for(let i=0;i<reordered.length;i+=3)lineage[i/3]=b.lineage[queues.get(`${reordered[i]},${reordered[i+1]},${reordered[i+2]}`).shift()];
-  const raw=Buffer.concat([Buffer.from(mesh.vertices),Buffer.from(mesh.indices),Buffer.from(mesh.nodes),Buffer.from(lineage.buffer)]),hash=createHash('sha256').update(raw).digest('hex'),file=`meshes/${hash}.bin.gz`,gz=gzipSync(raw,{level:6});
+  const raw=Buffer.concat([Buffer.from(mesh.vertices),Buffer.from(mesh.indices),Buffer.from(mesh.nodes),Buffer.from(lineage.buffer)]),hash=sha(raw),file=`meshes/${hash}.bin.gz`,gz=gzipSync(raw,{level:6});
   await fs.mkdir(path.join(root,'meshes'),{recursive:true});await fs.writeFile(path.join(root,file),gz);
   const p=new Float32Array(vertices),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(let i=0;i<p.length;i+=8)for(let a=0;a<3;a++){min[a]=Math.min(min[a],p[i+a]);max[a]=Math.max(max[a],p[i+a]);}
   const id=`${tiles[j].id}:${c.id}`;
@@ -143,6 +161,8 @@ for(const c of manifest.chunks){
    vertexCount:b.words.length/8,vertexBytes:vertices.byteLength,indexBytes:mesh.indices.byteLength,nodeBytes:mesh.nodes.byteLength,lineageBytes:lineage.byteLength,nodeCount:mesh.nodeCount,triangles:b.indices.length/3,bounds:{min,max},format:'nuray-tile-mesh-v1'});
   tiles[j].chunks.push(id);tiles[j].fullTriangles+=b.indices.length/3;exportedTriangles+=b.indices.length/3;
   if(!['paint','unbound-paint'].includes(c.name)){tiles[j].coarseChunks.push(id);tiles[j].coarseTriangles+=b.indices.length/3;}
+  if(!bounded)buckets[j]=null;
+  if(bounded&&(j+1)%100===0)console.log('PACK TILES',c.name,j+1,'/',tiles.length);
  }
  if(cacheKey)await savePacked(cacheFolder,cacheKey,[...assets.values()].filter(a=>a.sourceChunk===c.id),root);
  console.log('PACK',c.name,c.triangles);

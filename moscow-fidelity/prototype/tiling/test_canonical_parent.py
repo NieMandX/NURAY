@@ -5,9 +5,39 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from canonical_parent import load_parent
+from canonical_store import load_canonical
 
 
 class ParentSharingTests(unittest.TestCase):
+    def test_fallback_shares_actual_streaming_reader_objects(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path=Path(folder)/'city.json'
+            value={'surfaces':[{'id':'a','geometry':[[1.,-0.,3.]]}],
+                   'objectLayer':{'instances':[{'id':'tree','height':2.}]}}
+            path.write_text(json.dumps(value))
+            current=load_canonical(path)
+            self.assertIsNot(type(current['surfaces'][0]),dict)
+            parent=load_parent(path,current)
+            self.assertEqual(parent,value)
+            self.assertIs(parent['surfaces'],current['surfaces'])
+            self.assertIs(parent['objectLayer'],current['objectLayer'])
+            current['surfaces'][0]['geometry'][0][0]=99.
+            parent=load_parent(path,current)
+            self.assertEqual(parent,value)
+            self.assertIsNot(parent['surfaces'][0],current['surfaces'][0])
+
+    def test_new_street_revision_preserves_absent_parent_fields(self):
+        old={'surfaces':[{'id':'a','height':1.}], 'boundsMSK':[0,0,10000,10000]}
+        current={**old,'streetLayer':{'objects':[]},'geometryRevision':{'type':'street-objects','previousRevision':None}}
+        with tempfile.TemporaryDirectory() as folder:
+            path=Path(folder)/'city.json'
+            path.write_text(json.dumps(old,separators=(',',':')))
+            with patch('canonical_parent.value_from_events',side_effect=AssertionError('Expected exact-byte proof')):
+                parent=load_parent(path,current,changed_keys=('geometryRevision','streetLayer'))
+            self.assertEqual(parent,old)
+            self.assertNotIn('geometryRevision',parent)
+            self.assertIs(parent['surfaces'],current['surfaces'])
+
     def read(self, parent, current, compressed=False):
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / 'city.json'

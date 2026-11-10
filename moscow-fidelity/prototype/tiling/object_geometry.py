@@ -1,5 +1,5 @@
 """Attribute-preserving object clipping and the existing NURAY vertex format."""
-import gzip, json, struct
+import gzip, json, struct, os
 from pathlib import Path
 import numpy as np
 
@@ -26,9 +26,23 @@ def clip_triangles(tris,materials,bounds):
         parts=clip_triangle(t,bounds);extra.extend(parts);ids.extend([m]*len(parts))
     return (np.concatenate((tris[inside],extra)) if extra else tris[inside],np.concatenate((materials[inside],ids)).astype(np.uint32))
 
+def unique_vertex_words(words):
+    """Exact uint32 row order without NumPy's per-field record comparator.
+
+    Big-endian encoding makes bytewise order identical to lexicographic
+    unsigned-word order, including packed normals, material bits and -0.
+    """
+    encoded=words.astype('>u4',order='C')
+    keys=encoded.view(np.dtype((np.void,words.shape[1]*4))).reshape(-1)
+    unique,inverse=np.unique(keys,return_inverse=True)
+    del keys,encoded
+    return unique.view('>u4').reshape(-1,words.shape[1]).astype('<u4'),inverse
+
+
 def pack(triangles,materials,path,tints=None):
     if not len(triangles):return None
-    triangles=np.asarray(triangles,dtype='<f4');p=triangles[:,:,:3];n=triangles[:,:,3:6]
+    original_triangles=np.asarray(triangles)
+    triangles=np.asarray(original_triangles,dtype='<f4');p=triangles[:,:,:3];n=triangles[:,:,3:6]
     n=n/np.maximum(np.abs(n).sum(2,keepdims=True),1e-20);xy=n[:,:,:2].copy();mask=n[:,:,2]<0
     xy[mask]=(1-np.abs(xy[mask][:,::-1]))*np.where(xy[mask]>=0,1,-1)
     octn=np.round(np.clip(xy,-1,1)*32767).astype('<i2').reshape(-1,2)
@@ -39,13 +53,18 @@ def pack(triangles,materials,path,tints=None):
         tints=np.asarray(tints,dtype='<f4').reshape(-1)
         assert len(tints)==len(words) and np.isfinite(tints).all() and np.all(tints>0)
         floats[:,7]=tints
-    verts,ix=np.unique(words,axis=0,return_inverse=True);ix=ix.reshape(-1,3).astype('<u4')
-    pp=verts.view('<f4')[ix,:3];keep=np.linalg.norm(np.cross(pp[:,1]-pp[:,0],pp[:,2]-pp[:,0]),axis=1)>1e-9;ix=ix[keep]
+    verts,ix=unique_vertex_words(words);ix=ix.reshape(-1,3).astype('<u4')
+    pp=verts.view('<f4')[ix,:3];keep=np.linalg.norm(np.cross(pp[:,1]-pp[:,0],pp[:,2]-pp[:,0]),axis=1)>1e-9
+    from quantized_winding import repair_packed
+    winding_repairs=repair_packed(verts,ix,original_triangles)
+    ix=ix[keep]
     if not len(ix):return None
     # Match transport-tile compression. Level 9 costs minutes on long fence
     # meshes without changing a single decoded vertex, index or attribute.
     with gzip.GzipFile(filename=str(path),mode='wb',mtime=0,compresslevel=6) as f:f.write(verts.tobytes());f.write(ix.tobytes())
-    return dict(vertexBytes=verts.nbytes,vertexCount=len(verts),triangles=len(ix),bounds=dict(min=pp[keep].min((0,1)).tolist(),max=pp[keep].max((0,1)).tolist()))
+    result=dict(vertexBytes=verts.nbytes,vertexCount=len(verts),triangles=len(ix),bounds=dict(min=pp[keep].min((0,1)).tolist(),max=pp[keep].max((0,1)).tolist()))
+    if winding_repairs:result['quantizedWindingRepairs']=winding_repairs
+    return result
 
 def decode_normals(words):
     xy=words.copy().view('<i2').reshape(-1,2).astype(float)/32767
@@ -55,6 +74,15 @@ def decode_normals(words):
 
 def export_glb(manifest,folder):
     """One standard GLB with shared tree meshes and one node per occurrence."""
+    # The canonical meshes are the build input; this monolith is optional.
+    # Avoid multi-GB intermediate copies when preparing large regions. The
+    # final merged exporter remains independent and is never suppressed here.
+    folder=Path(folder)
+    if (os.environ.get('NURAY_DEFER_CANONICAL_GLB')=='1'
+            and folder.name=='full' and folder.parent.name=='canonical'):
+        for name in ('model.glb','model.glb.gz','model.glb.archive.json'):
+            (folder/name).unlink(missing_ok=True)
+        return 0
     binary=bytearray();views=[];accessors=[];meshes=[];nodes=[];images=[];textures=[];tinted_materials={}
     def view(data):
         while len(binary)%4:binary.append(0)
@@ -108,3 +136,4 @@ def export_glb(manifest,folder):
     temporary.replace(folder/'model.glb')
     for name in ('model.glb.gz','model.glb.archive.json'):
         if (folder/name).exists():(folder/name).unlink()
+    return (folder/'model.glb').stat().st_size

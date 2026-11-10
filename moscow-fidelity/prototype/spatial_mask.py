@@ -1,6 +1,33 @@
 """Exact local overlays on a large connected polygon, without changing topology."""
 import shapely as sh
+import numpy as np
 from collections import OrderedDict
+
+
+def intersecting_components(tree, geometry):
+    """Exact STRtree intersections without a city-wide multipart predicate.
+
+    GEOS checks representative points of every target component when testing
+    containment. One dispersed MultiPolygon can therefore scan all its parts
+    for each terrain triangle in its bounding box. Query the original, uncut
+    components instead; intersects distributes over their union. The final
+    bounding-box query retains exactly the original tree traversal order.
+    No buffering, clipping, coordinate rounding or predicate tolerance occurs.
+    """
+    components=[]
+    def collect(g):
+        if g.is_empty:return
+        if g.geom_type in ('MultiPolygon','MultiLineString','MultiPoint','GeometryCollection'):
+            for part in g.geoms:collect(part)
+        else:components.append(g)
+    collect(geometry)
+    if len(components)<=1:return tree.query(geometry,predicate='intersects')
+    selected=np.zeros(len(tree.geometries),dtype=bool)
+    for part in components:
+        selected[tree.query(part,predicate='intersects')]=True
+    candidates=tree.query(geometry)
+    return candidates[selected[candidates]]
+
 
 class SpatialMask:
     def __init__(self,geometry,cell_size=250.):

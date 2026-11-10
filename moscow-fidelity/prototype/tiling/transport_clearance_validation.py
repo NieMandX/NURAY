@@ -24,6 +24,8 @@ from railway_tunnel_validation import volume_cells
 from interface_validation import check_interfaces,clipped_polygon,BARRIERS
 from prepare_railway_entries import load_terrain,near_passages,meshes
 from portal_guards import parallel_to_source
+from walking_floor_continuity import WalkingFloorContinuity
+from seam_validation import packing_error_bound, SOURCE_POSITION_TOLERANCE
 
 PRECISION=1e-5
 DEPTH=1.05
@@ -56,6 +58,7 @@ def source_terminal_evidence(poly,rows,arches,extent):
                             if parallel_to_source(contact,arch):deep.append(contact);source_ids.add(rid)
     return dict(groundLevelBoundaryM=union(ground,PRECISION).length,
                 sourcePortalBoundaryM=union(deep,PRECISION).length,sourcePortalIds=sorted(source_ids),
+                relativeHeightRangeM=[float(min(all_heights)),float(max(all_heights))] if all_heights else None,
                 terrainLevelWalkingSurface=bool(all_heights and np.max(np.abs(all_heights))<.002))
 
 
@@ -135,21 +138,30 @@ def build_inventory(city):
                 # entrance: retain the explicit connectivity requirement.
                 source_upper=bool(upper)
                 source_deep=bool(deep or evidence['sourcePortalBoundaryM']>.25)
+                # The provider also labels underground platforms and ramps
+                # between buried levels as descents. Their entire source
+                # floor is below ground, so no ground-level endpoint exists.
+                # Keep auditing that floor and its actual tunnel interfaces;
+                # require a real source tunnel join to establish continuity.
+                underground=bool(mode=='pedestrian' and deep and evidence['relativeHeightRangeM']
+                                 and evidence['relativeHeightRangeM'][1]<-1)
                 components.append(dict(id=f'{mode}-descent:{len(components)}',mode=mode,level=list(level),
                     poly=poly,parents=sorted(parents),joins=joins,upperEntries=len(upper),deepPortals=len(deep),
-                    sourceTerminals=evidence,regionClipped=clipped,
-                    passed=bool((source_upper and source_deep) or (mode=='pedestrian' and evidence['terrainLevelWalkingSurface']) or clipped)))
+                    sourceTerminals=evidence,regionClipped=clipped,subterraneanSourceFloor=underground,
+                    passed=bool((source_upper and source_deep) or underground or (mode=='pedestrian' and evidence['terrainLevelWalkingSurface']) or clipped)))
     return rows,interfaces,components
 
 
 def volumes(city,dem,demtree):
     rows,interfaces,components=inventory(city);byid={r['id']:r for r in rows}
+    extent=sh.box(*city['boundsMSK'])
     # Every outward approach refers to the same immutable ground-road shape.
     # Decode it once, rather than rebuilding the whole city's coordinate tree
     # twice per walking entrance (full width and centre strip).
     ground_road=shape(city['groundRoadGeometry'])
     floors=[s for s in city['surfaces'] if s['kind'].startswith('roadbed')]
     polys=[shape(s['geometry']) for s in floors];tree=sh.STRtree(polys)
+    walking_floors=WalkingFloorContinuity(rows)
     result=[];cores=[];coverage=[];covered_interfaces=[]
 
     def floor_cells(gate,mode,end_keys):
@@ -169,10 +181,24 @@ def volumes(city,dem,demtree):
             cells.extend(volume_cells(piece,s['heightPlane'],city['originMSK'],.02,.75));covered.append(piece)
         return cells,union(covered,PRECISION)
 
-    def entry_cells(gate,r,outside):
+    def entry_cells(gate,r,outside,continuations):
         keys={(e['kind'],tuple(e['level'])) for e in r['ends']}
         cells,covered=floor_cells(gate,r['mode'],keys)
         if not outside.is_empty:
+            # A ground-level platform may adjoin a ramp in a different source
+            # drawing tier. Its slab underside is below that ramp's floor,
+            # not an obstruction above the neighbouring terrain. Resolve only
+            # source-proven continuous floors, never the highest XY surface.
+            continued=[]
+            for i in tree.query(outside,predicate='intersects'):
+                s=floors[int(i)]
+                if s['owner'] not in continuations:continue
+                local=(np.asarray(polys[int(i)].bounds).reshape(2,2)-np.asarray(city['originMSK'][:2]))*[1,-1]
+                tolerance=SOURCE_POSITION_TOLERANCE+float(packing_error_bound(local))
+                piece=gate.intersection(outside).intersection(polys[int(i)].buffer(tolerance))
+                cells.extend(volume_cells(piece,s['heightPlane'],city['originMSK'],.02,.75))
+                continued.append(piece);covered=covered.union(piece)
+            outside=outside.difference(union(continued,PRECISION))
             # A confirmed walking node can open onto asphalt. Use its real
             # canonical floor there, not an invented raised sidewalk plane.
             asphalt=outside.intersection(ground_road)
@@ -216,8 +242,10 @@ def volumes(city,dem,demtree):
             outside=union(approach,PRECISION).difference(source)
         if walking_ground:source=source.union(outside)
         if r.get('connectorGeometry'):source=source.union(shape(r['connectorGeometry']))
-        gate=gate.intersection(source.buffer(-INSET))
-        cells,covered=entry_cells(gate,r,outside)
+        gate=gate.intersection(source.buffer(-INSET)).intersection(extent)
+        parents={p for e in r['ends'] for p in e['parents']}
+        continuations=walking_floors.owners(line,source.difference(outside),parents) if walking_ground else set()
+        cells,covered=entry_cells(gate,r,outside,continuations)
         missing=gate.difference(covered.buffer(PRECISION*5)).area
         coverage.append(dict(id=r['id'],expectedAreaM2=gate.area,missingFloorM2=missing,passed=bool(cells and missing<.001)))
         if cells:result.append((r,cells))
@@ -225,7 +253,7 @@ def volumes(city,dem,demtree):
         # Separately retain ALL full-width contacts, rather than dismissing
         # lateral walls, garden edging or small intrusions as a clean pass.
         core=gate.intersection(substring(line,line.length*.25,line.length*.75).buffer(DEPTH,cap_style='flat'))
-        core_cells,core_covered=entry_cells(core,r,outside)
+        core_cells,core_covered=entry_cells(core,r,outside,continuations)
         assert core_cells and core.difference(core_covered.buffer(PRECISION*5)).area<.001,r['id']
         cores.append((r,core_cells))
     for c in components:

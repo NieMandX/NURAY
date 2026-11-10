@@ -11,6 +11,17 @@ class FaceByFaceMesh(Mesh):
 
 
 class FenceBatchTests(unittest.TestCase):
+    def test_consumed_mesh_keeps_exact_independent_arrays(self):
+        mesh=Mesh();mesh.box([1,2,3],[2,3,4],7)
+        before,materials=mesh.arrays()
+        after,new_materials=mesh.arrays(consume=True)
+        self.assertEqual(after.tobytes(),before.tobytes())
+        self.assertEqual(new_materials.tobytes(),materials.tobytes())
+        self.assertEqual(mesh.faces,[]);self.assertEqual(mesh.materials,[])
+        mesh.box([4,5,6],[1,1,1],3)
+        self.assertEqual(after.tobytes(),before.tobytes())
+        self.assertEqual(new_materials.tobytes(),materials.tobytes())
+
     def test_sloped_prisms_preserve_positions_winding_uv_and_material(self):
         rng=np.random.default_rng(749)
         for _ in range(120):

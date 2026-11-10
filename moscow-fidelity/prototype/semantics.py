@@ -8,6 +8,7 @@ from source_objects import BUILDING_LAYERS, INFORMATION_LAYERS, POLICY as PHYSIC
 from cemetery_cover import LAYER as CEMETERY_LAYER, MATERIAL_INDEX as CEMETERY_MATERIAL
 from pedestrian_materials import RULES as PEDESTRIAN_MATERIALS
 from parking_cover import LAYER as PARKING_LAYER, MATERIAL_INDEX as PARKING_MATERIAL
+from land_use_cover import RULES as LAND_USE_COVER
 
 ROAD_LAYERS={'Roadbed','Main_Roadbed','Gas_station_Roadbed','Parking_Roadbed',
              'Constructed_Roadbed','Intraquarter_Roadbed','WithMarking_Roadbed','Pocket_Roadbed',
@@ -22,7 +23,7 @@ COVER={'Administrative_quarter','Dwelling_quarter','Garage_place','Garage_quarte
        'Immersive_park_polygon_grey','Immersive_park_polygon_brown',
        'Private_quarter','Technical_quarter','Stadium_place',
        'Pier_quarter','Bridge_area','Immersive_park_polygon_background',
-       'Workout_place','Racecourse_place'}
+       'Workout_place','Racecourse_place','Warehouse_place'}
 # Explicit source pavement classes, not water/grass inferred from their colour.
 PARK_PAVING={
     'Immersive_park_polygon_blue':(14,'14930'),
@@ -48,12 +49,18 @@ def classify(layer,properties,geometry_type):
         result.update(purpose='map-information',construction='not-applicable',status='non-rendering',rule=PHYSICAL_POLICY['rule'])
         return result
     if geometry_type=='polygon':
-        if layer in {'Background','Supplementary_quarter','Airport_place'}:
+        if layer in {'Background','Supplementary_quarter','Airport_place','Winter_entertainment'}:
             # A provider's default road_part also occurs on full-tile map
             # backgrounds, hidden helper regions and airport extent tints.
+            # Winter_entertainment has no polygon draw rule in the retained
+            # source style; keep its seasonal area reference without making a
+            # new slab over the source's detailed terrain and paths.
             # None supplies a physical road/floor. Retain it as evidence.
             result.update(purpose='map-background' if layer=='Background' else 'area-reference',
                           construction='not-applicable',status='non-rendering')
+        elif layer in LAND_USE_COVER:
+            result.update(purpose='land-cover', kind='land', rank=20,
+                          status='built', rule='land-use-cover-v1', **LAND_USE_COVER[layer])
         elif layer==CEMETERY_LAYER:
             # A land-use tint, not evidence of a continuous raised lawn.
             result.update(purpose='land-cover',surface='cemetery-cover',

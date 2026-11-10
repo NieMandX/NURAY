@@ -8,3 +8,12 @@ export function gpuPageLimit(limits,preferred=DEFAULT_GPU_PAGE_BYTES){
   if(values.some(v=>!Number.isFinite(v)||v<4))throw Error('Недопустимый лимит GPU-буфера');
   return Math.floor(Math.min(...values)/4)*4;
 }
+
+export function gpuDeviceLimits(limits,preferred=DEFAULT_GPU_PAGE_BYTES){
+  const page=gpuPageLimit(limits,preferred),layers=limits.maxTextureArrayLayers;
+  if(!Number.isSafeInteger(layers)||layers<1)throw Error('Недопустимый лимит слоёв текстур GPU');
+  // Device defaults may expose only 256 layers even when the adapter can
+  // handle the larger city's materials. Request the advertised capability;
+  // allocation remains proportional to the actual scene, not this limit.
+  return {maxStorageBufferBindingSize:page,maxBufferSize:page,maxTextureArrayLayers:layers};
+}

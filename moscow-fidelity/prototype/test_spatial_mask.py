@@ -1,9 +1,39 @@
 import unittest
 import numpy as np
 import shapely as sh
-from spatial_mask import SpatialMask, LinearMask
+from spatial_mask import SpatialMask, LinearMask, intersecting_components
 
 class Masks(unittest.TestCase):
+    def test_component_query_preserves_exact_contacts_and_tree_order(self):
+        polygons=[sh.box(x,y,x+1,y+1) for x in range(12) for y in range(12)]
+        np.random.default_rng(16).shuffle(polygons)
+        tree=sh.STRtree(polygons)
+        queries=[sh.Polygon(),sh.box(0,0,12,12),
+                 sh.MultiPolygon([sh.box(0,0,1,1),sh.box(10,10,11,11)]),
+                 sh.GeometryCollection([sh.Point(0,0),sh.LineString([(1,1),(11,11)]),
+                     sh.GeometryCollection([sh.box(4,4,5,5),sh.Point(12,12)])]),
+                 sh.MultiLineString([[(1,0),(1,12)],[(0,5),(12,5)]]),
+                 sh.MultiPoint([(0,0),(12,12),(6.5,6.5)])]
+        for q in queries:
+            np.testing.assert_array_equal(intersecting_components(tree,q),tree.query(q,predicate='intersects'))
+
+    def test_component_query_keeps_tiny_gaps_and_large_coordinates(self):
+        rng=np.random.default_rng(26)
+        x,y=np.meshgrid(np.arange(40)*2.+2125,np.arange(30)*2.+8070)
+        triangles=sh.polygons(np.stack([np.stack([x.ravel(),y.ravel()],1),
+            np.stack([x.ravel()+2,y.ravel()],1),np.stack([x.ravel(),y.ravel()+2],1)],1))
+        tree=sh.STRtree(triangles[rng.permutation(len(triangles))])
+        for dx in [-.00001,0,.00001]:
+            pieces=[sh.box(a+dx,b+.5,a+dx+.00002,b+1.5)
+                    for a,b in zip(x.ravel()[::7],y.ravel()[::7])]
+            q=sh.set_precision(sh.MultiPolygon(pieces),.00001)
+            np.testing.assert_array_equal(intersecting_components(tree,q),tree.query(q,predicate='intersects'))
+
+    def test_component_query_handles_empty_index_entries(self):
+        tree=sh.STRtree([None,sh.Polygon(),sh.box(0,0,1,1),sh.box(3,3,4,4)])
+        q=sh.MultiPoint([(1,1),(3,3),(100,100)])
+        np.testing.assert_array_equal(intersecting_components(tree,q),tree.query(q,predicate='intersects'))
+
     def test_exact_difference_near_holes_and_partition_cuts(self):
         g=sh.union_all([sh.box(-40,-30,440,30),sh.box(170,-200,230,250)]).difference(sh.box(190,-10,210,10))
         mask=SpatialMask(g,60)

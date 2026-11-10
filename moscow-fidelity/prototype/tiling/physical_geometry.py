@@ -32,6 +32,41 @@ def ranges(owners):
     return result
 
 
+def verify_owner_bounds(points, row, origin):
+    """Check source bounds plus the owner's documented raised roof patches.
+
+    Source bounds remain immutable: they describe the acquired model before
+    our flat-roof operation. Only the recorded patch may extend upwards by
+    its declared parapet raise; sideways movement, base changes and any
+    other geometry outside the source bounds still fail the original test.
+    """
+    tolerance=.005
+    world=points[:,:,[0,2,1]]*[1,-1,1]+origin
+    world[:,:,2]-=row['placement']['shiftM']
+    lower=np.asarray(row['bounds']['min']);upper=np.asarray(row['bounds']['max'])
+    assert np.all(world>=lower-tolerance), ('ownership lower bound',row['id'])
+    assert np.all(world[:,:,:2]<=upper[:2]+tolerance), ('ownership upper bound',row['id'])
+    above=world[:,:,2]>upper[2]+tolerance
+    if not above.any():return
+    roof=row.get('flatRoof')
+    assert row['category']=='building' and roof, ('ownership upper bound',row['id'])
+    raise_m=roof.get('raiseM',0.)
+    assert np.isfinite(raise_m) and raise_m>0, ('invalid roof raise',row['id'])
+    assert abs(raise_m+roof['depthM']-roof['parapetHeightM'])<1e-9, ('invalid roof height',row['id'])
+    points=points[above];allowed=np.zeros(len(points),dtype=bool)
+    for patch in roof['patches']:
+        assert patch.get('raiseM',raise_m)==raise_m, ('inconsistent roof raise',row['id'])
+        height=patch['heightM']
+        source_height=height+origin[2]-row['placement']['shiftM']
+        assert lower[2]-tolerance<=source_height<=upper[2]+tolerance, ('roof outside source height',row['id'])
+        x0,z0,x1,z1=patch['bounds']
+        allowed |= ((points[:,0]>=x0-tolerance)&(points[:,0]<=x1+tolerance)&
+                    (points[:,2]>=z0-tolerance)&(points[:,2]<=z1+tolerance)&
+                    (points[:,1]>=height-tolerance)&
+                    (points[:,1]<=float(np.float32(height+raise_m))+tolerance))
+    assert allowed.all(), ('ownership upper bound',row['id'])
+
+
 def ownership(root, city, manifest):
     rows=city['objectLayer']['buildings'];by_id={r['id']:r for r in rows}
     assert len(by_id)==len(rows)
@@ -53,15 +88,12 @@ def ownership(root, city, manifest):
             offset+=c['triangles']
             assert len(owners)==c['triangles'] and set(owners)==set(c['sourceObjectIds'])
             words,ix=arrays(read(root,c),c)
-            # Audit every assigned primitive, including neighbouring physical
-            # meshes, against its original, rigidly placed source bounds.
+            # Audit every assigned primitive against its rigidly placed source
+            # bounds and, where present, its own documented roof extension.
             for r in ranges(owners):
                 row=by_id[r['id']];assert row['category']==category
                 p=words.view('<f4')[ix[r['first']:r['first']+r['count']],:3].astype(float)
-                world=p[:,:,[0,2,1]]*[1,-1,1]+city['originMSK']
-                world[:,:,2]-=row['placement']['shiftM']
-                assert np.all(world>=np.array(row['bounds']['min'])-.005), ('ownership lower bound',row['id'])
-                assert np.all(world<=np.array(row['bounds']['max'])+.005), ('ownership upper bound',row['id'])
+                verify_owner_bounds(p,row,np.asarray(city['originMSK']))
             result[c['id']]=owners
     return result
 

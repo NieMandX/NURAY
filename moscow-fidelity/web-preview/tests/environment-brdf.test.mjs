@@ -21,7 +21,7 @@ test('rough ground retains weak environment reflection at grazing angles, while 
 });
 test('semantic ground role covers roads, paving and green areas, excludes water, buildings and props',()=>{
  const ground=['Асфальт','Территория / покрытие','Пешеходное покрытие','Газон','green-cover',
-  'parking-asphalt','pedestrian-asphalt','pedestrian-stone','pedestrian-gravel','pedestrian-sand','pedestrian-wood',
+  'parking-asphalt','land-use-cover','pedestrian-asphalt','pedestrian-stone','pedestrian-gravel','pedestrian-sand','pedestrian-wood',
   'Кладбище · зелёное покрытие','Неопределённая территория','Площадка · теннис'];
  for(const family of ground){
   const m={kind:1,family,metallic:0};assert.equal(isDryGround(m),true,family);

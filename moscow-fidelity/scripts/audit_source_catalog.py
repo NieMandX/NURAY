@@ -7,6 +7,7 @@ Run from any directory; dependencies are Python's standard library only.
 import argparse
 from collections import Counter, defaultdict
 import gzip
+import gc
 import hashlib
 import json
 import sys
@@ -136,6 +137,7 @@ def audit(args):
         raise ValueError('Inventory must be separate from source and release')
     out.mkdir(parents=True, exist_ok=True)
     city_path = release/'canonical/urban-model.json'; city = load_canonical(city_path)
+    gc.freeze()  # The retained acyclic city is unchanged throughout this CLI audit.
     plan_path = source_plan_path(source); plan = read(plan_path)
     style_path = source/'source/style_flat.json'; styles = read(style_path)
     assets_path = source/'source/map_style.json'; model_assets = read(assets_path)['result']['models']

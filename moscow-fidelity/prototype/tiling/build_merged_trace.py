@@ -6,15 +6,11 @@ The browser uploads all GLB geometry and preserves every instance transform.
 """
 import argparse,gzip,hashlib,json,struct,subprocess,tempfile
 from pathlib import Path
+from merged_asset import read_container
 
 def header(path):
-    with path.open('rb') as f:
-        magic,version,length,jlen,jtype=struct.unpack('<5I',f.read(20))
-        if (magic,version,jtype)!=(0x46546c67,2,0x4e4f534a) or length!=path.stat().st_size:
-            raise ValueError('Invalid GLB')
-        raw=f.read(jlen);doc=json.loads(raw);blen,btype=struct.unpack('<2I',f.read(8))
-        if btype!=0x004e4942 or f.tell()+blen!=length:raise ValueError('Invalid BIN')
-        return doc,f.tell(),hashlib.sha256(raw).hexdigest()
+    doc,_,offset,digest,_=read_container(path)
+    return doc,offset,digest
 
 def digest_range(f,offset,size):
     f.seek(offset);h=hashlib.sha256()
@@ -25,9 +21,9 @@ def digest_range(f,offset,size):
     return h.hexdigest()
 
 def build(glb):
-    doc,offset,header_hash=header(glb);meta=doc['extras']['nuray'];out=glb.parent/'trace';out.mkdir(exist_ok=True)
-    manifest=dict(format='nuray-merged-trace-v1',glbBytes=glb.stat().st_size,headerSha256=header_hash,draws=[],stats=meta['stats'])
-    with tempfile.TemporaryDirectory(prefix='nuray-merged-bvh-') as tmp,glb.open('rb') as f:
+    doc,binary,offset,header_hash,asset_bytes=read_container(glb);meta=doc['extras']['nuray'];out=glb.parent/'trace';out.mkdir(exist_ok=True)
+    manifest=dict(format='nuray-merged-trace-v1',glbBytes=asset_bytes,assetBytes=asset_bytes,assetFile=glb.name,headerSha256=header_hash,draws=[],stats=meta['stats'])
+    with tempfile.TemporaryDirectory(prefix='nuray-merged-bvh-') as tmp,binary.open('rb') as f:
         tmp=Path(tmp);exe=tmp/'builder';raw=tmp/'mesh.bin'
         subprocess.run(['clang++','-O3','-std=c++17',str(Path(__file__).with_name('merged_bvh.cpp')),'-o',str(exe)],check=True)
         for d in meta['draws']:
@@ -36,7 +32,7 @@ def build(glb):
             key=hashlib.sha256((vh+ih+'sah-v1').encode()).hexdigest()[:20];info_path=out/(key+'.json');compressed=out/(key+'.bin.gz')
             if info_path.exists() and compressed.exists():info=json.loads(info_path.read_text())
             else:
-                result=subprocess.run([str(exe),str(glb),str(offset+v['byteOffset']),str(v['byteLength']),str(offset+ix['byteOffset']),str(ix['byteLength']),str(raw)],check=True,capture_output=True,text=True)
+                result=subprocess.run([str(exe),str(binary),str(offset+v['byteOffset']),str(v['byteLength']),str(offset+ix['byteOffset']),str(ix['byteLength']),str(raw)],check=True,capture_output=True,text=True)
                 info=json.loads(result.stdout);info.update(nodeBytes=info['nodeCount']*32,vertexSha256=vh,indexSha256=ih)
                 h=hashlib.sha256()
                 with raw.open('rb') as source,compressed.open('wb') as sink,gzip.GzipFile(fileobj=sink,mode='wb',compresslevel=3,mtime=0) as z:

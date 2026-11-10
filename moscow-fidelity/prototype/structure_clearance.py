@@ -33,6 +33,13 @@ def positive_polygon(points, values):
 
 def reserved_extension(extension, floors, tree, owners, height, depth, guard,
                        triangulate, z_at, precision):
+    return reserved_envelope(extension,floors,tree,owners,
+        lambda p:height(p)-depth,lambda p:height(p)+guard,triangulate,z_at,precision)
+
+
+def reserved_envelope(extension,floors,tree,owners,lower_height,upper_height,
+                      triangulate,z_at,precision):
+    """Reserve neighbouring exposed floors against a variable-height solid."""
     cuts=[]
     for i in tree.query(extension,predicate='intersects'):
         row=floors[int(i)]
@@ -41,13 +48,15 @@ def reserved_extension(extension, floors, tree, owners, height, depth, guard,
         piece=extension.intersection(row['poly'])
         if piece.area<=precision**2:continue
         for tri in triangulate(piece,np.zeros(3)):
-            xy=tri[:,:2];base=np.array([height(p) for p in xy])
+            xy=tri[:,:2]
+            low=np.array([lower_height(p) for p in xy])
+            high=np.array([upper_height(p) for p in xy])
             road=z_at(row['plane'],xy)
             # The synthetic solid [base-depth, base+guard] intersects the
             # neighbouring corridor [road, road+reserved height]. Clip the
             # two inequalities continuously, including sloped crossings.
-            lower=positive_polygon(xy,road+RESERVED_HEIGHT-(base-depth))
-            upper=positive_polygon(xy,(base+guard)-road)
+            lower=positive_polygon(xy,road+RESERVED_HEIGHT-low)
+            upper=positive_polygon(xy,high-road)
             cut=lower.intersection(upper)
             if cut.area>precision**2:cuts.append(cut)
     return sh.union_all(cuts,grid_size=precision) if cuts else sh.Polygon()

@@ -2,7 +2,7 @@
 const STANDARD_GROUND=new Set(['Территория / покрытие','Пешеходное покрытие']);
 export const isStandardGround=m=>m?.kind===1&&STANDARD_GROUND.has(m.family||m.name);
 const DRY_GROUND=new Set([...STANDARD_GROUND,'Асфальт','Газон','green-cover',
- 'Неопределённая территория','Кладбище · зелёное покрытие','parking-asphalt',
+ 'Неопределённая территория','Кладбище · зелёное покрытие','parking-asphalt','land-use-cover',
  'pedestrian-asphalt','pedestrian-stone','pedestrian-gravel','pedestrian-sand','pedestrian-wood',
  'Пешеходный переход · светлое покрытие','Транспортное полотно · светлое покрытие','Велодорожка']);
 export const isDryGround=m=>m?.kind===1&&(m.metallic??0)===0&&

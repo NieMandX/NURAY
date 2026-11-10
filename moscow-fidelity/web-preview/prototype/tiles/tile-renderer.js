@@ -1,10 +1,10 @@
 import {layerDefaults,normalizeLayers,layerVisible} from './scene-layers.js?v=scene-layers-1';
 import {meshBytes,visitMeshBatches} from './packed-mesh.js?v=asset-delivery-1';
 import {readAssetJSON} from '../../src/district/asset-fetch.js?v=asset-delivery-1';
-import {DistrictRenderer} from '../../src/district/renderer.js?v=dry-ground-1';
+import {DistrictRenderer} from '../../src/district/renderer.js?v=large-region-1';
 import {REGION_GPU_PAGE_BYTES} from '../../src/district/gpu-limits.js?v=moscow-defaults-1';
 import {orthographic,lookAt,perspective,multiply,visible} from '../../src/district/math.js?v=moscow-defaults-1';
-import {loadCityMaterials} from '../../src/district/city-materials.js?v=asset-delivery-1';
+import {loadCityMaterials} from '../../src/district/city-materials.js?v=large-region-1';
 import {planGpuPages} from './gpu-pages.js?v=moscow-defaults-1';
 import {activeChunkIds,pageChunkIds,sceneInstances,rasterLayout,traceScene} from './tile-scene.js?v=moscow-defaults-1';
 
@@ -50,6 +50,7 @@ export class TileRenderer extends DistrictRenderer {
     this.state.exposure=.85;this.assets=new Map(this.tileset.chunks.map(c=>[c.id,c]));
   }
   chooseTiles({full=false}={}){
+    if(this.manualTiles)return this.fitTraceTiles(new Map(this.tileset.tiles.filter(t=>this.manualTiles.has(t.id)).map(t=>[t.id,'full'])));
     const c=this.camera;let all=this.tileset.tiles;
     if(full&&this.state.engine==='raster')return new Map(all.map(t=>[t.id,'full']));
     if(this.tileset.extentMetres>1500){

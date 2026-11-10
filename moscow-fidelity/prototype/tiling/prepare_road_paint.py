@@ -151,9 +151,12 @@ def finish_metadata(city,report):
 def build(base,out):
     assert not out.exists() and base.parent==out.parent
     proof=json.loads((base/'validation.json').read_text());assert proof['passed']
-    city=load_canonical(base/'canonical/urban-model.json');scene=json.loads((base/'canonical/full/scene.json').read_text())
+    city=load_canonical(base/'canonical/urban-model.json')
     gc.freeze()
-    report=json.loads((base/'canonical/validation.json').read_text());faces,diagnostic=clip(base,city,scene)
+    scene=json.loads((base/'canonical/full/scene.json').read_text())
+    report=json.loads((base/'canonical/validation.json').read_text())
+    gc.freeze()
+    faces,diagnostic=clip(base,city,scene)
     out.mkdir()
     for name in ('canonical','textures','library','fence-library'):
         if (base/name).exists():shutil.copytree(base/name,out/name,copy_function=copy_asset)
@@ -179,7 +182,7 @@ def finalize(base,out,city,scene,report,diagnostic,changes):
     city['roadPaint']=dict(policy=POLICY,clipping=diagnostic,validation=actual)
     finish_metadata(city,report);save(out/'paint-diagnostic.json',city['roadPaint'])
     refresh_stats(scene,report,out);save(out/'canonical/full/scene.json',scene)
-    export_glb(scene,out/'canonical/full');report['export']['glbBytes']=(out/'canonical/full/model.glb').stat().st_size
+    report['export']['glbBytes']=export_glb(scene,out/'canonical/full')
     save_canonical(out/'canonical/urban-model.json',city);save(out/'canonical/validation.json',report)
     print('ROAD PAINT',actual,flush=True)
 
@@ -191,6 +194,7 @@ def resume(base,out):
     assert json.loads((base/'validation.json').read_text())['passed']
     assert canonical_digest(out/'canonical/urban-model.json')==canonical_digest(base/'canonical/urban-model.json')
     city=load_canonical(base/'canonical/urban-model.json')
+    gc.freeze()
     report=json.loads((base/'canonical/validation.json').read_text())
     old=json.loads((base/'canonical/full/scene.json').read_text())
     scene=json.loads((out/'canonical/full/scene.json').read_text())

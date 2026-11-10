@@ -5,9 +5,37 @@ import shapely as sh
 from overpasses import build
 from build import triangulate,z_at,plane
 from structure_clearance import reserved_extension,attached_extension
+from passage_space import ground_approach,ground_landings,landing_floors
 
 
 class StructureClearanceTests(unittest.TestCase):
+    def test_ground_approach_protects_from_another_mode_only_at_same_height(self):
+        walk=sh.box(0,0,4,4);mouth=sh.LineString([(0,0),(0,4)])
+        extent=sh.box(-10,-10,20,20);dem=[(extent,np.zeros(3))]
+        connection=dict(id='walking-mouth',kind='roadbed_tunnel_descent',sourceParents=['walk'],
+            peerKind='pedestrian_ground',transport='pedestrian',atGround=True,
+            mouthGeometry=sh.geometry.mapping(mouth),landingGeometry=sh.geometry.mapping(ground_approach(mouth,walk)))
+        protected=sh.box(-1.05,.05,-.01,3.95)
+        for height,blocked in ((1.2,False),(5.,True)):
+            rows=[dict(owner='walk',kind='roadbed_tunnel_descent',transport='pedestrian',tiers=[-1],poly=walk,plane=np.array([0,0,.1])),
+                  dict(owner='bridge',kind='roadbed_overpass',tiers=[3],poly=sh.box(-4,-1,-1.3,5),plane=np.array([0,0,height]))]
+            groups=defaultdict(list)
+            profiles,_=build(rows,dem,sh.STRtree([extent]),groups,extent,1e-5,triangulate,z_at,plane,[connection])
+            self.assertTrue(all(p['passed'] for p in profiles))
+            overlap=sh.geometry.shape(profiles[0]['deckGeometry']).intersection(protected).area
+            self.assertEqual(overlap>1e-6,blocked)
+
+    def test_ground_approach_height_uses_terrain_and_transport_datum(self):
+        extent=sh.box(-5,-5,5,5);dem=[(extent,np.array([.2,-.1,12.]))]
+        floor=sh.box(0,0,3,4);mouth=sh.LineString([(0,0),(0,4)])
+        rows=[dict(owner='rail',kind='roadbed_overpass',poly=floor)]
+        c=dict(id='rail-entry',sourceParents=['rail'],peerKind='railway_ground',atGround=True,mouthGeometry=sh.geometry.mapping(mouth))
+        landings=ground_landings([c],rows)
+        floors=landing_floors(landings,dem,sh.STRtree([extent]))
+        self.assertTrue(floors)
+        for f in floors:np.testing.assert_array_equal(f['plane'],[.2,-.1,12.12])
+        c['atGround']=False
+        self.assertEqual(ground_landings([c],rows),[])
     def test_disconnected_concrete_remnant_is_not_extruded(self):
         source=sh.box(0,0,5,4)
         attached=sh.box(0,4,5,5);orphan=sh.box(6,4,6.002,4.002)

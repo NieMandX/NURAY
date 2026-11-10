@@ -101,10 +101,13 @@ def verify_revision(root,city,manifest):
         materialOnlyChunks=len(remaps),**headers,
         geometryIdentityOutsideRevision=True,instancesAndTexturesUnchanged=True)
 
-def verify_headers(root,city,manifest):
+def verify_headers(root,city,manifest,*,terrain=None):
     revision=city['geometryRevision']
     terrain_path=root/'canonical/terrain.npz';assert hashlib.sha256(terrain_path.read_bytes()).hexdigest()==revision['terrainSha256']
-    terrain=np.load(terrain_path);polys=sh.from_wkb(terrain['polygons']);tree=sh.STRtree(polys);planes=terrain['planes']
+    if terrain is None:
+        from terrain_store import read_terrain_arrays
+        polys,planes=read_terrain_arrays(terrain_path);tree=sh.STRtree(polys)
+    else:polys,planes,tree=terrain
     top=[];bottom=[];origin=np.asarray(city['originMSK'])
     for c in manifest['chunks']:
         if not c['name'].startswith('portal_guard'):continue
@@ -121,12 +124,13 @@ def verify_headers(root,city,manifest):
         land=float(planes[di]@np.r_[p[:2],1])+.1;drop=land-p[2]
         assert -.002<=drop<=.502, ('Header blocks the opening',drop)
         max_drop=max(max_drop,drop)
-    portals=0;sources=set()
+    portals=0;sources=set();top_cover=top_xy.buffer(.001)
     for group in city['tunnelWalls']['groups']:
         headers=group['portalHeaders'];assert headers['passed']
         for line in headers['openings']:
             geometry=sh.geometry.shape(line)
-            assert geometry.difference(top_xy.buffer(.001)).length<.001, 'Missing serialized portal roof'
+            absent=geometry.difference(top_cover).length
+            assert absent<.001, ('Missing serialized portal roof',absent,line)
             portals+=1
         sources.update(headers['sourceIds'])
     assert portals>0

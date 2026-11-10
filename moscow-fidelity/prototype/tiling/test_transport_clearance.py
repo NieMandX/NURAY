@@ -1,5 +1,5 @@
 """Wide vehicle/walking clearance regressions, independent of city coordinates."""
-import json,sys,unittest
+import gzip,json,sys,unittest
 from pathlib import Path
 import numpy as np
 import shapely as sh
@@ -30,6 +30,63 @@ def fixture(mode='pedestrian',overpass=False):
 
 
 class TransportClearanceChecks(unittest.TestCase):
+    def test_retained_moscow_source_entrances_and_buried_platforms(self):
+        path=Path(__file__).resolve().parents[1]/'fixtures/source-walking-entrances.json.gz'
+        with gzip.open(path,'rt') as f:c=json.load(f)
+        _,_,components=inventory(c)
+        actual={tuple(sorted(r['parents'])):r for r in components}
+        for expected in c['expected']:
+            r=actual[tuple(sorted(expected['parents']))]
+            with self.subTest(parents=expected['parents']):
+                self.assertTrue(r['passed'],r)
+                self.assertEqual(r['subterraneanSourceFloor'],expected['subterranean'])
+                if not expected['subterranean']:self.assertGreater(r['upperEntries'],0)
+
+    def test_explicit_ground_endpoint_can_open_into_exposed_paving(self):
+        c=fixture();c['features']=[f for f in c['features'] if f['id']!='ground']
+        c['features'].append(dict(id='plaza',layer='Immersive_park_polygon_pedestrian_stone',
+            geometryType='polygon',coordinates=[[-5,0,0],[-5,4,0],[0,0,0],[0,4,0]],properties={}))
+        self.assertTrue(self.check_meshes([],c)['passed'])
+        c['features'][-1]['layer']='Forest_quarter'
+        self.assertFalse(self.check_meshes([],c)['passed'])
+        c['features'][-1]['layer']='Pedestrian_quarter'
+        c['features'].append(dict(c['features'][-1],id='forest',layer='Forest_quarter'))
+        self.assertFalse(self.check_meshes([],c)['passed'])
+
+    def test_underground_source_floor_does_not_require_an_invented_ground_exit(self):
+        for slope,top in ((0.,-5.),(-.25,-2.)):
+            c=fixture();c['features']=[f for f in c['features'] if f['geometryType']=='polygon']
+            slab=next(f for f in c['features'] if f['id']=='slab')
+            for v in slab['coordinates']:v[2]=top+slope*v[0]
+            for v in next(f for f in c['features'] if f['id']=='tunnel')['coordinates']:v[2]=top+slope*12
+            c['surfaces'][0]['heightPlane']=[slope,0,top+.1]
+            c['surfaces'][1]['heightPlane']=[0,0,top+slope*12+.1]
+            self.assertTrue(self.check_meshes([],c)['passed'])
+            self.assertFalse(self.check_meshes([('tunnel_wall_side',wall(6,top+slope*6+.1,top+slope*6+1))],c)['passed'])
+            c['features']=[f for f in c['features'] if f['id']!='tunnel']
+            self.assertFalse(self.check_meshes([],c)['passed'])
+
+    def test_ground_approach_is_clipped_only_at_the_actual_scene_boundary(self):
+        c=fixture();c['boundsMSK']=[-.4,-10,25,20]
+        self.assertTrue(self.check_meshes([],c)['passed'])
+        self.assertFalse(self.check_meshes([('tunnel_wall_side',wall(-.2,.1,.8))],c)['passed'])
+
+    def test_ground_path_internal_vertex_is_a_source_junction(self):
+        c=fixture()
+        ground=next(f for f in c['features'] if f['id']=='ground')
+        ground['coordinates']=[[-4,1,0],[0,2,0],[-4,3,0]]
+        ground['properties']['db_segment_level']=0
+        self.assertTrue(self.check_meshes([],c)['passed'])
+        ground['coordinates']=[[-4,1,0],[4,3,0]]
+        self.assertFalse(self.check_meshes([],c)['passed'])
+
+    def test_shared_zero_level_node_with_small_visual_offset(self):
+        c=fixture();ground=next(f for f in c['features'] if f['id']=='ground');axis=next(f for f in c['features'] if f['id']=='axis')
+        ground['coordinates'][-1][0]=-.1;axis['coordinates'][0][0]=-.1
+        self.assertTrue(self.check_meshes([],c)['passed'])
+        ground['coordinates'][-1][0]=-.3;axis['coordinates'][0][0]=-.3
+        self.assertFalse(self.check_meshes([],c)['passed'])
+
     def test_ground_overlap_uses_structural_floor(self):
         c=fixture('vehicle',True)
         ground=next(s for s in c['surfaces'] if s['owner']=='ground')

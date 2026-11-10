@@ -1,6 +1,6 @@
 {
-  "catalog": "assets-moscow-style-20261024-r14/tileset.json",
-  "canonicalModel": "assets-moscow-style-20261024-r14/merged/model.glb",
+  "catalog": "assets-moscow-10km-20261108-r1/tileset.json",
+  "canonicalModel": "assets-moscow-10km-20261108-r1/merged/model.gltf",
   "inspectionViews": [
     {
       "key": "rail-level-review",
@@ -209,7 +209,8 @@
   "surfaceEffects": {
     "assets-spb-10km-live-20261024-r13/tileset.json": "assets-spb-10km-live-20261024-r13/surface-effects.json",
     "assets-hosek-check/tileset.json": "assets-hosek-check/surface-effects.json",
-    "assets-moscow-style-20261024-r14/tileset.json": "assets-moscow-style-20261024-r14/surface-effects.json"
+    "assets-moscow-style-20261024-r14/tileset.json": "assets-moscow-style-20261024-r14/surface-effects.json",
+    "assets-moscow-10km-20261108-r1/tileset.json": "assets-moscow-10km-20261108-r1/surface-effects.json"
   },
   "geography": {
     "assets-spb-10km-live-20261024-r13/tileset.json": {
@@ -238,7 +239,8 @@
   "libraryPreview": "library/preview.png",
   "fenceLibraryPreview": "fence-library/preview.png",
   "meshPacks": {
-    "assets-moscow-style-20261024-r14/tileset.json": "moscow-mesh-pack.json"
+    "assets-moscow-style-20261024-r14/tileset.json": "moscow-mesh-pack.json",
+    "assets-moscow-10km-20261108-r1/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/mesh-pack.json"
   },
   "visibilityMetadata": {
     "assets-moscow-style-20261024-r14/tileset.json": "moscow-visibility.json"
@@ -316,6 +318,108 @@
           }
         ]
       }
+    },
+    "assets-moscow-10km-20261108-r1/tileset.json": {
+      "catalog": {
+        "url": "delivery-20261108-v1/tileset-runtime.json.gz",
+        "encoding": "gzip",
+        "bytes": 43941166,
+        "sha256": "9a89038c4f90b525d7e8267258ce54f94f55401b1912e5f11fbf310b38c10bc4",
+        "decodedBytes": 186089981,
+        "decodedSha256": "65a2256202a1f1d16764f044b4bf850d1637cd3baa45f32959e042bf0fc16234",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 65536,
+            "sha256": "393e6fc5985aeaca09ad58b8d735a8f73adba522ed7c2c23763621f43f9eb9e8"
+          },
+          {
+            "offset": 21937815,
+            "bytes": 65536,
+            "sha256": "7c1588e75d21bdac82cb2580e6fdf36624bc2098cf13592672fd745bd47c0081"
+          },
+          {
+            "offset": 43875630,
+            "bytes": 65536,
+            "sha256": "00b3d4289ef6ad175f934f6c6713ebb8641270f6b18b92fa8e5d2b262c71c7bb"
+          }
+        ]
+      },
+      "validation": {
+        "url": "delivery-20261108-v1/validation-summary.json.gz",
+        "encoding": "gzip",
+        "bytes": 108207,
+        "sha256": "f1273a44d69650677f42de2ee6b4ef425e87e9dff396a848f1de55d240a83e36",
+        "decodedBytes": 281394,
+        "decodedSha256": "5ab12326041df0fc076473f015e2cf1fc035173586a686d5b4dfdc7f8f2b8432",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 65536,
+            "sha256": "0c1841e1c5a6be629db2a962e088694266cd545dfc8d35ada6c5e08ce1524c93"
+          },
+          {
+            "offset": 21335,
+            "bytes": 65536,
+            "sha256": "5fa1424926439d33c59f8f7e74c206c37df060bf4ae8a84aff82f69d8d99a776"
+          },
+          {
+            "offset": 42671,
+            "bytes": 65536,
+            "sha256": "8a4aa58f38d5843efc6b49973069a95e1b2e7a3b66b400afc57b3e5e91414756"
+          }
+        ]
+      },
+      "merged": {
+        "url": "delivery-20261108-v1/model.gltf.gz",
+        "encoding": "gzip",
+        "bytes": 72983,
+        "sha256": "6697ad31ebec92a7928bf787505e76d1ad097cc8881a573a3db195fb2d12edc7",
+        "decodedBytes": 453458,
+        "decodedSha256": "2a383efb9d1bb73ad7a28da5fb18cedf09617861a2f2bc1dabbf05cdf6ce47c1",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 65536,
+            "sha256": "01169c657baa081bcd6573919c1e8ea1847aeba322137bf11e7dabb3b53fcf99"
+          },
+          {
+            "offset": 3723,
+            "bytes": 65536,
+            "sha256": "7aea971b4f00ac2c1a8d0cb0c024a3814ff21ea98583fb381a2a8321982babc2"
+          },
+          {
+            "offset": 7447,
+            "bytes": 65536,
+            "sha256": "61f281bafd0c8f9d1c989bfa5414b73f39e25d6a67c56049aa64ed6a09d28e9c"
+          }
+        ]
+      },
+      "mergedBuffer": {
+        "url": "delivery-20261108-v1/model.bin.gz",
+        "encoding": "gzip",
+        "bytes": 3780466415,
+        "sha256": "4850f2de14e8492dde3ee311b3586a0ba4a08e3dff9b0a0719e9bb3148aa547f",
+        "decodedBytes": 11526282004,
+        "decodedSha256": "1c03bc04e4826514ccd735c6f2783025961614703a35796b83f217000ac1ee88",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 65536,
+            "sha256": "579b7772cbc0bf942f64987f993d2c74ed7f0fc77926d2346a8128c238e5ad3c"
+          },
+          {
+            "offset": 1890200439,
+            "bytes": 65536,
+            "sha256": "4d62bc0cc4816cd3445613da083a18cb7f1b3d3502f42f580089eda56b892164"
+          },
+          {
+            "offset": 3780400879,
+            "bytes": 65536,
+            "sha256": "11e40388e0d239ec383d627ec7f5cc56f8c3b5271f27137a5a18e37033e653b3"
+          }
+        ]
+      }
     }
   },
   "mergedMirrors": {
@@ -323,6 +427,18 @@
       "yandex": {
         "label": "Яндекс Cloud",
         "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-style-20261024-r14/delivery-20261107-v1/model.glb.gz"
+      }
+    }
+  },
+  "manualCatalogs": {
+    "assets-moscow-10km-20261108-r1/tileset.json": {
+      "catalog": {
+        "url": "sectors-v1/index.json",
+        "cache": "no-cache"
+      },
+      "validation": {
+        "url": "delivery-20261108-v1/validation-summary.json.gz",
+        "encoding": "gzip"
       }
     }
   }

@@ -39,8 +39,17 @@ def area_union(gs,precision):
 
 def build(surfaces, dem, demtree, groups, extent, precision, triangulate, z_at, plane, connections=None,prepartitioned=False,collision_floors=None):
     from coverage import uncovered_length
+    # JSON/WKB does not retain GEOS's precision model. Restore the canonical
+    # grid before shared-edge ownership tests; otherwise changing the local
+    # origin can split one physical sheet into unrelated, capped pieces.
+    def canonical(rows):
+        return [s if sh.get_precision(s['poly'])==precision else
+                dict(s,poly=sh.set_precision(s['poly'],precision)) for s in rows]
+    surfaces=canonical(surfaces)
     elevated=[s for s in surfaces if s['kind']=='roadbed_overpass']
-    floors=collision_floors if collision_floors is not None else [s for s in surfaces if s['kind'].startswith('roadbed')]
+    floors=canonical(collision_floors) if collision_floors is not None else [s for s in surfaces if s['kind'].startswith('roadbed')]
+    from passage_space import ground_landings,landing_floors
+    floors=[*floors,*landing_floors(ground_landings(connections,floors,precision),dem,demtree,precision)]
     floor_tree=sh.STRtree([s['poly'] for s in floors])
     profiles=[];side_count=0
     if prepartitioned:
@@ -111,6 +120,10 @@ def build(surfaces, dem, demtree, groups, extent, precision, triangulate, z_at, 
                 # Constant outward continuation of edge height. Along the road,
                 # the shoulder follows the source ramp, not a single flat slab.
                 base,edge_distance=source_height(xy)
+                # Boolean overlays snap the common road/shoulder edge to the
+                # precision grid. Micrometres of XY residue are not an outward
+                # shoulder offset and must not blend in another mouth height.
+                if edge_distance<=precision:edge_distance=0.
                 nearby=portal_tree.query(pt,predicate='dwithin',distance=overhang)
                 if len(nearby):
                     # At a grade mouth, the raised shoulder meets the raised
@@ -169,7 +182,22 @@ def build(surfaces, dem, demtree, groups, extent, precision, triangulate, z_at, 
             # extending the first mouth height through the returning branch.
             source_joint=bool(entry_records and entry_records[entry_index].get('datumPolicy')=='source-shared-edge')
             ends=[source_relative_height(xy[0]),source_relative_height(xy[-1])] if source_joint else [values[0],values[-1]]
-            portal_datums.append((LineString(datum_xy),distances,np.r_[ends[0],values,ends[-1]]))
+            datum_line=LineString(datum_xy)
+            datum_values=np.r_[ends[0],values,ends[-1]]
+            if source_joint:
+                # An extended mouth may hit a returning edge of this same
+                # slab before reaching its nominal outer endpoint. Anchor the
+                # actual intersection, not just the sampled far endpoint, so
+                # the shoulder cannot interpolate across that source height.
+                anchors=list(zip(distances,datum_values))
+                for point in sh.get_coordinates(datum_line.intersection(footprint.boundary)):
+                    station=datum_line.project(Point(point))
+                    if distances[1]+precision<station<distances[-2]-precision:continue
+                    if min(abs(distances-station))<=precision:continue
+                    anchors.append((station,source_relative_height(point)))
+                anchors.sort(key=lambda item:item[0])
+                distances=np.asarray([s for s,v in anchors]);datum_values=np.asarray([v for s,v in anchors])
+            portal_datums.append((datum_line,distances,datum_values))
             outside_signs=[]
             for index,(aa,bb) in enumerate(zip(xy,xy[1:])):
                 tangent=(bb-aa)/np.linalg.norm(bb-aa);out=np.array([tangent[1],-tangent[0]])

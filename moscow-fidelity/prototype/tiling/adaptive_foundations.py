@@ -183,8 +183,8 @@ def collect(root, city, scene):
 def install(root, city, scene):
     assert not city['objectLayer'].get('foundations'), 'Foundations already installed; rebuild from the immutable parent'
     print('FOUNDATION INPUT: finished ground and source facade edges',flush=True)
-    ground = SurfaceSampler(root, scene, GROUND_NAMES)
     rows, objects = collect(root, city, scene)
+    ground = SurfaceSampler(root, scene, GROUND_NAMES)
     records = []; faces = []; ranges = []; audit = []
     for index,(oid, ts) in enumerate(sorted(objects.items())):
         if index%250==0:print('FOUNDATION BUILDINGS',index,'/',len(objects),flush=True)

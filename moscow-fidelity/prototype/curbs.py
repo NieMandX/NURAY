@@ -28,7 +28,7 @@ def band(road, opening, extent, precision):
     return stable_area(g,precision)
 
 
-def solid_sides(curb_band, road, dem, demtree, groups, z_at, extent):
+def solid_sides(curb_band, road, dem, demtree, groups, z_at, extent, boundary_region=None):
     """Top and bottom cells are emitted by the land partition; add volume sides.
 
     Polygon rings put solid on the left; side faces consequently point right.
@@ -43,6 +43,7 @@ def solid_sides(curb_band, road, dem, demtree, groups, z_at, extent):
             xy = np.asarray(ring.coords)[:,:2]
             for start, end in zip(xy, xy[1:]):
                 segment = LineString([start,end]).difference(crop_boundary)
+                if boundary_region is not None:segment=segment.intersection(boundary_region)
                 for line in parts(segment, 'LineString'):
                     for i in demtree.query(line,predicate='intersects'):
                         for piece in parts(line.intersection(dem[i][0]), 'LineString'):
@@ -66,10 +67,17 @@ def solid_sides(curb_band, road, dem, demtree, groups, z_at, extent):
                                 # At a narrow corner a fixed 1 mm probe can
                                 # jump across the asphalt into the opposite
                                 # curb. Confirm both sides locally instead.
+                                # A DEM cut may isolate the sub-millimetre tip
+                                # of an acute island: even 10 um then crosses
+                                # its entire tapered curb. Start with a probe
+                                # relative to this segment, safely above local
+                                # floating-point roundoff. Geometry is unchanged.
+                                local_probe=max(64*np.spacing(max(1.,np.max(np.abs(midpoint_xy)))),
+                                                min(.000001,np.linalg.norm(b-a)*.0001))
                                 road_facing=any(
                                     curb_band.covers(sh.Point(midpoint_xy-outward*probe)) and
                                     road.covers(sh.Point(midpoint_xy+outward*probe))
-                                    for probe in (.00001,.000025,.00005,.0001,.001))
+                                    for probe in (local_probe,.00001,.000025,.00005,.0001,.001))
                                 midpoint=face.interpolate(.5,normalized=True)
                                 distance=0. if road.covers(midpoint) else midpoint.distance(road_edges.segments[int(road_edges.tree.nearest(midpoint))])
                                 kind='curb_front' if distance<.00005 and road_facing else 'curb_back'

@@ -8,13 +8,14 @@ export function planMergedTrace(draws,manifest,limit,maxPages=4){
     const b=records.get(d.id);
     if(!b||b.vertexBytes!==d.vertexBytes||b.indexBytes!==d.indexBytes||b.triangles!==d.triangles||b.nodeBytes!==b.nodeCount*32||!b.nodeCount)throw Error('Ускоритель не соответствует GLB: '+d.id);
     const bytes=d.vertexBytes+d.indexBytes+b.nodeBytes;
-    if(!Number.isSafeInteger(bytes)||bytes%4||bytes>limit)throw Error('Блок цельной сцены превышает лимит GPU');
+    if(!Number.isSafeInteger(bytes)||bytes%4)throw Error('Неверный размер блока ускорителя GLB');
     return {...b,bytes};
   }).sort((a,b)=>b.bytes-a.bytes||a.id-b.id);
+  if(items.some(c=>c.bytes>limit)){const error=Error('Блок ускорителя полной сцены превышает лимит GPU.');error.code='TRACE_CAPACITY';throw error;}
   const sizes=Array(maxPages).fill(0),descriptors=new Map();
   for(const c of items){
     const page=sizes.indexOf(Math.min(...sizes));
-    if(sizes[page]+c.bytes>limit)throw Error(`Вся сцена не помещается в ${maxPages} GPU-буфера по ${Math.round(limit/1048576)} МиБ. Полная трассировка требует большего лимита памяти; геометрия не была обрезана.`);
+    if(sizes[page]+c.bytes>limit){const error=Error(`Вся сцена не помещается в ${maxPages} GPU-буфера по ${Math.round(limit/1048576)} МиБ. Полная трассировка требует большего лимита памяти; геометрия не была обрезана.`);error.code='TRACE_CAPACITY';throw error;}
     const vertex=sizes[page]/4,index=vertex+c.vertexBytes/4,nodes=index+c.indexBytes/4;
     descriptors.set(c.id,{page,vertex,index,nodes,nodeCount:c.nodeCount});sizes[page]+=c.bytes;
   }

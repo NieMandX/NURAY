@@ -14,15 +14,16 @@ from vegetation_variation import apply as apply_variation
 from custom_vegetation import install as install_vegetation
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from source_objects import partition, receipt
-from canonical_store import load_canonical, save_canonical
+from canonical_store import load_canonical, save_canonical, copy_asset
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--base',type=Path,required=True);ap.add_argument('--extraction',type=Path,required=True);ap.add_argument('--output',type=Path,required=True);args=ap.parse_args()
     if args.base.resolve()==args.output.resolve():raise ValueError('Write a separate version')
     output=args.output;folder=output/'canonical/full';folder.mkdir(parents=True,exist_ok=True)
-    for file in (args.base/'canonical/full').iterdir():shutil.copy2(file,folder/file.name)
-    if (args.base/'canonical/terrain.npz').exists():shutil.copy2(args.base/'canonical/terrain.npz',args.output/'canonical/terrain.npz')
+    for file in (args.base/'canonical/full').iterdir():copy_asset(file,folder/file.name)
+    if (args.base/'canonical/terrain.npz').exists():copy_asset(args.base/'canonical/terrain.npz',args.output/'canonical/terrain.npz')
     city=load_canonical(args.base/'canonical/urban-model.json');report=json.loads((args.base/'canonical/validation.json').read_text());assert report['passed']
+    print('OBJECTS CANONICAL INPUT',len(city['surfaces']),'surfaces',flush=True)
     manifest=json.loads((folder/'scene.json').read_text());extraction=json.loads((args.extraction/'extraction.json').read_text())
     extraction['objects'],excluded_objects=partition(extraction['objects'])
     source_path=Path(extraction['pbrSource']);source=json.loads(source_path.read_text())
@@ -31,6 +32,7 @@ def main():
     # samples a surface once; a building's complete source hierarchy moves rigidly.
     land=[s for s in city['surfaces'] if s['kind'] in {'land','curb_top','roadbed_flat','water'}];polys=np.asarray([sh.geometry.shape(s['geometry']) for s in land],dtype=object)
     tree=STRtree(polys);planes=np.asarray([s['heightPlane'] for s in land]);fallback=[];datum_bindings=[];terrain_index=None
+    print('OBJECTS GROUND INDEX',len(land),'cells',flush=True)
     def ground(xy,owner):
         nonlocal terrain_index
         point=sh.Point(*xy);hits=tree.query(point,predicate='covered_by')
@@ -62,7 +64,8 @@ def main():
     footprints={key:sh.union_all(parts) for key,parts in footprints.items()}
     anchors={};groups=defaultdict(list);object_rows=[];id_map={};used_textures={}
     for row in extraction['objects']:groups[row.get('sourceBuildingId') or row['id']].append(row)
-    for bid,rows in groups.items():
+    for anchor_number,(bid,rows) in enumerate(groups.items()):
+        if anchor_number%1000==0:print('BUILDING ANCHORS',anchor_number,'/',len(groups),flush=True)
         footprint=footprints.get(bid)
         if footprint is not None and not footprint.is_empty:p=footprint.representative_point();xy=[p.x,p.y]
         else:
@@ -100,7 +103,8 @@ def main():
         manifest['chunks'].append(dict(id=idx,name=name,category=category,file=file,**meta,**extra));return idx
     # Keep a compact source object inventory and its exact primitive range.
     batches=defaultdict(list)
-    for row in extraction['objects']:
+    for object_number,row in enumerate(extraction['objects']):
+        if object_number%1000==0:print('BUILDING GEOMETRY',object_number,'/',len(extraction['objects']),flush=True)
         data=np.load(args.extraction/row['file']);t=data['triangles'].copy();m=data['materials'];bid=row.get('sourceBuildingId') or row['id'];anchor=anchors[bid]
         t[:,:,2]+=anchor['shiftM'];t[:,:,:3]=(t[:,:,:3]-origin)@AXES.T;t[:,:,3:6]=t[:,:,3:6]@AXES.T
         t,m=clip_triangles(t,m,clip)
@@ -133,7 +137,8 @@ def main():
         idx=add_chunk(t,data['materials'],row['id'],'vegetation',instanced=True,objectGeometry=True)
         assert idx is not None;template_map[row['id']]=idx
     vegetation=[]
-    for row in extraction['instances']:
+    for instance_number,row in enumerate(extraction['instances']):
+        if instance_number%20000==0:print('PLANT PLACEMENT',instance_number,'/',len(extraction['instances']),flush=True)
         p=np.asarray(row['position'],dtype=float);old_z=float(p[2]);p[2]=ground(p[:2],row['id'])
         linear=AXES@np.asarray(row['linear'])@AXES.T;translation=AXES@(p-origin);matrix=np.column_stack((linear,translation)).ravel().tolist()
         # A half-open ownership rule keeps a boundary tree whole, present once.
@@ -148,6 +153,7 @@ def main():
         policy=dict(buildings='one rigid translation per source building ID before clipping; retain child-node offsets, normals and atlas UVs; no terrain drape per vertex or sign',
           vegetation='source XY, rotation and scale; root on canonical raised ground; half-open owner tile by root; full crown and shared mesh/BVH',materials='retain established NURAY PBR conversion and source atlases; non-paint reflectance at most 0.65; do not invent solid glass interiors'))
     from flat_roofs import install as install_flat_roofs
+    print('OBJECTS ROOFS AND FACADES',flush=True)
     roofs=install_flat_roofs(object_rows,manifest,folder,city['boundsMSK'])
     layer['roofs']={k:roofs[k] for k in ('policy','stats','records')}
     from pitched_roofs import install as install_pitched_roofs
@@ -170,7 +176,8 @@ def main():
     manifest['stats'].update(uniqueTriangles=sum(c['triangles'] for c in manifest['chunks']),expandedTriangles=sum(manifest['chunks'][i['mesh']]['triangles'] for i in manifest['instances']),streetInstances=len(vegetation))
     report['export'].update(triangles=manifest['stats']['uniqueTriangles'],expandedTriangles=manifest['stats']['expandedTriangles'],chunks=len(manifest['chunks']),downloadBytes=sum((folder/Path(c['file']).name).stat().st_size for c in manifest['chunks']),textureBytes=stats['textureBytes'])
     (folder/'scene.json').write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')))
-    export_glb(manifest,folder);report['export']['glbBytes']=(folder/'model.glb').stat().st_size
+    report['export']['glbBytes']=export_glb(manifest,folder)
+    print('OBJECTS CANONICAL ARCHIVE',flush=True)
     save_canonical(output/'canonical/urban-model.json',city)
     (output/'canonical/validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
     (output/'textures').mkdir(exist_ok=True)

@@ -1,5 +1,5 @@
 """Append a replaceable street library to an immutable canonical city release."""
-import argparse, collections, gzip, hashlib, json, math, shutil
+import argparse, collections, gzip, hashlib, json, math, shutil, gc
 from pathlib import Path
 import numpy as np
 import shapely as sh
@@ -16,6 +16,7 @@ IDENTITY=[1,0,0,0,0,1,0,0,0,0,1,0]
 def build(base,output,evidence,inventory):
     assert base.parent==output.parent and not output.exists()
     city=load_canonical(base/'canonical/urban-model.json');manifest=json.loads((base/'canonical/full/scene.json').read_text())
+    gc.freeze()  # Keep the long-lived input outside repeated cyclic scans.
     report=json.loads((base/'canonical/validation.json').read_text());assert report['passed'] and json.loads((base/'validation.json').read_text())['passed']
     source=json.loads(gzip.decompress(evidence.read_bytes()));catalog=json.loads(inventory.read_text())
     records=source['records'];assert not any(r['layer']=='Traffic_light' for r in records)
@@ -31,7 +32,7 @@ def build(base,output,evidence,inventory):
     def local(p):return [p[0]-ox,oy-p[1]]
     def defer(r,reason):deferred.append(dict(sourceRecordId=r['sourceRecordId'],layer=r['layer'],reason=reason));account.append(dict(sourceRecordId=r['sourceRecordId'],status='deferred',reason=reason))
     def append_mesh(name,mesh,instanced):
-        tris,mats=mesh.arrays()
+        tris,mats=mesh.arrays(consume=True)
         if not instanced:tris,mats=clip_triangles(tris,mats,[bounds[0]-ox,oy-bounds[3],bounds[2]-ox,oy-bounds[1]])
         idx=len(manifest['chunks']);filename=f'mesh-{idx:03d}.bin.gz';meta=pack(tris,mats+matbase,folder/filename)
         assert meta
@@ -127,6 +128,7 @@ def build(base,output,evidence,inventory):
             placement=dict(surface=hit,ground=g,top=top,heightRule='ground-to-deck-or-cap',cap=cap,defaultRadiusM=.45)))
         account.append(dict(sourceRecordId=r['sourceRecordId'],status='placed',count=1))
     if supports.faces:append_mesh('street-supports',supports,False)
+    del fences,supports,ground,deck
     assert len(account)==len(records)==len({r['sourceRecordId'] for r in account})
     counts=dict(collections.Counter(o['layer'] for o in objects));stats=dict(objects=len(objects),pointInstances=len(instances),templates=len(library),byLayer=counts,
         sourceRecords=len(records),deferredRecords=len(deferred),existingVegetationRecords=sum(a['status']=='existing-vegetation' for a in account),
@@ -147,7 +149,7 @@ def build(base,output,evidence,inventory):
     city['geometryRevision']=revision;report['geometryRevision']=revision;report['streetLayer']=dict(passed=True,**stats)
     manifest['stats'].update(uniqueTriangles=sum(c['triangles'] for c in manifest['chunks']),expandedTriangles=sum(manifest['chunks'][i['mesh']]['triangles'] for i in manifest['instances']))
     report['export'].update(triangles=manifest['stats']['uniqueTriangles'],expandedTriangles=manifest['stats']['expandedTriangles'])
-    write(folder/'scene.json',manifest);export_glb(manifest,folder);report['export']['glbBytes']=(folder/'model.glb').stat().st_size
+    write(folder/'scene.json',manifest);report['export']['glbBytes']=export_glb(manifest,folder)
     save_canonical(output/'canonical/urban-model.json',city);write(output/'canonical/validation.json',report);write(output/'street-objects.json',layer)
     shutil.copyfile(evidence,output/'canonical/street-source-evidence.json.gz')
     write(output/'canonical/fence-source-rules.json',dict(rules=catalog['sourceRulesByLayer']['Fence'],sourceInventorySha256=sha(inventory),sourceStyleSha256=catalog['provenance']['stylesSha256']))

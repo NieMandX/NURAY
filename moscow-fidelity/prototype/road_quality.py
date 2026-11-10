@@ -61,7 +61,10 @@ def compare(surfaces, protected=None, reference=None):
     if reference is None:
         old=json.loads((BASE/'urban-model-terrain.json').read_text())
         reference=old['surfaces']
-    previous=quality(reference);current=quality(surfaces,protected)
+    print('ROAD QUALITY SOURCE',len(reference),'cells',flush=True)
+    previous=quality(reference)
+    print('ROAD QUALITY RECONSTRUCTED',len(surfaces),'surface rows',flush=True)
+    current=quality(surfaces,protected)
     return dict(previous=previous,current=current,
         passed=bool(current['maxHeightDiscontinuityM']<.001 and not current['thinEnclosedSlits']
                     and current['maxFaceAngleDeg']<max(.01,previous['maxFaceAngleDeg']*.5)),

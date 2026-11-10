@@ -1,5 +1,6 @@
 """Serialized passage precision scales with format ULP, never with object ID."""
 import unittest
+from unittest.mock import patch
 import json
 from pathlib import Path
 import numpy as np
@@ -67,6 +68,32 @@ class SerializedPassagePrecision(unittest.TestCase):
         asphalt=sh.union_all(sh.polygons(triangles[:,:,[0,2]]))
         self.assertGreater(gate.difference(asphalt.intersection(gate).buffer(tolerance)).area,1e-7)
         self.assertEqual(result['checks'][0]['missingAsphaltBeyondToleranceM2'],0)
+
+    def test_broad_phase_matches_full_city_face_scan(self):
+        gate=sh.box(2499.98,10,2500.02,70)
+        far=np.concatenate([rectangle(x,1000,x+3,1003) for x in range(-5000,5000,10)])
+        ground=np.concatenate([rectangle(2490,0,2499.999,80),rectangle(2500.001,0,2510,80),far])
+        wall=np.array([[[2500,0,20],[2500,0,60],[2500,.1,60]],
+                       [[2500,0,20],[2500,.1,60],[2500,.1,20]]])
+        meshes=[('roadbed_flat',ground),('curb_front',wall),('land',far),
+                ('curb_top',np.concatenate([rectangle(2500,0,2501,80,.1),far]))]
+        indexed=self.check(gate,meshes)
+        with patch('seam_validation.near_witnesses',side_effect=lambda triangles,tree:triangles):
+            exhaustive=self.check(gate,meshes)
+        self.assertEqual(indexed,exhaustive)
+        self.assertFalse(indexed['passed'])
+
+    def test_broad_phase_keeps_nearby_precision_witness(self):
+        gate=sh.box(-.02,10,.02,70)
+        # This face is outside the gate, but within the precision halo. Its
+        # distant vertex still contributes the original measured ULP bound.
+        neighbor=np.array([[[.0201,0,20],[.0201,0,60],[4000,0,20]]])
+        meshes=[('roadbed_flat',rectangle(-1,0,1,80)),('curb_top',neighbor)]
+        indexed=self.check(gate,meshes)
+        with patch('seam_validation.near_witnesses',side_effect=lambda triangles,tree:triangles):
+            exhaustive=self.check(gate,meshes)
+        self.assertEqual(indexed,exhaustive)
+        self.assertGreater(indexed['checks'][0]['positionToleranceM'],.0002)
 
 
 if __name__=='__main__':unittest.main()

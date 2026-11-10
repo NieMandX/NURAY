@@ -13,10 +13,13 @@ from canonical_store import open_canonical, canonical_digest, dump_compact
 
 
 def same_json(a, b):
-    if type(a) is not type(b) or a != b:
+    # The streaming city reader interns object keys in a dict subclass. That
+    # implementation detail is still the same JSON object, not a type change.
+    same_type=type(a) is type(b) or (isinstance(a,dict) and isinstance(b,dict))
+    if not same_type or a != b:
         return False
     # Python equality equates True/1 and 1/1.0, including inside dictionaries.
-    # Reuse must retain the parent's exact decoded types and object key order.
+    # Reuse must retain JSON scalar types and object key order.
     if isinstance(a, (dict, list)):
         return json.dumps(a, ensure_ascii=False, separators=(',', ':')) == json.dumps(b, ensure_ascii=False, separators=(',', ':'))
     return True

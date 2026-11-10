@@ -7,14 +7,14 @@ from railway_texture import make_texture
 from object_geometry import pack,export_glb
 from railway_support import POLICY
 from railway_layer import generate, select_input
-from canonical_store import load_canonical, save_canonical
+from canonical_store import load_canonical, save_canonical, copy_asset
 
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--base',type=Path,required=True);ap.add_argument('--output',type=Path,required=True);args=ap.parse_args()
     if args.base.resolve()==args.output.resolve():raise ValueError('Write a separate version')
     folder=args.output/'canonical/full';folder.mkdir(parents=True,exist_ok=True)
-    for file in (args.base/'canonical/full').iterdir():shutil.copy2(file,folder/file.name)
+    for file in (args.base/'canonical/full').iterdir():copy_asset(file,folder/file.name)
     from support_assets import copy_support_assets
     copy_support_assets(args.base,args.output)
     city=load_canonical(args.base/'canonical/urban-model.json');report=json.loads((args.base/'canonical/validation.json').read_text());assert report['passed']
@@ -56,8 +56,8 @@ def main():
     report['export'].update(triangles=manifest['stats']['uniqueTriangles'],expandedTriangles=manifest['stats']['expandedTriangles'],chunks=len(manifest['chunks']),
         downloadBytes=sum((folder/Path(c['file']).name).stat().st_size for c in manifest['chunks']),
         textureBytes=sum(p.stat().st_size for p in (args.output/'textures').iterdir() if p.is_file()))
-    (folder/'scene.json').write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')));export_glb(manifest,folder)
-    report['export']['glbBytes']=(folder/'model.glb').stat().st_size
+    (folder/'scene.json').write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')))
+    report['export']['glbBytes']=export_glb(manifest,folder)
     save_canonical(args.output/'canonical/urban-model.json',city)
     (args.output/'canonical/validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
     print('RAILWAY LAYER',json.dumps(stats),flush=True)

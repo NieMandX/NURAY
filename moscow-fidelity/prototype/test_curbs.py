@@ -40,3 +40,24 @@ narrow_groups=defaultdict(list)
 narrow_front,_=solid_sides(narrow_band,narrow,dem,sh.STRtree([extent]),narrow_groups,lambda c,xy:np.zeros(len(xy)),extent)
 assert narrow.boundary.difference(narrow_front.buffer(.00005)).length<.001
 print('Narrow curb regression passed: local side probes cannot jump across the road.')
+
+# Expanded Moscow exposed two intact faces labelled as the back of a curb:
+# a DEM edge split the sub-millimetre tip of an acute island. Reproduce that
+# shape without location-specific rules or changed validation tolerances.
+from shapely.affinity import rotate,translate
+from coverage import uncovered_length
+for angle in (0,37,90):
+    for offset in ((0,0),(6937,8201)):
+        transform=lambda g:translate(rotate(g,angle,origin=(0,0)),*offset)
+        ext=transform(sh.box(-1,-1,1,1))
+        island=transform(sh.Polygon([(-.1,-.0008),(0,0),(-.1,.0008)]))
+        rd=ext.difference(island)
+        cb=band(rd,sh.Polygon(),ext,.00001)
+        terrain=[(transform(sh.box(-1,-1,-.001,1)),np.zeros(3)),
+                 (transform(sh.box(-.001,-1,1,1)),np.zeros(3))]
+        emitted=defaultdict(list)
+        fr,_=solid_sides(cb,rd,terrain,sh.STRtree([p for p,c in terrain]),emitted,
+                         lambda c,xy:np.zeros(len(xy)),ext)
+        expected=rd.boundary.difference(ext.boundary.buffer(.00005))
+        assert uncovered_length(expected,fr,.00005)<.001,(angle,offset)
+print('Acute island regression passed: DEM cuts do not relabel the intact tip; original, rotated and translated cases retain the 1 mm audit threshold.')

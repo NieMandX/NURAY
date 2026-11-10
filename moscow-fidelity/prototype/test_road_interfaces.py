@@ -103,3 +103,44 @@ split_connections,_=discover(split_roads,sh.union_all([r['poly'] for r in split_
 assert len(split_connections)==2 and interface_coverage(split_interfaces,split_connections,1e-5)['passed']
 assert all(abs(c['mouthWidthM']-2)<1e-7 for c in split_connections)
 print('Divided-entry regression passed: two exact source mouths open independently while the median stays separate.')
+
+# A third surface only touches the mouth's corner. Its height must not be
+# sampled as if it were an owner of the shared edge.
+corner_source=[road(sh.box(0,4,2,8),[0,0,0],'roadbed_tunnel_descent',-1,'entry'),
+               road(sh.box(2,4,12,8),[0,0,0],'roadbed_overpass',1,'deck'),
+               road(sh.Polygon([(2,8),(1,9),(0,8)]),[0,0,2],'roadbed_tunnel_descent',-1,'flank')]
+corner_interfaces=shared_interfaces(corner_source,sh.box(-1,0,13,12),P,z_at)
+assert len(corner_interfaces)==1 and corner_interfaces[0]['relativeHeightsM']==[0.,0.]
+assert corner_interfaces[0]['ends'][0]['parents']==['deck']
+assert corner_interfaces[0]['ends'][1]['parents']==['entry']
+
+# Conflicting height fields along the actual shared span remain an error.
+overlapping=corner_source[:2]+[
+    road(sh.box(0,4,2,8),[0,0,2],'roadbed_tunnel_descent',-1,'entry-duplicate'),
+    road(sh.box(2,4,12,8),[0,0,2],'roadbed_overpass',1,'deck-duplicate')]
+try:
+    shared_interfaces(overlapping,sh.box(-1,0,13,12),P,z_at)
+except ValueError as error:
+    assert 'Ambiguous source heights' in str(error)
+else:
+    raise AssertionError('Two conflicting shared-edge heights must still fail')
+print('Height provenance regressions passed: point-only flank excluded, conflicting shared-edge owners rejected.')
+
+fixture=json.loads((Path(__file__).parent/'fixtures/tunnel-interface-point-contact.json').read_text())
+for angle,offset in [(0,[0,0]),(.43,[-3400,-4300])]:
+    c,s=np.cos(angle),np.sin(angle);matrix=np.array([[c,-s],[s,c]])
+    transform=[c,-s,s,c,*offset];candidates=[]
+    for row in fixture['roads']:
+        patches=[]
+        for patch in row['patches']:
+            poly=affine_transform(sh.geometry.shape(patch['geometry']),transform)
+            height=np.array(patch['plane']);normal=matrix@height[:2]
+            patches.append((poly,np.r_[normal,height[2]-np.dot(normal,offset)]))
+        candidates.append(dict(id=row['id'],kind='road',part=row['part'],tiers=row['tiers'],
+            poly=sh.union_all([p for p,c in patches],grid_size=P),patches=patches))
+    interfaces=shared_interfaces(candidates,affine_transform(sh.box(*fixture['bounds']),transform),P,z_at)
+    assert len(interfaces)==2
+    assert all(np.max(np.abs(np.array(i['relativeHeightsM'])+5))<.001 for i in interfaces)
+    assert all(i['maxHeightMismatchM']<.00001 for i in interfaces)
+    assert sorted(round(i['mouthWidthM'],3) for i in interfaces)==[12.292,12.319]
+print('Expanded Moscow tunnel regression passed, including rotation: only matched edge patches supply heights.')

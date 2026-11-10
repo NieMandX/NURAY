@@ -5,8 +5,14 @@ import shapely as sh
 from source_config import load_plan
 from spatial_mask import SpatialMask
 from canonical_store import save_canonical,JsonRows
+from checkpoint_stream import _without_cycle_scans
 
+@_without_cycle_scans
 def finish(b,opening,roads,paint_checks,total,bound,start,fresh_source=False):
+    # The canonical graph remains strongly referenced throughout this phase.
+    # Reference counting frees temporaries; repeated cyclic-GC scans of every
+    # live city cell only page the whole scene back into RAM. Restore the
+    # caller's collector state even if validation or export fails.
     failed_profiles=[{k:p[k] for k in ('transport','level','maxAsphaltShoulderHeightMismatchM','maxGroundShoulderJoinErrorM',
         'uncoveredDeckSidesM','uncoveredParapetSidesM','uncoveredShoulderRisersM') if k in p}
         for p in b.overpass_profiles if not p['passed']]
@@ -56,6 +62,8 @@ def finish(b,opening,roads,paint_checks,total,bound,start,fresh_source=False):
         roadHeightControlGrid=b.road_model.controls(),roadInterfaces=b.road_interfaces,gradeConnections=b.grade_connections,
         surfaces=JsonRows({**{k:v for k,v in s.items() if k not in ['poly','plane']},'geometry':sh.geometry.mapping(s['poly']),'heightPlane':s['plane'].tolist()} for s in b.surfaces),
         overpassProfiles=b.overpass_profiles,relationships=b.relationships,roadSeamRepairs=b.slit_repairs,
+        curbs=b.curb_report,curbBandGeometry=sh.geometry.mapping(b.curb_band),
+        transitionTerrainCutGeometry=sh.geometry.mapping(b.transition_cut),
         roadSeamChecks=report['roadSeams'],
         rules=dict(semantics='classify purpose, construction and appearance independently by explicit source layer/style; archive deferred/unknown records; reject unsupported structural surfaces',
           tunnelWalls=b.wall_report['policy'],railwayEntries=b.RAILWAY_ENTRY_POLICY,

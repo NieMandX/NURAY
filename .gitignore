@@ -9,4 +9,7 @@ __pycache__/
 moscow-fidelity/source/
 moscow-fidelity/output/
 moscow-fidelity/web-preview/prototype/tiles/assets*/
+moscow-fidelity/web-preview/prototype/tiles/.bvh-validation-cache/
+moscow-fidelity/web-preview/prototype/tiles/.source-topology-cache/
+moscow-fidelity/web-preview/prototype/tiles/.transport-cache/
 moscow-fidelity/diagnostics/

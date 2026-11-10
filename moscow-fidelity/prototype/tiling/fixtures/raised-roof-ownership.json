@@ -1,0 +1,85 @@
+{
+  "row": {
+    "id": "building:Technical_house_4504235282810213",
+    "category": "building",
+    "file": "object-00304.npz",
+    "triangles": 40,
+    "bounds": {
+      "min": [
+        -2872.905029296875,
+        12347.037109375,
+        0.0
+      ],
+      "max": [
+        -2861.895263671875,
+        12361.564453125,
+        2.9963808059692383
+      ]
+    },
+    "sourceBuildingId": "4504235282810213",
+    "sourceLayer": "Technical_house_4504235282810213",
+    "sourceTerrainBaseM": 0.0,
+    "heightReference": "source-relative",
+    "placement": {
+      "positionMSK": [
+        -2867.1519281465753,
+        12354.793829843988
+      ],
+      "sourceBaseM": 0.0,
+      "targetBaseM": 136.9951935851035,
+      "shiftM": 136.9951935851035,
+      "method": "rigid-source-building-group"
+    },
+    "retainedTriangles": 124,
+    "flatRoof": {
+      "version": 3,
+      "insetM": 0.4,
+      "depthM": 0.4,
+      "parapetHeightM": 1.0,
+      "raiseM": 0.6,
+      "sourceLevelToleranceM": 0.01,
+      "selection": "ordinary house body without a source roof part or detailed model; horizontal generated caps only",
+      "shape": "inset the full coplanar cap, preserving concavity and courtyard holes; rim and inner walls retain the original material",
+      "center": "only the recessed horizontal face receives grey matte metal",
+      "fallback": "retain caps too narrow for the inset, non-horizontal caps, and buildings cut by the acquisition boundary",
+      "patches": [
+        {
+          "heightM": -5.008429129918416,
+          "sourceHeightSpanM": 8.58306884765625e-06,
+          "areaM2": 83.12429738044739,
+          "centerAreaM2": 68.28270039352272,
+          "innerPerimeterM": 35.80556866738882,
+          "wallAreaM2": 35.80556866738882,
+          "outerWallAreaM2": 23.041449760345184,
+          "parapetHeightM": 1.0,
+          "raiseM": 0.6,
+          "centerTriangles": 12,
+          "rimTriangles": 28,
+          "wallTriangles": 56,
+          "bounds": [
+            -4997.9052734375,
+            -4291.564453125,
+            -4986.8955078125,
+            -4277.037109375
+          ]
+        }
+      ]
+    },
+    "facadeBands": {
+      "material": 329,
+      "baseY": -8.004806414896507,
+      "version": 1,
+      "brightness": 1.35,
+      "storeyHeightM": 3.0,
+      "storeys": "illustrative spacing; no authoritative floor count in retained building attributes",
+      "scope": "near-vertical ordinary house walls with the Buildings material",
+      "preserve": "all roof surfaces, landmarks, geometry, normals, tint, triangle order and BVHs",
+      "alignment": "source building group ground datum; continuous across corners and tiles"
+    }
+  },
+  "originMSK": [
+    2125.0,
+    8070.0,
+    145.0
+  ]
+}

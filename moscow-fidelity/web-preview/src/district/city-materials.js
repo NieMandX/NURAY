@@ -1,4 +1,4 @@
-import {groundMaterialRole} from './ground-surfaces.js?v=dry-ground-1';
+import {groundMaterialRole} from './ground-surfaces.js?v=land-use-1';
 import {isRoad} from './surface-effects.js?v=moscow-defaults-1';
 import {isFacade,facadePixels} from './facade-relief.js?v=moscow-defaults-1';
 import {cityBase} from './city-config.js?v=moscow-defaults-1';

@@ -105,7 +105,14 @@ def prepare(source, output):
         descriptor['validation'] = compressed_file(compact, output / 'validation-summary.json.gz', prefix + 'validation-summary.json.gz')
         compact.unlink()
     print(json.dumps({'catalog': descriptor['catalog']}, ensure_ascii=False), flush=True)
-    descriptor['merged'] = compressed_file(source / 'merged/model.glb', output / 'model.glb.gz', prefix + 'model.glb.gz')
+    metadata_path = source / 'merged/metadata.json'
+    asset = json.loads(metadata_path.read_text()).get('asset', {}) if metadata_path.exists() else {}
+    filename = asset.get('file', 'model.glb')
+    if filename not in ('model.glb', 'model.gltf'):
+        raise ValueError('Unsupported merged scene container')
+    descriptor['merged'] = compressed_file(source / ('merged/' + filename), output / (filename + '.gz'), prefix + filename + '.gz')
+    if filename == 'model.gltf':
+        descriptor['mergedBuffer'] = compressed_file(source / 'merged/model.bin', output / 'model.bin.gz', prefix + 'model.bin.gz')
     (output / 'delivery.json').write_text(json.dumps(descriptor, indent=2) + '\n')
     print(json.dumps(descriptor, ensure_ascii=False), flush=True)
     return descriptor

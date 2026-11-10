@@ -18,7 +18,8 @@ STRUCTURES={'overpass_bottom','overpass_riser','overpass_shoulder','overpass_sid
 
 
 def load_terrain(root):
-    c=np.load(root/'canonical/terrain.npz');dem=list(zip(sh.from_wkb(c['polygons']),c['planes']))
+    from terrain_store import read_terrain
+    dem=read_terrain(root/'canonical/terrain.npz')
     return dem,sh.STRtree([p for p,c in dem])
 
 

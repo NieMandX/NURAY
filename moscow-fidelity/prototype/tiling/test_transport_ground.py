@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 import shapely as sh
-from transport_ground import clip_mesh,restore_land,ground_words
+from transport_ground import clip_mesh,restore_land,ground_words,nearby_surfaces,exposed_curb
 from prepare_road_paint import world
 
 def words(t):
@@ -13,6 +13,31 @@ def words(t):
     return out
 
 class GroundPartitionTests(unittest.TestCase):
+    def test_exposed_land_requires_curbs_but_not_across_walking_mouth(self):
+        road=sh.box(-3,-4,0,4);missing=sh.box(0,-2,.2,2)
+        needed=exposed_curb(missing,road,[],[])
+        self.assertAlmostEqual(needed.area,.6)
+        c=dict(atGround=True,peerKind='pedestrian_ground',landingGeometry=sh.geometry.mapping(sh.box(-.2,-2,.3,2)))
+        self.assertEqual(exposed_curb(missing,road,[c],[]).area,0.)
+        c['atGround']=False
+        self.assertAlmostEqual(exposed_curb(missing,road,[c],[]).area,.6)
+        descent=dict(kind='roadbed_tunnel_descent',geometry=sh.geometry.mapping(sh.box(-.2,-1,.3,1)))
+        self.assertAlmostEqual(exposed_curb(missing,road,[],[descent]).area,.3)
+
+    def test_batched_surface_scan_matches_exact_geometry_and_order(self):
+        polygons=[sh.box(i*3,0,i*3+2,2) for i in range(5000)]
+        polygons += [sh.Polygon([(0,0),(100,0),(100,100),(0,100)],
+                               holes=[[(10,10),(90,10),(90,90),(10,90)]]),
+                     sh.MultiPolygon([sh.box(-3,-3,-2,-2),sh.box(200,200,201,201)]),
+                     sh.Polygon()]
+        rows=[dict(id=str(i),kind='land',geometry=sh.geometry.mapping(p)) for i,p in enumerate(polygons)]
+        rows.append(dict(id='ignored',kind='roadbed_overpass',geometry=sh.geometry.mapping(polygons[0])))
+        class Document:
+            def items(self,key):return iter(rows)
+        relevant=sh.union_all([sh.box(50,50,60,60),sh.box(-2.5,-2.5,-2,-2),sh.box(12290,1,12303,4)])
+        expected=[str(i) for i,p in enumerate(polygons) if p.intersects(relevant)]
+        self.assertEqual([s['id'] for s in nearby_surfaces(Document(),relevant)],expected)
+
     def test_sloping_ground_keeps_height_material_and_outside_area(self):
         source=words([[0,0,0],[4,0,.4],[0,4,.8]])
         cut=sh.box(1,-1,3,5)

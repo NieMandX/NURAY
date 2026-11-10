@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
 import shapely as sh
-from green_insets import recover,strip_polygon,areal
-from landscape import plan,split_cell
+from green_insets import recover,strip_polygon,areal,protected_ground
+from landscape import plan,split_cell,area_only
 from semantics import classify
 
 def feature(i,layer,xy):
@@ -45,5 +45,16 @@ class GreenInsetsTests(unittest.TestCase):
         g=sh.GeometryCollection([sh.box(0,0,2,2),sh.LineString([[2,2],[3,3]])])
         self.assertEqual(areal(g).area,4)
         self.assertEqual(areal(g).geom_type,'Polygon')
+    def test_full_reserve_keeps_shared_ground_when_walking_is_removed(self):
+        city=dict(boundsMSK=[-10,-10,10,10],gradeConnections=[],roadInterfaces=[],
+                  tunnelWalls={'groups':[]},features=[dict(id='rail',layer='Railroad_line',geometryType='polyline',
+                  properties={},coordinates=[[-5,0,0],[5,0,0]])])
+        covered=sh.box(-.1,-.1,.1,.1)
+        a=area_only(protected_ground(city,walking=covered))
+        b=area_only(protected_ground(city))
+        self.assertEqual(a.symmetric_difference(b).area,0)
+        exposed=sh.box(-.1,4,.1,4.2)
+        c=area_only(protected_ground(city,walking=exposed))
+        self.assertAlmostEqual(c.difference(b).area,exposed.area)
 
 if __name__=='__main__':unittest.main()

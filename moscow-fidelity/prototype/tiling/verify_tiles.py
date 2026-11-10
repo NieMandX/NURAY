@@ -89,13 +89,10 @@ def oct_decode(u):
 
 for c in canonical['chunks']:
     raw = gzip.decompress((ROOT / 'canonical/full' / Path(c['file']).name).read_bytes())
-    v = np.frombuffer(raw[:c['vertexBytes']], '<f4').reshape(-1, 8)
-    u = np.frombuffer(raw[:c['vertexBytes']], '<u4').reshape(-1, 8)
-    ix = np.frombuffer(raw[c['vertexBytes']:], '<u4').reshape(-1, 3)
-    sources[c['id']] = {'area': areas(v[ix, :3].astype(float)), 'material': u[ix[:, 0], 6]}
-    if c.get('objectGeometry') or c['name']=='waterfront-bank':sources[c['id']].update(points=v[ix,:3].astype(float),uv=v[ix,4:6].astype(float))
-    if c.get('instanced'):sources[c['id']]['cornerWords']=u[ix].copy()
+    from canonical_mesh_audit import source_geometry
+    sources[c['id']] = source_geometry(raw,c)
     accumulated[c['id']] = np.zeros(c['triangles'])
+    del raw
 
 total_nodes = 0
 bvh_cache_hits = 0
@@ -215,6 +212,10 @@ assert area_delta / source_area < 1e-6
 from partition_quantization import verify_area_exceptions
 area_rounding=verify_area_exceptions(ROOT,canonical,manifest,sources,accumulated)
 assert max_uv_error < .0001
+# The geometry/area/seam proofs are complete. Their large per-triangle witness
+# arrays are not used by transport or instance checks below.
+del sources,accumulated,seams,normals,seam_sources
+raw=None;vertices=None;indices=None
 print('VERIFY TILE BOUNDARIES COMPLETE',pairs,'checking road seams',flush=True)
 road_seams = check_passages(gates, passage_meshes)
 assert road_seams['passed'], road_seams
@@ -247,9 +248,15 @@ if city.get('railwayLayer'):
 print('VERIFY RAILWAYS COMPLETE checking transport corridors',flush=True)
 from transport_clearance_validation import audit as audit_transport_clearance
 transport_clearance=audit_transport_clearance(city,dem,dtree,iter(interface_meshes))
-assert transport_clearance['passed'],transport_clearance
+(ROOT/'transport-clearance-audit.json').write_text(json.dumps(transport_clearance,indent=2))
+assert transport_clearance['passed'],dict(
+    report='transport-clearance-audit.json',
+    failedChecks=[r['interface'] for r in transport_clearance['checks'] if not r['passed']],
+    failedCorridors=[r['id'] for r in transport_clearance['source']['corridors'] if not r['passed']],
+    missingFloors=[r for r in transport_clearance['source']['floorCoverage'] if not r['passed']])
 if city['rules'].get('passageClearance'):
     assert transport_clearance['fullWidth']['passed'],transport_clearance['partialContacts']
+del passage_meshes,interface_meshes,interface_volumes,gates,dem,dtree
 print('VERIFY TRANSPORT CORRIDORS COMPLETE checking objects and instances',flush=True)
 object_check=None
 if city.get('objectLayer'):

@@ -11,9 +11,9 @@
 - [Принятые визуальные решения](docs/knowledge/DECISIONS.md)
 - [Размещение данных и публикация](docs/knowledge/DEPLOYMENT.md)
 - [Московский пресет от 27 октября 2026](docs/moscow-approved-20261027.json)
-- [Размеры и SHA-256 файлов сцены](docs/assets-manifest.json)
+- [Размеры и SHA-256 файлов сцены](docs/assets-moscow-10km-20261110-manifest.json)
 
-Москва: 5 × 5 км, выпуск `assets-moscow-style-20261024-r14`. По умолчанию — WebGPU, растеризация, физическое небо Hosek–Wilkie, Ocean, сохранённый ракурс и свет. Настройки Петербурга не заменяются московскими.
+Москва: **10 × 10 км**, выпуск `assets-moscow-10km-20261108-r1`. Сначала загружается выбранный квадрат **3 × 3 км**; соседние ячейки добавляются вручную в панели «Участки карты». По умолчанию — WebGPU-растеризация, физическое небо Hosek–Wilkie, Ocean и сохранённый свет. Настройки Петербурга не заменяются московскими.
 
 Код, небольшие библиотечные ассеты и документация — здесь. Сшитый GLB, тайлы, текстуры сцены и ускорители трассировки — в Yandex Object Storage, бакет `nuray-assets-niemandx`. Секреты доступа в репозиторий не входят.
 
@@ -30,9 +30,9 @@ python3 -m http.server 8776 --bind 127.0.0.1 --directory moscow-fidelity/web-pre
 Для локальной копии данных:
 
 ```sh
-python3 scripts/restore_assets.py --mode merged
+python3 scripts/restore_assets.py --manifest docs/assets-moscow-10km-20261110-manifest.json --mode all
 ```
 
-Полный набор с тайлами: `--mode all`. Затем уберите `assetBase` и `meshPacks` из локального `moscow-fidelity/web-preview/prototype/tiles/config.json`. Скрипт восстановит исходные файлы из контейнера тайлов и проверит SHA-256. Сборка геометрии для просмотра готовой сцены не требуется.
+Скрипт проверяет SHA-256 и восстанавливает тайлы из контейнера. Для автономного полного экспорта дополнительно распакуйте gzip glTF/BIN, как описано в [инструкции](docs/knowledge/DEPLOYMENT.md). Пересборка геометрии для просмотра готовой сцены не требуется.
 
 ![Московская сцена с сохранёнными настройками](docs/proof/moscow-defaults.png)

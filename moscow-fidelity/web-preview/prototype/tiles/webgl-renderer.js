@@ -1,4 +1,4 @@
-import {groundMaterialRole} from '../../src/district/ground-surfaces.js?v=dry-ground-1';
+import {groundMaterialRole} from '../../src/district/ground-surfaces.js?v=land-use-1';
 import {absorptionCoefficients,linearColor} from '../../src/district/ocean/optics.js?v=shore-water-1';
 import {HosekCache} from '../../src/district/hosek/model.js?v=moscow-defaults-1';
 import {waterSkyVertex,waterSkyFragment} from './water-webgl-sky.js?v=shore-water-1';
@@ -6,7 +6,7 @@ import {installSurfaceField,isRoad} from '../../src/district/surface-effects.js?
 import {sunCascades,shadowUniform,inverseMatrix} from '../../src/district/sun-shadows.js?v=moscow-defaults-1';
 import {isFacade,facadePixels} from '../../src/district/facade-relief.js?v=moscow-defaults-1';
 import {contactVertex,contactFragment,contactComposite} from './webgl-contact-ao.js?v=moscow-defaults-1';
-import {TileRenderer} from './tile-renderer.js?v=asset-delivery-1';
+import {TileRenderer} from './tile-renderer.js?v=manual-areas-1';
 import {mapConcurrent} from '../../src/district/asset-fetch.js?v=asset-delivery-1';
 import {activeChunkIds,sceneInstances,rasterLayout} from './tile-scene.js?v=moscow-defaults-1';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from '../../src/district/math.js?v=moscow-defaults-1';

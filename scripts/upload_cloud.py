@@ -35,7 +35,8 @@ def save_state(path, value):
 
 def verify(client, path, bucket, key, size, digest):
     head = client.head_object(Bucket=bucket, Key=key)
-    if head['ContentLength'] != size or head.get('Metadata', {}).get('sha256') != digest:
+    metadata = {key.lower(): value for key, value in head.get('Metadata', {}).items()}
+    if head['ContentLength'] != size or metadata.get('sha256') != digest:
         raise ValueError('Existing object does not match size/SHA-256 metadata; refusing overwrite')
     length = min(65536, size)
     with path.open('rb') as source:
@@ -82,6 +83,7 @@ def main():
     p.add_argument('--region', default='ru-central-1')
     p.add_argument('--addressing-style', choices=('path', 'virtual'), default='path')
     p.add_argument('--credentials-file', type=Path)
+    p.add_argument('--iam-token-file', type=Path, help='Private short-lived Yandex IAM session; never logged')
     p.add_argument('--state-dir', type=Path, default=Path('.local/uploads'))
     p.add_argument('--part-mib', type=int, default=8)
     p.add_argument('--workers', type=int, default=2)
@@ -99,6 +101,14 @@ def main():
     if args.sha256 and args.sha256 != digest:
         raise ValueError('Local file checksum differs from the release manifest')
     credentials = {}
+    if args.iam_token_file and args.credentials_file:
+        p.error('Choose either an IAM session or static credentials')
+    if args.iam_token_file:
+        if args.endpoint != 'https://storage.yandexcloud.net':
+            p.error('IAM sessions are supported only for the official Yandex endpoint')
+        if args.iam_token_file.stat().st_mode & 0o077:
+            raise ValueError('IAM session file must be private (chmod 600)')
+        from botocore import UNSIGNED
     if args.credentials_file:
         if args.credentials_file.stat().st_mode & 0o077:
             raise ValueError('Credentials file must be private (chmod 600)')
@@ -108,11 +118,15 @@ def main():
             key_id = secret['tenantId'] + ':' + key_id
         credentials = {'aws_access_key_id': key_id, 'aws_secret_access_key': secret['secretAccessKey']}
     client = boto3.client('s3', endpoint_url=args.endpoint, region_name=args.region,
-        config=Config(signature_version='s3v4', s3={'addressing_style': args.addressing_style},
+        config=Config(signature_version=UNSIGNED if args.iam_token_file else 's3v4', s3={'addressing_style': args.addressing_style},
                       connect_timeout=20, read_timeout=120, max_pool_connections=args.workers + 2,
                       retries={'mode': 'standard', 'max_attempts': 5},
                       request_checksum_calculation='when_required',
                       response_checksum_validation='when_required'), **credentials)
+    if args.iam_token_file:
+        def authorize(request, **kwargs):
+            request.headers['Authorization'] = 'Bearer ' + args.iam_token_file.read_text().strip()
+        client.meta.events.register('before-send.s3', authorize)
     try:
         client.head_object(Bucket=args.bucket, Key=args.key)
     except ClientError as error:

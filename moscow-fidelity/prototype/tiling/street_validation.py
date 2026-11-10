@@ -3,13 +3,14 @@ import gzip, hashlib, json
 from pathlib import Path
 import numpy as np
 from street_placement import owner, transform, SurfaceSampler, GROUND_NAMES
-from canonical_store import load_canonical
+from canonical_parent import load_parent
 
 def verify_revision(root,city,manifest):
     revision=city['geometryRevision'];parent=root.parent/revision['parent'];layer=city['streetLayer']
     proof=(parent/'validation.json').read_bytes()
     assert hashlib.sha256(proof).hexdigest()==revision['parentValidationSha256'] and json.loads(proof)['passed']
-    old=json.loads((parent/'canonical/full/scene.json').read_text());before=load_canonical(parent/'canonical/urban-model.json')
+    old=json.loads((parent/'canonical/full/scene.json').read_text())
+    before=load_parent(parent/'canonical/urban-model.json',city,changed_keys=('geometryRevision','streetLayer'))
     # A fresh canonical/object/rail build has no earlier refinement revision.
     assert before.get('geometryRevision')==revision['previousRevision']
     for k in set(before)|set(city):
@@ -26,10 +27,18 @@ def verify_revision(root,city,manifest):
     additions=manifest['chunks'][len(old['chunks']):]
     assert revision['addedChunks']==[c['id'] for c in additions]
     for c in additions:
-        raw=gzip.decompress((root/'canonical/full'/Path(c['file']).name).read_bytes());u=np.frombuffer(raw[:c['vertexBytes']],'<u4').reshape(-1,8)
-        assert c['streetGeometry'] and np.isfinite(u.view('<f4')[:,:3]).all()
-        assert np.all((u[:,6]&0x7fffffff)>=len(old['materials']))
-        assert np.all((u[:,6]&0x7fffffff)<len(manifest['materials']))
+        raw=gzip.decompress((root/'canonical/full'/Path(c['file']).name).read_bytes())
+        u=np.frombuffer(raw,'<u4',count=c['vertexBytes']//4).reshape(-1,8)
+        assert c['streetGeometry']
+        # Every vertex is checked; temporary masks need not cover the complete
+        # 4+ GB fence buffer at once. Read the original bytes without a slice copy.
+        for start in range(0,len(u),1_000_000):
+            part=u[start:start+1_000_000]
+            assert np.isfinite(part.view('<f4')[:,:3]).all()
+            assert np.all((part[:,6]&0x7fffffff)>=len(old['materials']))
+            assert np.all((part[:,6]&0x7fffffff)<len(manifest['materials']))
+        del raw,u
+        if c['vertexBytes']:del part
     evidence=(root/'canonical/street-source-evidence.json.gz').read_bytes()
     assert hashlib.sha256(evidence).hexdigest()==layer['sourceEvidenceSha256']
     records={r['sourceRecordId']:r for r in json.loads(gzip.decompress(evidence))['records']}

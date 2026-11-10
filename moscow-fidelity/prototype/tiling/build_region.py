@@ -21,7 +21,9 @@ parser.add_argument('--source-checkpoint',type=Path,help='Reuse only a provenanc
 parser.add_argument('--surface-checkpoint',type=Path,help='Save fitted road geometry before structural and land overlays')
 parser.add_argument('--resume-surfaces',type=Path,help='Resume this task’s own surface checkpoint after a structural rule repair')
 parser.add_argument('--resume-stage',type=Path,help='Resume completed surfaces or paint from this same source capture')
+parser.add_argument('--rebuild-curb-sides',action='store_true',help='Regenerate only curb side faces from the retained global band and terrain when resuming')
 args=parser.parse_args()
+if args.rebuild_curb_sides and not args.resume_stage:parser.error('--rebuild-curb-sides requires --resume-stage')
 # The 1 km region remains inside the retained Blender marking extraction.
 # These are experiment extents, not coordinate exceptions in geometry rules.
 b.B=args.bounds or ([1875.,7820.,2375.,8320.] if args.size==500 else [2125-args.size/2,8000-args.size/2,2125+args.size/2,8000+args.size/2])
@@ -91,14 +93,21 @@ else:
             with temporary.open('wb') as f:dump_geometry((signature,state,candidates,model),f)
             temporary.replace(args.source_checkpoint)
     source_audit=b.audit_semantics(b.records)
+    (b.DATA/'source-semantics-validation.json').write_text(json.dumps(source_audit,ensure_ascii=False,indent=2))
     if not source_audit['passed']:
-        (b.DATA/'source-semantics-validation.json').write_text(json.dumps(source_audit,ensure_ascii=False,indent=2))
         raise ValueError('Unsupported physical surface classes; resolve source semantics before fitting the region')
     print('REGION SOURCE',len(b.records),'DEM',len(b.dem),flush=True)
     if args.surface_checkpoint:
         b.surface_checkpoint_hook=lambda *inputs:save_checkpoint(b,args.surface_checkpoint,inputs)
     opening,roads=b.build_surfaces(candidates)
 print('REGION SURFACES',len(b.surfaces),flush=True)
+if args.rebuild_curb_sides:
+    for kind in ('curb_front','curb_back'):
+        b.groups[(kind,b.CURB_MATERIAL)]=[]
+        if (kind,b.CURB_MATERIAL) in b.shading_flags:del b.shading_flags[(kind,b.CURB_MATERIAL)]
+    b.curb_front,side_count=b.solid_sides(b.curb_band,roads,b.dem,b.demtree,b.groups,b.z_at,b.EXTENT)
+    b.curb_report.update(sideSegments=side_count)
+    print('REGION REBUILT CURB SIDES',side_count,flush=True)
 if stage=='paint':
     paint_checks,total,bound=saved['paint']
 else:

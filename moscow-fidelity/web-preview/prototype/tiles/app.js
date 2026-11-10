@@ -1,27 +1,30 @@
 import {installSceneLayers} from './scene-layers.js?v=scene-layers-1';
 import {installWaterPanel} from './water-panel.js?v=shore-water-1';
 import {installHeliodon,sceneGeography} from './heliodon.js?v=moscow-defaults-1';
-import {MergedGlbRenderer} from './merged-glb-renderer.js?v=asset-delivery-1';
-import {TileRenderer} from './tile-renderer.js?v=asset-delivery-1';
-import {WebGLTileRenderer} from './webgl-renderer.js?v=asset-delivery-1';
+import {MergedGlbRenderer} from './merged-glb-renderer.js?v=large-region-2';
+import {TileRenderer} from './tile-renderer.js?v=manual-areas-1';
+import {WebGLTileRenderer} from './webgl-renderer.js?v=manual-areas-1';
+import {areaTileIds,hydrateAreas,installAreaPicker,drawAreaOutline} from './manual-areas.js?v=manual-areas-1';
 import {bindCameraInput} from './camera-input.js?v=moscow-defaults-1';
 import {createStatsPanel} from './viewer-stats.js?v=moscow-defaults-1';
-import {viewerDefaults,catalogKey,defaultSunPreset} from '../../src/district/viewer-defaults.js?v=moscow-preset-2';
+import {viewerDefaults,catalogKey,defaultSunPreset} from '../../src/district/viewer-defaults.js?v=moscow-10km-1';
 import {readAssetJSON} from '../../src/district/asset-fetch.js?v=asset-delivery-1';
 const $=id=>document.getElementById(id),showStats=createStatsPanel();
 const mergedMode=new URLSearchParams(location.search).get('layout')==='merged';
+let manualMode=new URLSearchParams(location.search).get('layout')==='sectors';
 let canvas=$('scene'),renderer;
 let initialized=false,pending=false,draining=false,layerChanging=false,debounce,currentDrain=Promise.resolve();
 function fail(message){$('error').hidden=false;$('error').textContent=message;$('loading').hidden=true;$('retry').hidden=false;console.error(message);}
 function report(s){
   const st=renderer.streamStats;canvas.dataset.camera=JSON.stringify(renderer.camera);
   if(mergedMode)$('stats-scope').textContent='Счётчики относятся к включённым объектам всей карты. Рейтрейс учитывает их и вне кадра; отключённые объекты не видны лучам.';
+  if(manualMode){canvas.dataset.selectedTiles=JSON.stringify([...(renderer.manualTiles??[])]);drawAreaOutline(renderer);}
   canvas.dataset.sceneLayers=JSON.stringify(renderer.sceneLayers);
   canvas.dataset.residency=JSON.stringify({modes:[...renderer.tileModes],bytes:st.residentBytes,released:st.releasedGpuBytes,revision:renderer.revision,gpuPages:renderer.mergedArenas?.length??renderer.tilePages.size,gpuPageLimit:renderer.pageLimit,wholeSceneTrace:!!renderer.mergedTraceReady});
   showStats(s,st);
-  $('residency').textContent=mergedMode?`Единый GLB · ${renderer.tileset?.nodes??'—'} объекта · вся карта`:`250 × 250 м · подробно: ${st.fullTiles??0} · обзор: ${st.coarseTiles??0}${st.budgetLimited?' · лимит нагрузки':''}`;
+  $('residency').textContent=mergedMode?`Единая сцена · ${renderer.tileset?.nodes??'—'} объекта · вся карта`:`250 × 250 м · подробно: ${st.fullTiles??0} · обзор: ${st.coarseTiles??0}${st.budgetLimited?' · лимит нагрузки':''}`;
   if(s.loading){const msg=`${s.phase} · ${Math.round(s.progress*100)}%`;$('loading').textContent=msg;$('activity').textContent=msg;}
-  else if(initialized)$('activity').textContent=st.budgetLimited?'Ограничение нагрузки: показаны ближайшие участки. Переместите камеру для подгрузки соседних.':mergedMode?'Карта загружена из единого GLB':'Участки загружены';
+  else if(initialized)$('activity').textContent=st.budgetLimited?(manualMode?'Лимит этого режима: показана часть выбранной территории. В WebGPU-растеризации она доступна полностью.':'Ограничение нагрузки: показаны ближайшие участки. Переместите камеру для подгрузки соседних.'):mergedMode?'Карта загружена целиком':manualMode?'Выбранные участки загружены. Остальная карта — по выбору.':'Участки загружены';
   for(const b of document.querySelectorAll('[data-tile]')){
     const mode=renderer.tileModes.get(b.dataset.tile);
     if(b.dataset.detail===(mode||''))continue;
@@ -82,7 +85,7 @@ async function applySceneLayers(value){
 $('engine').onchange=()=>{
   const engine=$('engine').value;
   renderer.ready=false;renderer.state.engine=engine;
-  if(!mergedMode&&engine!=='raster')$('streaming').value='auto';
+  if(!mergedMode&&!manualMode&&engine!=='raster')$('streaming').value='auto';
   renderer.syncWaterPanel?.();
   renderer.tracer.cache.invalidate();renderer.tracer.reset();
   // The trace/cascade switch shares geometry, but still resumes rendering.
@@ -95,9 +98,10 @@ $('sun-shadows').onchange=e=>{renderer.state.shadows=e.target.checked;renderer.s
 $('quality').onchange=e=>{renderer.state.pixels=Number(e.target.value);renderer.resize();};
 $('samples').onchange=e=>{renderer.tracer.limit=Number(e.target.value);renderer.tracer.reset();renderer.publish(true);};
 $('streaming').onchange=()=>schedule({immediate:true});
+$('area-boundary').onchange=()=>drawAreaOutline(renderer);
 $('views').onclick=e=>{
   const b=e.target.closest('[data-view]');if(!b||!initialized)return;
-  renderer.camera=b.dataset.view==='overview'&&renderer.backend==='webgl2'
+  renderer.camera=b.dataset.view==='overview'&&renderer.backend==='webgl2'&&!manualMode
     ?renderer.overviewCamera(renderer.camera.target):structuredClone(views[b.dataset.view]);
   $('view-name').textContent=b.firstChild.textContent;
   document.querySelectorAll('[data-view]').forEach(v=>v.setAttribute('aria-pressed',v===b));moved();schedule({immediate:true});
@@ -120,6 +124,13 @@ try{
     if(!/^assets[-a-z0-9]+\/tileset\.json$/.test(preview))throw Error('Неверный адрес локального каталога');
     config.catalog=preview;config.canonicalModel=preview.replace('tileset.json','canonical/full/model.glb');
   }
+  if(!params.has('layout')&&config.manualCatalogs?.[config.catalog])manualMode=true;
+  if(manualMode){
+    const sectors=config.manualCatalogs?.[config.catalog];
+    if(!sectors)throw Error('Для этой сцены выбор участков ещё не подготовлен');
+    config.assetDelivery??={};
+    config.assetDelivery[config.catalog]={...config.assetDelivery[config.catalog],...sectors};
+  }
   // Mirrors are opt-in and replace only the compressed GLB, keeping the same
   // catalog identity, materials, visibility, presets and integrity checks.
   const mirrorKey=mergedMode?params.get('mirror'):null;
@@ -127,11 +138,16 @@ try{
   if(mirrorKey&&(!mirror||!config.assetDelivery?.[config.catalog]?.merged))throw Error('Для этой сцены зеркало GLB не настроено');
   const assetBase=config.assetBase?new URL(config.assetBase,configURL):configURL;
   const catalogURL=new URL(config.catalog,assetBase),validationURL=new URL(mergedMode?'merged/validation.json':'validation.json',catalogURL);
-  $('catalog-link').href=catalogURL.href;$('validation-link').href=validationURL.href;
+  $('catalog-link').href=catalogURL.href;$('validation-link').href=new URL((!mergedMode&&config.assetDelivery?.[config.catalog]?.validation?.url)||validationURL.href,catalogURL).href;
   if(mergedMode)config.canonicalModel=config.catalog.replace('tileset.json','merged/model.glb');
   if(config.canonicalModel)$('model-link').href=new URL(config.canonicalModel,assetBase).href;else $('model-link').hidden=true;
+  if(manualMode){
+    const delivery=config.assetDelivery?.[config.catalog];
+    $('model-link').href=new URL(delivery?.merged?.url||'merged/model.gltf',catalogURL).href;$('model-link').textContent='Вся Москва · glTF'+(delivery?.merged?.encoding==='gzip'?' gzip':'');
+    $('model-buffer-link').href=new URL(delivery?.mergedBuffer?.url||'merged/model.bin',catalogURL).href;$('model-buffer-link').textContent='Буфер BIN'+(delivery?.mergedBuffer?.encoding==='gzip'?' gzip':'');$('model-buffer-link').hidden=false;
+  }
   readAssetJSON((!mergedMode&&config.assetDelivery?.[config.catalog]?.validation)||{url:validationURL.href,cache:'no-cache'},catalogURL).then(r=>{
-    if(mergedMode){$('validation').textContent=r.passed?`Единый GLB проверен: ${r.objects} объекта, ${r.gpuBatches} групп отрисовки. Атрибуты вершин и матрицы инстансов сохранены; геометрия не упрощена.`:'Проверка GLB выявила расхождения';return;}
+    if(mergedMode){$('validation').textContent=r.passed?`Единая сцена проверена: ${r.objects} объекта, ${r.gpuBatches} групп отрисовки. Атрибуты вершин и матрицы инстансов сохранены; геометрия не упрощена.`:'Проверка сцены выявила расхождения';return;}
     $('validation').textContent=r.passed?`Границы и BVH проверены. Максимальное расхождение шва: ${(r.seams.maxGapM*1000).toFixed(4)} мм. Все ${r.meshes} блоков сохраняют происхождение граней.${r.roadInterfaces?.passed?` Проверены ${r.roadInterfaces.interfaces} стыков дорожных и пешеходных поверхностей: поперечных бетонных препятствий нет.`:''}${r.roadSeams?.passed?` Проверены ${r.roadSeams.passages} сшитых дорожных проходов: поперечных бордюров и поднятой земли нет.`:''}`:'Проверка выявила расхождения — см. JSON';
     if(r.roadPaint?.passed)$('validation').textContent+=` Разметка проверена по полотну: ${r.roadPaint.trianglesChecked.toLocaleString('ru-RU')} граней, заступов на недорожные поверхности нет.`;
     if(r.transportClearance?.fullWidth?.passed){
@@ -145,7 +161,7 @@ try{
       if(headers)$('validation').textContent+=` Над ${headers} входами в подземную часть построены короткие перемычки; проходы под ними открыты.`;
     }
   }).catch(e=>{$('validation').textContent=e.message;});
-  const alternate=new URL(location.href);if(mergedMode)alternate.searchParams.delete('layout');else{alternate.searchParams.set('layout','merged');alternate.searchParams.set('renderer','webgpu');}$('layout-link').href=alternate.href;$('layout-link').textContent=mergedMode?'Открыть тайловую версию':'Пробная версия · единый GLB';
+  const alternate=new URL(location.href);if(mergedMode)alternate.searchParams.set('layout',config.manualCatalogs?.[config.catalog]?'sectors':'tiles');else{alternate.searchParams.set('layout','merged');alternate.searchParams.set('renderer','webgpu');}$('layout-link').href=alternate.href;$('layout-link').textContent=mergedMode&&config.manualCatalogs?.[config.catalog]?'Загрузить только выбранный сектор':mergedMode?'Открыть тайловую версию':'Открыть всю карту · большая загрузка';
   $('layout-link').hidden=!mergedMode;
   if(!mergedMode)fetch(new URL('merged/metadata.json',catalogURL),{method:'HEAD'}).then(r=>{$('layout-link').hidden=!r.ok;}).catch(()=>{});
   const approvedDefaults=viewerDefaults(config.catalog),defaults=approvedDefaults.display;
@@ -188,21 +204,56 @@ try{
   renderer.assetDelivery=config.assetDelivery?.[config.catalog];
   if(mirror)renderer.assetDelivery={...renderer.assetDelivery,merged:{...renderer.assetDelivery.merged,url:new URL(mirror.url,configURL).href}};
   await renderer.open(catalogURL);
+  if(manualMode){
+    renderer.manualTiles=areaTileIds(renderer.tileset.manualAreas);
+    await hydrateAreas(renderer,renderer.manualTiles);
+  }
+  if(mergedMode&&renderer.modelURL){
+    $('model-link').href=renderer.modelURL.href;
+    if(renderer.mergedFormat==='gltf'){
+      const delivery=config.assetDelivery?.[config.catalog];
+      $('model-link').href=new URL(delivery?.merged?.url||renderer.modelURL.href,catalogURL).href;
+      $('model-link').textContent='Общий участок · glTF'+(delivery?.merged?.encoding==='gzip'?' gzip':'');
+      $('model-buffer-link').href=new URL(delivery?.mergedBuffer?.url||new URL('model.bin',renderer.modelURL).href,catalogURL).href;
+      $('model-buffer-link').textContent='Буфер BIN'+(delivery?.mergedBuffer?.encoding==='gzip'?' gzip':'');
+      $('model-buffer-link').hidden=false;
+    }
+  }
   if(config.surfaceEffects?.[config.catalog])await renderer.loadSurfaceEffects(new URL(config.surfaceEffects[config.catalog],assetBase));
   const sourceGeo=sceneGeography(renderer.tileset,config.geography?.[config.catalog]);
   installWaterPanel(renderer,config.catalog,()=>{renderer.revision++;renderer.gpu=null;renderer.publish(true);});
   installHeliodon(renderer,sourceGeo,()=>{renderer.revision++;renderer.gpu=null;renderer.tracer.cache.invalidate();renderer.tracer.reset();renderer.publish(true);},defaultSunPreset(params,approvedDefaults));
   const data=renderer.tileset,ox=data.origin[0],oy=data.origin[1],bounds=data.boundsMSK;
   const target=[(bounds[0]+bounds[2])/2-ox,0,oy-(bounds[1]+bounds[3])/2];
-  views.overview=isGL?renderer.overviewCamera(target):{yaw:.12,pitch:1.03,distance:data.extentMetres*1.8,target};
+  views.overview=isGL&&!manualMode?renderer.overviewCamera(target):{yaw:.12,pitch:1.03,distance:data.extentMetres*1.8,target};
+  if(manualMode){
+    const initial=data.manualAreas.initial,center=[initial.centerMSK[0]-ox,0,oy-initial.centerMSK[1]];
+    views.overview={yaw:0,pitch:1.493,distance:initial.sizeM*1.48,target:center};
+    views['selected-site']={yaw:-.35,pitch:.8,distance:650,target:center};
+  }
   if(isGL)for(const button of document.querySelectorAll('[data-view="overview"]'))button.textContent='Обзор окрестностей';
   views.center.target=mergedMode?target:[bounds[0]+data.tileSizeM*Math.floor((data.grid?.columns??2)/2)-ox,0,oy-bounds[1]-data.tileSizeM*Math.floor((data.grid?.rows??2)/2)];
-  const title=`NURAY · ${data.extentMetres/1000} × ${data.extentMetres/1000} км`;
+  const title=manualMode?'NURAY · Москва · сектор 3 × 3 км':`NURAY · ${data.extentMetres/1000} × ${data.extentMetres/1000} км`;
   document.title=title;$('region-title').textContent=title;
-  const regionName=data.regionName||'Кутузовская',isMoscow=regionName==='Кутузовская';
-  $('region-subtitle').textContent=mergedMode?`${regionName} · единый GLB · ${data.nodes} объекта`:`${regionName} · ${data.tiles.length} тайлов по ${data.tileSizeM} м`;
+  const regionName=data.regionName||'Кутузовская',isMoscow=approvedDefaults.id.startsWith('moscow-');
+  $('region-subtitle').textContent=mergedMode?`${regionName} · единая сцена · ${data.nodes} объекта`:`${regionName} · ${data.tiles.length} тайлов по ${data.tileSizeM} м`;
+  if(manualMode){
+    $('region-subtitle').textContent='Москва · начальный участок 3 × 3 км · доступно 10 × 10 км';
+    $('streaming').disabled=true;$('streaming').value='full';$('streaming').selectedOptions[0].textContent='Только выбранные участки';
+    $('streaming-note').textContent='При перемещении камеры остальная карта не загружается. Добавляйте участки на схеме выше. Общий план возвращает к начальному квадрату.';
+    $('stats-scope').textContent='Счётчики относятся только к загруженным выбранным участкам.';
+    $('backend-note').textContent=isGL?'WebGL 2 · выбранные участки с ограничением памяти устройства. Полная детализация выбранной территории — в WebGPU.':'WebGPU · выбранные участки. Свет, материалы, вода и инстансы сохранены.';
+    installAreaPicker(renderer,async ids=>{
+      layerChanging=true;$('settings').disabled=true;
+      const previous=renderer.manualTiles;
+      try{await currentDrain;await hydrateAreas(renderer,ids);renderer.manualTiles=ids;await renderer.updateTiles(renderer.chooseTiles());renderer.publish(true);}
+      catch(e){renderer.manualTiles=previous;fail(e.message);throw e;}
+      finally{layerChanging=false;$('settings').disabled=false;if(pending)void drain();}
+    });
+  }
   if(mirror)$('region-subtitle').textContent+=` · зеркало: ${mirror.label}`;
-  if(mergedMode){$('streaming').disabled=true;$('streaming').value='full';$('streaming').selectedOptions[0].textContent='Вся карта · единый GLB';$('streaming-note').textContent='Вся карта загружается из одного файла. Деревья и городские предметы сохраняют общие модели и инстансы.';$('backend-note').textContent='WebGPU · вся карта из GLB. Растр, рейтрейс и каскады используют включённые объекты всей карты, включая объекты вне кадра.';$('objects-summary').textContent=`Статическая геометрия: 1 объект · общие модели: ${data.nodes-1} · инстансов: ${data.stats.sharedInstances.toLocaleString('ru-RU')}`;}
+  if(mergedMode){$('streaming').disabled=true;$('streaming').value='full';$('streaming').selectedOptions[0].textContent='Вся карта · единая сцена';$('streaming-note').textContent='Вся карта загружается из объединённой геометрии. Деревья и городские предметы сохраняют общие модели и инстансы.';$('backend-note').textContent='WebGPU · объединённая карта. Растр, рейтрейс и каскады используют включённые объекты всей карты, включая объекты вне кадра.';$('objects-summary').textContent=`Статическая геометрия: 1 объект · общие модели: ${data.nodes-1} · инстансов: ${data.stats.sharedInstances.toLocaleString('ru-RU')}`;}
+  if(mergedMode&&renderer.mergedTraceUnavailable){$('backend-note').textContent='WebGPU · вся карта в растеризации. '+renderer.mergedTraceUnavailable;for(const o of $('engine').options)if(o.value!=='raster')o.disabled=true;}
   canvas.setAttribute('aria-label',`Трёхмерная модель · ${regionName}`);
   if(!isMoscow){
     // Source-specific witnesses belong to their own region. Global navigation
@@ -246,9 +297,9 @@ try{
     data.witnessViews['vegetation-contact-review']={yaw:-.8,pitch:.5,distance:20,target:[678.3396,7.7953,260.3076]};
     data.witnessViews['contact-shadows-review']={yaw:-4.8653125,pitch:.764,distance:158.96537538,target:[626.95619194,7.88677683,276.77457352]};
   }
-  const grid=$('tile-grid');grid.replaceChildren();if(mergedMode)grid.style.display='none';grid.style.gridTemplateColumns=`repeat(${data.grid?.columns??2},1fr)`;
+  const grid=$('tile-grid');grid.replaceChildren();if(mergedMode||manualMode)grid.style.display='none';grid.style.gridTemplateColumns=`repeat(${data.grid?.columns??2},1fr)`;
   if((data.grid?.columns??2)>8)grid.classList.add('compact');
-  for(const tile of [...data.tiles].sort((a,b)=>b.north-a.north||a.east-b.east)){
+  for(const tile of manualMode?[]:[...data.tiles].sort((a,b)=>b.north-a.north||a.east-b.east)){
     const key=`tile:${tile.id}`,button=document.createElement('button'),small=document.createElement('small');
     button.dataset.tile=tile.id;button.dataset.view=key;button.title=`Тайл ${tile.id}`;
     button.append(document.createTextNode(`${tile.east+1} · ${tile.north+1}`));small.textContent='Ожидание';button.append(small);grid.append(button);
@@ -272,9 +323,13 @@ try{
     $('tile-grid').after(group);
   }
   const requestedView=params.get('view');
-  const initialView=Object.hasOwn(views,requestedView)?requestedView:(isGL?'center':'overview');
+  if(manualMode){
+    for(const b of document.querySelectorAll('[data-view]'))if(b.dataset.view!=='overview')b.hidden=true;
+    const b=document.createElement('button');b.dataset.view='selected-site';b.textContent='Отмеченный участок · ближе';$('views').append(b);
+  }
+  const initialView=Object.hasOwn(views,requestedView)?requestedView:(isGL&&!manualMode?'center':'overview');
   renderer.camera=structuredClone(views[initialView]);
-  const approvedCamera=!requestedView&&!isGL&&approvedDefaults.scene.catalogs.includes(catalogKey(config.catalog));
+  const approvedCamera=!manualMode&&!requestedView&&!isGL&&approvedDefaults.scene.catalogs.includes(catalogKey(config.catalog));
   if(approvedCamera)renderer.camera=structuredClone(approvedDefaults.scene.camera);
   // A review link can preserve the exact user view while reloading shaders.
   try {
@@ -288,7 +343,7 @@ try{
     if(selected)$('view-name').textContent=button.firstChild.textContent;
   });
   if(approvedCamera)$('view-name').textContent='Сохранённый вид';
-  await renderer.updateTiles(renderer.chooseTiles({full:$('streaming').value==='full'}));await installSceneLayers(renderer,config.catalog,applySceneLayers);initialized=true;$('measure-scene').disabled=false;$('settings').disabled=false;$('views').disabled=false;$('loading').hidden=true;renderer.publish(true);
+  await renderer.updateTiles(renderer.chooseTiles({full:$('streaming').value==='full'}));await installSceneLayers(renderer,config.catalog,applySceneLayers);initialized=true;$('measure-scene').disabled=false;$('settings').disabled=false;$('views').disabled=false;$('area-picker').disabled=false;$('loading').hidden=true;renderer.publish(true);
 }catch(e){fail(e.message);}
 window.addEventListener('pagehide',()=>renderer?.dispose(),{once:true});
 document.addEventListener('visibilitychange',()=>renderer?.publish(true));

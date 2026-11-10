@@ -12,11 +12,26 @@ from transitions import parts,union
 from curbs import LAND_RAISE
 from coverage import uncovered_length
 from portal_guards import build_headers, parallel_to_source
-from passage_space import walking_reserve,stable_area
+from passage_space import walking_reserve,stable_area,ground_landings,landing_floors
 
 POSITION_TOLERANCE=.05
 HEIGHT_TOLERANCE=.02
 GUARD_HEIGHT=1.0
+
+def resolved_border_chains(confirmed,precision):
+    """Reject closed overlay remnants with no resolved area before extrusion.
+
+    A grid-sized triangle can have edges longer than the length tolerance but
+    no usable width. Probing its two sides then gives contradictory outward
+    directions. Apply the same area-width rule as the solid wall band; retain
+    every open chain and every closed boundary with a resolved interior.
+    """
+    resolved=[];rejected=[]
+    for line in parts(sh.line_merge(confirmed),'LineString'):
+        if line.is_ring and stable_area(Polygon(line),precision).is_empty:
+            rejected.append(dict(lengthM=line.length,geometry=mapping(line)))
+        else:resolved.append(line)
+    return resolved,rejected
 
 def build(surfaces,records,dem,demtree,groups,extent,precision,connections,styles,triangulate,z_at,plane):
     descents=[s for s in surfaces if s['kind']=='roadbed_tunnel_descent']
@@ -24,6 +39,10 @@ def build(surfaces,records,dem,demtree,groups,extent,precision,connections,style
     for index,surface in enumerate(surfaces):
         if surface['kind'].startswith('roadbed'):
             road_owners[surface['owner']].append(index)
+    floors=[s for s in surfaces if s['kind'].startswith('roadbed')]
+    approaches=ground_landings(connections,floors,precision)
+    collision_floors=[*floors,*landing_floors(approaches,dem,demtree,precision)]
+    collision_tree=sh.STRtree([s['poly'] for s in collision_floors])
     reports=[];count=0
     for mode,level in sorted({(s.get('transport','vehicle'),tuple(s['tiers'])) for s in descents}):
         rows=[s for s in descents if s.get('transport','vehicle')==mode and tuple(s['tiers'])==level]
@@ -89,8 +108,8 @@ def build(surfaces,records,dem,demtree,groups,extent,precision,connections,style
         bands=[]
         # Each source side is buffered only towards the land. No loop is closed
         # across a mouth, a tunnel arch, or a storage/region cut.
-        merged=sh.line_merge(confirmed)
-        for line in parts(merged,'LineString'):
+        chains,precision_loops=resolved_border_chains(confirmed,precision)
+        for line in chains:
             xy=np.asarray(line.coords);signs=[]
             for a,b in zip(xy,xy[1:]):
                 length=np.linalg.norm(b-a)
@@ -122,6 +141,13 @@ def build(surfaces,records,dem,demtree,groups,extent,precision,connections,style
         band=union(bands,precision).difference(corridor).intersection(extent)
         # Roundoff can leave fragments of a source border detached from its floor.
         band=stable_area(union([p for p in parts(band) if p.distance(footprint)<precision*5],precision),precision)
+        from structure_clearance import reserved_envelope
+        def top_height(xy):
+            point=Point(xy);i=int(demtree.nearest(point))
+            return float(z_at(dem[i][1],xy))+LAND_RAISE+guard
+        reserved=reserved_envelope(band,collision_floors,collision_tree,owners,
+            lambda xy:floor(xy)-.1,top_height,triangulate,z_at,precision)
+        if not reserved.is_empty:band=stable_area(band.difference(reserved),precision)
         support=[]
         for i in demtree.query(band,predicate='intersects'):
             i=int(i);piece=band.intersection(dem[i][0]);terrain=dem[i][1]+[0,0,LAND_RAISE]
@@ -183,13 +209,14 @@ def build(surfaces,records,dem,demtree,groups,extent,precision,connections,style
         headers=build_headers(footprint,arches,band,floor,dem,demtree,groups,extent,
                               precision,width,guard,triangulate,z_at,plane,landings)
         reports.append(dict(transport=mode,level=list(level),sourceStyleId=style_id,widthM=width,guardAboveLandM=guard,
+            reservedNeighbourFloorAreaM2=reserved.area,
             rejectedTransverseMatches=rejected_turns,portalHeaders=headers,
             sourceBorderFeatures=len(source),matchedSourceBorders=sorted(matched),
             unmatchedSourceBorders=[r['id'] for r in source if r['id'] not in matched],
             sourcePortalFeatures=[r['id'] for r in arches],sourceMatchedBoundaryM=confirmed.length,
             fallbackBoundaryM=missing.length,uncoveredSolidSidesM=gap,maxSourceHeightMismatchM=max(height_errors,default=0),
-            uncertainty=uncertain,bandGeometry=mapping(band),
+            uncertainty=uncertain,rejectedPrecisionLoops=precision_loops,bandGeometry=mapping(band),
             passed=bool(gap<.001 and not uncertain and headers['passed']),
             evidence='verified source border position/tier/relative floor; style width; project guard height 1 m; top follows raised surrounding terrain; bottom follows source floor'))
-    return count,dict(ruleVersion=4,passed=all(r['passed'] for r in reports),groups=reports,
+    return count,dict(ruleVersion=6,passed=all(r['passed'] for r in reports),groups=reports,
                       policy='parallel source-supported side walls and deep portal headers with 1 m guards above raised surrounding land; short fascia below ground, open ground-level entries; all retaining concrete uses material 6; missing source sides retain explicitly inferred thin lining')

@@ -4,14 +4,34 @@ Runtime tile files are unaffected. Readers accept either representation;
 provenance hashes always cover the uncompressed JSON bytes.
 """
 import gzip
+import gc
 import hashlib
 import json
 import os
 import shutil
-import subprocess
 import sys
+from functools import lru_cache
 from itertools import islice
 from pathlib import Path
+
+
+@lru_cache(maxsize=1)
+def _clonefile_api():
+    if sys.platform != 'darwin':
+        return None
+    import ctypes
+    try:
+        clone = ctypes.CDLL('/usr/lib/libSystem.B.dylib', use_errno=True).clonefile
+        clone.argtypes = (ctypes.c_char_p, ctypes.c_char_p, ctypes.c_uint32)
+        clone.restype = ctypes.c_int
+        return clone
+    except (AttributeError, OSError):
+        return None
+
+
+def _clone_asset(source, destination):
+    clone = _clonefile_api()
+    return clone is not None and clone(os.fsencode(source), os.fsencode(destination), 0) == 0
 
 
 def copy_asset(source, destination, *, follow_symlinks=True):
@@ -23,8 +43,9 @@ def copy_asset(source, destination, *, follow_symlinks=True):
     source, destination=Path(source),Path(destination)
     if (sys.platform=='darwin' and os.environ.get('NURAY_DISABLE_CLONES')!='1'
             and source.is_file() and not source.is_symlink() and not destination.exists()):
-        result=subprocess.run(['/bin/cp','-c',str(source.resolve()),str(destination.resolve())],capture_output=True)
-        if result.returncode==0:
+        # Forking a process for each file duplicates the large city's page
+        # tables. Call the same native COW operation without a child process.
+        if _clone_asset(source.resolve(), destination.resolve()):
             shutil.copystat(source,destination,follow_symlinks=follow_symlinks)
             return str(destination)
     return shutil.copy2(source,destination,follow_symlinks=follow_symlinks)
@@ -36,6 +57,12 @@ class JsonRows:
         self.rows = rows
 
 
+class _SharedKeys(dict):
+    __slots__ = ()
+    def __setitem__(self, key, value):
+        super().__setitem__(sys.intern(key), value)
+
+
 def open_canonical(path, mode='rt'):
     path = Path(path)
     if path.exists():
@@ -44,8 +71,39 @@ def open_canonical(path, mode='rt'):
 
 
 def load_canonical(path):
-    with open_canonical(path) as stream:
-        return json.load(stream)
+    # Parsed JSON is an acyclic tree retained by the result. Repeated cyclic
+    # collections during construction rescan millions of reachable records.
+    # Keep normal reference-count cleanup and restore the caller's GC state
+    # after the stream is closed, including malformed-file and I/O failures.
+    enabled = gc.isenabled()
+    gc.disable()
+    try:
+        return _read_canonical(path)
+    finally:
+        if enabled:
+            gc.enable()
+
+
+def _read_canonical(path):
+    # json.load first reads the complete document into a second, city-sized
+    # string. The streaming parser builds the same registry without that copy.
+    # Share repeated property names too, as the standard JSON decoder does.
+    import ijson
+    with open_canonical(path, 'rb') as stream:
+        values = ijson.items(stream, '', use_float=True, map_type=_SharedKeys)
+        try:
+            result = next(values)
+            # Consume the end of the document: do not accept trailing JSON.
+            if next(values, None) is not None:
+                raise ValueError('More than one canonical JSON value')
+            return result
+        except (ijson.JSONError, StopIteration):
+            # Retain standard JSON semantics for unusual integers outside the
+            # fast parser's native range, and its normal malformed-file error.
+            values = None
+            result = None
+            stream.seek(0)
+            return json.load(stream)
 
 
 def canonical_digest(path):

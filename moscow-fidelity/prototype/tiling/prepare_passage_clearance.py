@@ -85,14 +85,24 @@ def discover_ground(city):
 def build(base,out):
     assert not out.exists() and base.parent==out.parent
     proof=json.loads((base/'validation.json').read_text());assert proof['passed']
-    city=load_canonical(base/'canonical/urban-model.json');scene=json.loads((base/'canonical/full/scene.json').read_text())
+    city=load_canonical(base/'canonical/urban-model.json')
     gc.freeze()
-    report=json.loads((base/'canonical/validation.json').read_text());extent=sh.box(*city['boundsMSK']);dem,tree=load_terrain(base)
+    scene=json.loads((base/'canonical/full/scene.json').read_text())
+    report=json.loads((base/'canonical/validation.json').read_text())
+    gc.freeze()
+    extent=sh.box(*city['boundsMSK']);dem,tree=load_terrain(base)
     before=audit(city,dem,tree,meshes(base,scene))
     print('BEFORE',[(r['interface'],r['blockingFaceAreaM2']) for r in before['partialContacts']],flush=True)
     cs,ifs=discover_ground(city)
     if already_clear(city,cs,ifs,before):
         preserve_clear_version(base,out,city,scene,report,before,cs,ifs)
+        return
+    if city.get('landscape',{}).get('version',0)>=2 and city.get('tunnelWalls',{}).get('ruleVersion',0)>=4:
+        # A modern, validated landscape must not be remeshed for a local curb
+        # contact. The selective builder proves unchanged source entries and
+        # refuses non-curb obstructions before it creates its output folder.
+        from passage_curb_refinement import build_local
+        build_local(base,out,city,scene,report,before,cs,ifs,dem,tree)
         return
     old_cs=[c for c in city['gradeConnections'] if c.get('peerKind')=='pedestrian_ground'];old_ids={c['id'] for c in old_cs}
     city['gradeConnections']=[c for c in city['gradeConnections'] if c.get('peerKind')!='pedestrian_ground']+cs
@@ -192,12 +202,15 @@ def build(base,out):
         connections=cs,interfaces=ifs,removedNumericCurbAreaM2=curb_removed.area,terrainSha256=digest(base/'canonical/terrain.npz'))
     city['geometryRevision']=revision;report['geometryRevision']=revision;report['gradeConnections']['interfaceCoverage']=coverage
     refresh_stats(scene,report,out);save(folder/'scene.json',scene)
-    export_glb(scene,folder);report['export']['glbBytes']=(folder/'model.glb').stat().st_size
+    report['export']['glbBytes']=export_glb(scene,folder)
     save_canonical(out/'canonical/urban-model.json',city);save(out/'canonical/validation.json',report)
     print('PASSAGE VERSION',out,flush=True)
 
 
 def verify_revision(root,city,scene):
+    if city['geometryRevision'].get('mode')=='localized-curbs':
+        from passage_curb_refinement import verify_local
+        return verify_local(root,city,scene)
     rev=city['geometryRevision'];base=root.parent/rev['parent'];proof=json.loads((base/'validation.json').read_text())
     assert proof['passed'] and digest(base/'validation.json')==rev['parentValidationSha256']
     old=json.loads((base/'canonical/full/scene.json').read_text())

@@ -7,13 +7,14 @@ from streaming_json import Document
 from prepare_railway_entries import load_terrain
 from transitions import below,parts
 
-def audit(base,profiles):
-    old=Document(base/'canonical/urban-model.json').read('overpassProfiles')
+def audit(base,profiles,*,old=None,terrain=None):
+    if old is None:old=Document(base/'canonical/urban-model.json').read('overpassProfiles')
     old_deck=sh.union_all([sh.geometry.shape(p['deckGeometry']) for p in old],grid_size=1e-5)
     new_deck=sh.union_all([sh.geometry.shape(p['deckGeometry']) for p in profiles],grid_size=1e-5)
     added=new_deck.difference(old_deck);removed=old_deck.difference(new_deck)
     print('DECK FOOTPRINT CHANGE',added.area,removed.area,flush=True)
-    dem,tree=load_terrain(base);results={}
+    dem,tree=terrain if terrain is not None else load_terrain(base)
+    results={}
     for kind,delta,source in [('added',added,profiles),('removed',removed,old)]:
         low=[]
         for p in source:

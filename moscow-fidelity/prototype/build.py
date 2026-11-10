@@ -5,7 +5,7 @@ No source .blend, production exporter, or published assets are modified.
 """
 from pathlib import Path
 from collections import defaultdict, Counter
-import json, math, gzip, hashlib, struct, time
+import json, math, gzip, hashlib, struct, time, os
 import numpy as np
 import shapely as sh
 from shapely.geometry import Polygon, LineString, box, mapping
@@ -86,6 +86,9 @@ from parking_cover import MATERIAL_INDEX as PARKING_MATERIAL, material as parkin
 assert len(MATERIALS) == PARKING_MATERIAL
 _parking = parking_material(dict(color=MATERIALS[0][1], roughness=MATERIALS[0][2]))
 MATERIALS.append((_parking['name'], _parking['color'], _parking['roughness']))
+from land_use_cover import FIRST_MATERIAL as LAND_USE_FIRST, materials as land_use_materials
+assert len(MATERIALS) == LAND_USE_FIRST
+MATERIALS.extend((m['name'],m['color'],m['roughness']) for m in land_use_materials())
 
 def parts(g, typ='Polygon'):
     if g.is_empty: return []
@@ -376,9 +379,11 @@ def legacy_material(row,mid):
 def legacy_and_paint(model):
     from paint_binding import bind as bind_paint, SOURCE_FLOOR
     stree=STRtree([s['poly'] for s in surfaces]);paint_checks=[];bound_area=0.;total_area=0.
-    for row in model['objects']:
+    for row_number,row in enumerate(model['objects']):
         if row['hidden']:continue
+        print('SOURCE PAINT OBJECT',row_number+1,'/',len(model['objects']),row['name'],flush=True)
         arr=dict(np.load(DIAG/'corrected'/row['file']));tri=arr['triangles'].astype(float)
+        row_tiers=arr.get('2gis_tier');source_tiers=arr.get('source_tiers')
         if row.get('heightReference')=='source-relative':
             # New snapshots retain map-relative paint until the shared region
             # height function exists; no earlier Blender terrain is involved.
@@ -391,8 +396,10 @@ def legacy_and_paint(model):
             clipped=clip_triangle(t)
             old_groups[(row['name'],material)].extend(clipped)
             if not is_paint or row['name'] in MARKING_RULES:continue
-            tier=int(arr.get('2gis_tier',np.zeros(len(tri)))[ix])
-            tiers=[int(v) for v in arr['source_tiers'][ix] if v!=-32768] if 'source_tiers' in arr else [tier]
+            # dict.get evaluates its default eagerly. Allocating a full-length
+            # zero array for every triangle made large paint meshes quadratic.
+            tier=int(row_tiers[ix]) if row_tiers is not None else 0
+            tiers=[int(v) for v in source_tiers[ix] if v!=-32768] if source_tiers is not None else [tier]
             for ct in clipped:
                 g=clean(Polygon(ct[:,:2]))
                 if g.area<1e-9:continue
@@ -454,9 +461,15 @@ def local(t):
 
 def export(target,geometry):
     target.mkdir(parents=True,exist_ok=True);chunks=[];gltf_meshes=[];binary=bytearray();views=[];accessors=[]
+    # Flat triangle export needs 96 bytes/triangle, before JSON and textures.
+    # Large regions retain the exact canonical meshes even when an optional
+    # single GLB would exceed its 32-bit container limit.
+    defer_glb=(os.environ.get('NURAY_DEFER_CANONICAL_GLB')=='1'
+        or sum(len(rows) for rows in geometry.values())*96 >= 4_000_000_000)
     mats=[dict(name=n,family='Road paint' if i in [3,4,5] else n,color=c,roughness=r,metallic=0,ior=1.5,kind=12 if i==13 else 1,texture=None,alphaCutoff=0) for i,(n,c,r) in enumerate(MATERIALS)]
     mats[PEDESTRIAN_FIRST:PEDESTRIAN_FIRST+5]=pedestrian_materials(MATERIALS[0][1])
     mats[PARKING_MATERIAL]=parking_material(mats[0])
+    mats[LAND_USE_FIRST:LAND_USE_FIRST+3]=land_use_materials()
     paving_textures=pedestrian_textures(target)
     # Canonical stage folders stay flat for all downstream incremental stages.
     texture_folder=(target.parent.parent if target.name=='full' else target)/'textures'
@@ -493,14 +506,18 @@ def export(target,geometry):
         filename=f'mesh-{len(chunks):03d}.bin.gz'
         with gzip.GzipFile(filename=str(target/filename),mode='wb',mtime=0) as f:f.write(verts.tobytes());f.write(idx.tobytes())
         chunks.append(dict(id=len(chunks),name=name,category=name,file=f'/prototype/assets/{target.name}/{filename}',vertexCount=len(verts),vertexBytes=verts.nbytes,triangles=len(t),bounds=dict(min=t.min((0,1)).tolist(),max=t.max((0,1)).tolist())))
-        pos=glb_array(t.reshape(-1,3),'VEC3',limits=True);normal=glb_array(normals.reshape(-1,3).astype('<f4'),'VEC3')
-        uv=glb_array(t[:,:,[0,2]].reshape(-1,2).copy(),'VEC2')
-        gltf_meshes.append(dict(name=name,primitives=[dict(attributes=dict(POSITION=pos,NORMAL=normal,TEXCOORD_0=uv),material=material)]))
+        if not defer_glb:
+            pos=glb_array(t.reshape(-1,3),'VEC3',limits=True);normal=glb_array(normals.reshape(-1,3).astype('<f4'),'VEC3')
+            uv=glb_array(t[:,:,[0,2]].reshape(-1,2).copy(),'VEC2')
+            gltf_meshes.append(dict(name=name,primitives=[dict(attributes=dict(POSITION=pos,NORMAL=normal,TEXCOORD_0=uv),material=material)]))
     count=sum(c['triangles'] for c in chunks)
     manifest=dict(version=1,name=load_plan(SOURCE).get('name','Кутузовская')+' · '+target.name,extentMetres=max(B[2]-B[0],B[3]-B[1]),origin=ORIGIN.tolist(),axes='X east, Y up, Z south',chunks=chunks,
         instances=[dict(mesh=i,matrix=[1,0,0,0,0,1,0,0,0,0,1,0]) for i in range(len(chunks))],materials=mats,textures=paving_textures,
         stats=dict(uniqueTriangles=count,expandedTriangles=count,baseTriangles=count,streetInstances=0,sourceObjects=len(records)))
     (target/'scene.json').write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')))
+    if defer_glb:
+        (target/'model.glb').unlink(missing_ok=True)
+        return dict(triangles=count,chunks=len(chunks),downloadBytes=sum(p.stat().st_size for p in target.glob('*.gz'))+(target/'scene.json').stat().st_size,glbBytes=0)
     gltf=dict(asset=dict(version='2.0',generator='NURAY urban surface prototype'),scene=0,scenes=[dict(nodes=list(range(len(gltf_meshes))))],
         nodes=[dict(mesh=i,name=m['name']) for i,m in enumerate(gltf_meshes)],meshes=gltf_meshes,buffers=[dict(byteLength=len(binary))],bufferViews=views,accessors=accessors,
         materials=[dict(name=m['name'],doubleSided=True,pbrMetallicRoughness=dict(baseColorFactor=m['color']+[1],metallicFactor=0,roughnessFactor=m['roughness'])) for m in mats],extras=dict(originMSK=ORIGIN.tolist(),boundsMSK=B))

@@ -60,10 +60,16 @@ class UploadIntegrity(unittest.TestCase):
             remote = RemoteObject(data, digest)
             verify(remote, path, 'bucket', 'file', len(data), digest)
             self.assertEqual(remote.reads, 3)
+            # Yandex may preserve the HTTP metadata header's title case.
+            original_head = remote.head_object
+            remote.head_object = lambda **kw: {'ContentLength': len(data), 'Metadata': {'Sha256': digest}}
+            verify(remote, path, 'bucket', 'file', len(data), digest)
+            self.assertEqual(remote.reads, 6)
+            remote.head_object = original_head
             remote.digest = 'different'
             with self.assertRaisesRegex(ValueError, 'refusing overwrite'):
                 verify(remote, path, 'bucket', 'file', len(data), digest)
-            self.assertEqual(remote.reads, 3)
+            self.assertEqual(remote.reads, 6)
             remote.digest = digest
             remote.corrupt_range = True
             with self.assertRaisesRegex(ValueError, 'differs'):

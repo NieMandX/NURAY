@@ -47,6 +47,10 @@ def joined_portal_datums(datums,originals,footprint,precision):
     switching between unrelated clamped endpoint heights within micrometres.
     """
     tree=sh.STRtree([d[0] for d in datums]);nodes=defaultdict(list);events={}
+    def event_at(point,indices):
+        key=tuple(np.round(point.coords[0],8))
+        event=events.setdefault(key,dict(point=point,indices=set()))
+        event['indices'].update(indices)
     for i,(line,stations,values) in enumerate(datums):
         for j in tree.query(line,predicate='intersects'):
             j=int(j)
@@ -55,9 +59,16 @@ def joined_portal_datums(datums,originals,footprint,precision):
             for xy in sh.get_coordinates(crossing):
                 point=sh.Point(xy)
                 if footprint.contains(point):continue
-                key=tuple(np.round(xy,8))
-                event=events.setdefault(key,dict(point=point,indices=set()))
-                event['indices'].update((i,j))
+                event_at(point,(i,j))
+        # Consecutive source mouths can have almost collinear extensions a
+        # fraction of a grid unit apart. Their lines need not intersect, but
+        # every original height knot still belongs to the same physical seam.
+        # Carry that authoritative knot onto each coincident extension instead
+        # of interpolating through the neighbouring mouth's endpoint.
+        for xy in originals[i].coords:
+            point=sh.Point(xy)
+            near=tree.query(point,predicate='dwithin',distance=precision*5)
+            if len(near)>1:event_at(point,map(int,near))
     # Offsetting independently snapped source edges can put the same physical
     # corner a few micrometres apart. Resolve the whole precision-sized node,
     # not several incompatible height anchors on almost the same station.

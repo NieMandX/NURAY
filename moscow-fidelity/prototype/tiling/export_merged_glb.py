@@ -110,17 +110,15 @@ def main():
     assert source_triangles==scene['stats']['uniqueTriangles'];assert stats['expandedTriangles']==scene['stats']['expandedTriangles']
     meta['stats']={k:v for k,v in stats.items() if k!='batches'}
     doc=dict(asset=dict(version='2.0',generator='NURAY merged city experiment'),scene=0,scenes=[dict(nodes=list(range(len(nodes))))],nodes=nodes,meshes=meshes,materials=mats,buffers=[dict(byteLength=binary_size)],bufferViews=views,accessors=accessors,images=images,textures=textures,samplers=[dict(magFilter=9729,minFilter=9987,wrapS=10497,wrapT=10497)],extensionsUsed=['EXT_mesh_gpu_instancing'],extensionsRequired=['EXT_mesh_gpu_instancing'],extras=dict(nuray=meta))
-    header=json.dumps(doc,separators=(',',':')).encode();header+=b' '*((-len(header))%4);padding=(-binary_size)%4;size=28+len(header)+binary_size+padding
-    if size>=2**32:raise ValueError('Merged asset exceeds the GLB 32-bit length limit')
-    target=out/'model.glb.tmp'
-    with target.open('wb') as f,binary.open('rb') as src:
-        f.write(struct.pack('<4sII',b'glTF',2,size));f.write(struct.pack('<I4s',len(header),b'JSON'));f.write(header);f.write(struct.pack('<I4s',binary_size+padding,b'BIN\0'));shutil.copyfileobj(src,f,8*1024*1024);f.write(b'\0'*padding)
-    target.replace(out/'model.glb');binary.unlink();stats.update(glbBytes=size,gltfPrimitives=sum(len(m['primitives']) for m in meshes))
+    from merged_asset import write_container
+    asset=write_container(out,doc,binary)
+    stats.update(glbBytes=asset['bytes'] if asset['format']=='glb' else 0,assetBytes=asset['bytes'],asset=asset,gltfPrimitives=sum(len(m['primitives']) for m in meshes))
+    meta['asset']=asset
     (out/'validation.json').write_text(json.dumps(stats,separators=(',',':')));(out/'metadata.json').write_text(json.dumps(meta,separators=(',',':')))
     print('MERGED GLB PASSED',json.dumps({k:v for k,v in stats.items() if k!='batches'}),flush=True)
     if not a.skip_trace:
         from build_merged_trace import build
-        build((out/'model.glb').resolve())
+        build((out/asset['file']).resolve())
         from build_merged_visibility import build as build_visibility
         build_visibility(root,out/'visibility.json',merged=out)
 

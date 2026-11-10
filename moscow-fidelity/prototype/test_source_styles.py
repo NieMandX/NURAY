@@ -45,6 +45,13 @@ for invalid in [records[:1], [dict(r,properties={**r['properties'],'db_segment_l
 cut_records=[dict(r,properties={**r['properties'],'beginningIsCut':1,'endingIsCut':1}) for r in records]
 assert len(discover(candidates,cut_records,sh.Polygon(),extent,1e-5,z_at)[0])==2
 assert not discover(candidates,records,sh.Polygon(),sh.box(0,-4,20,8),1e-5,z_at)[0]
+# Spatial broad phases must retain near-diagonal endpoint matches, preserve
+# the strict 2 cm peer tolerance, and exclude the structural axis itself.
+near=axis('near','Pedestrian_road',[[-3,3,0],[.014,1.514,0]],0,0)
+outside=axis('outside','Pedestrian_road',[[-3,4,0],[.020001,1.5,0]],0,0)
+indexed=discover(candidates,records+[near,outside],sh.Polygon(),extent,1e-5,z_at,include_mixed_ground=True)[0]
+west=next(c for c in indexed if 'west' in c['peerParents'])
+assert west['peerParents']==['near','west'] and west['axisParents']==['bridge']
 crossfall=np.array([0,.02,0]);dem=[(extent,crossfall)]
 rows=[dict(poly=p,plane=c+crossfall+[0,0,.1],owner=f'ped:{i}',kind='roadbed_overpass',tiers=[1],
            transport='pedestrian',profile=profile) for i,(p,c) in enumerate(pieces)]

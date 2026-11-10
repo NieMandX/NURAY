@@ -46,9 +46,16 @@ def check_passages(gates, meshes):
     """
     collections = {'asphalt': [], 'raised': [], 'curbRoof': [], 'curbBottom': [], 'curbSides': []}
     rounding={k:[] for k in collections}
+    # Only faces near a witness can contribute to any query below. Keep the
+    # complete triangle (including an acute endpoint outside the gate) and a
+    # conservative bounding-box match against the largest allowed uncertainty.
+    # This avoids allocating millions of unrelated city polygons per audit.
+    witnesses=sh.STRtree([gate.buffer(MAX_SERIALIZED_POSITION_TOLERANCE) for _,gate in gates])
     for name, triangles in meshes:
         if name not in ['roadbed_flat', 'land', 'curb_top', 'curb_bottom', 'curb_front', 'curb_back']:
             continue
+        triangles=near_witnesses(np.asarray(triangles),witnesses)
+        if not len(triangles):continue
         xy = triangles[:, :, [0, 2]]
         errors=packing_error_bound(xy)
         if name in ['curb_front', 'curb_back']:
@@ -111,3 +118,11 @@ def check_passages(gates, meshes):
                 maxAllowedPositionToleranceM=MAX_SERIALIZED_POSITION_TOLERANCE,
                 precisionPolicy='Source boundary tolerance plus the measured two-rounding Float32 ULP bound of nearby vertices; reject format precision worse than 1 mm; retain all raw defects and test resolvable cores; vertical barrier length is unchanged.',
                 scope='serialized ground asphalt, land, curb roof, bottom and vertical sides inside source seam repairs')
+
+
+def near_witnesses(triangles,witnesses):
+    """Conservative broad phase; all exact face and precision tests follow."""
+    if not len(triangles):return triangles
+    xy=triangles[:,:,[0,2]];lo=xy.min(1);hi=xy.max(1)
+    bounds=sh.box(lo[:,0]-1e-8,lo[:,1]-1e-8,hi[:,0]+1e-8,hi[:,1]+1e-8)
+    return triangles[np.unique(witnesses.query(bounds)[0])]

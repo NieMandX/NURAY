@@ -1,11 +1,12 @@
 """Railway tunnel clearance regressions, independent of Moscow coordinates."""
-import sys, unittest
+import copy,gzip,json,sys, unittest
 from pathlib import Path
 import numpy as np
 import shapely as sh
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from test_railway_transitions import fixture
-from railway_tunnel_validation import inventory,audit,volume_cells
+from railway_tunnel_validation import inventory,audit,volume_cells,volumes
+from interface_validation import check_interfaces
 
 
 def city_fixture():
@@ -30,6 +31,29 @@ def wall(x,bottom,top):
 
 
 class RailwayTunnelChecks(unittest.TestCase):
+    def test_curved_source_portals_keep_real_floor_and_barrier_checks(self):
+        path=Path(__file__).resolve().parents[1]/'fixtures/railway-curved-deep-portals.json.gz'
+        with gzip.open(path,'rt') as f:city=json.load(f)
+        gates,_=volumes(city,[],sh.STRtree([]))
+        deep=[(r,cells) for r,cells in gates if r['id'].startswith('railway-tunnel-deep-interface:')]
+        self.assertEqual(len(deep),2)
+        for r,cells in deep:
+            self.assertGreater(sum(g.area for g,_ in cells),16)
+            # A genuine obstruction within the curved source corridor must
+            # still fail, including after translating to render coordinates.
+            gate,planes=max(cells,key=lambda v:v[0].area)
+            triangle=np.asarray(gate.exterior.coords)[:3]
+            plane=planes[-2];height=-(triangle@plane[[0,2]]+plane[3])+.1
+            cap=np.column_stack((triangle[:,0],height,triangle[:,1]))
+            self.assertFalse(check_interfaces([(r,cells)],[('portal_guard_top',[cap])])['passed'])
+        broken=copy.deepcopy(city)
+        # Never fit the witness to the available emitted floor: removing a
+        # whole source-owned floor must report a missing witness again.
+        owner=deep[0][0]['ends'][0]['parents'][0]
+        broken['surfaces']=[s for s in broken['surfaces'] if s['owner']!=owner]
+        with self.assertRaisesRegex(AssertionError,'Missing railway floor witness'):
+            volumes(broken,[],sh.STRtree([]))
+
     def test_coordinate_translation_collapse_does_not_make_nan_volume(self):
         # Source area is positive and above the triangulator's polygon cutoff,
         # but its width is smaller than one representable translated cell.

@@ -95,8 +95,7 @@ def build(base, out):
     city['limitations'].append('Buildings retain rigid source placement. Adaptive concrete plinths extend only confirmed base-level facade edges to the finished ground; no terrain regrading or inferred walls below elevated arches/canopies.')
     refresh_stats(scene, report, out)
     save(out/'canonical/full/scene.json', scene)
-    export_glb(scene, out/'canonical/full')
-    report['export']['glbBytes'] = (out/'canonical/full/model.glb').stat().st_size
+    report['export']['glbBytes'] = export_glb(scene, out/'canonical/full')
     report['foundations'] = dict(passed=True, **layer['stats'])
     save_canonical(out/'canonical/urban-model.json',city); save(out/'canonical/validation.json', report)
     print('FOUNDATIONS', json.dumps(layer['stats']), flush=True)
