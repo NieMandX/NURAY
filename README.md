@@ -35,4 +35,4 @@ python3 scripts/restore_assets.py --manifest docs/assets-moscow-10km-20261110-ma
 
 Скрипт проверяет SHA-256 и восстанавливает тайлы из контейнера. Для автономного полного экспорта дополнительно распакуйте gzip glTF/BIN, как описано в [инструкции](docs/knowledge/DEPLOYMENT.md). Пересборка геометрии для просмотра готовой сцены не требуется.
 
-![Московская сцена с сохранёнными настройками](docs/proof/moscow-defaults.png)
+![Начальный сектор Москвы на публичной странице](docs/proof/moscow-3km-public-20261110.png)

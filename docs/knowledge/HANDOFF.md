@@ -2,6 +2,8 @@
 
 ## CURRENT — Moscow publication / manual sectors (2026-11-10)
 
+**Published and verified:** application commit `41e45d5986001473d6528399cb7d8e653bdbac10`, [successful Pages workflow](https://github.com/NieMandX/NURAY/actions/runs/42752560957). The public root redirects to sectors, WebGPU raster. Public Chrome verification: initial169 tiles /454.51 MiB/379 requests; add cell (8,7) →185 tiles, reset →169; zoom-out leaves169 and makes no extra requests. No console errors/warnings. Yandex pack requests return206 and exact Content-Range. Proofs: `docs/proof/moscow-10km-{pages,browser}-20261110.json`, screenshot `docs/proof/moscow-3km-public-20261110.png`. 51 JS and6 Python release checks passed. Temporary local IAM token removed after upload.
+
 The user selected a **3 × 3 km square centred on the small red site polygon** in `codex-clipboard-2d99fe61-97ab-42cd-a5cb-acf7407814a2.png`. Image registration against the live full-map camera gives approximate scene MSK centre `[2388, 9626]` (local `[263, 0, -1556]`). Nominal bounds `[888, 8126, 3888, 11126]`; existing 250 m tile coverage `[875, 8000, 4125, 11250]`, **169 tiles**, 3.25 × 3.25 km including the edge margin. This is a visual site selection, not a survey measurement.
 
 Local start link: http://127.0.0.1:8786/prototype/tiles/?catalog=assets-moscow-10km-20261108-r1%2Ftileset.json&renderer=webgpu

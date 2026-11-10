@@ -1,0 +1,27 @@
+{
+  "commit": "41e45d5986001473d6528399cb7d8e653bdbac10",
+  "workflow": "https://github.com/NieMandX/NURAY/actions/runs/42752560957",
+  "passed": true,
+  "files": [
+    {
+      "path": "index.html",
+      "sha256": "a74a83a377834bffa6154929d7d6acee9fee2b75674a0aeb9cc26ed607c47c20",
+      "bytes": 889
+    },
+    {
+      "path": "prototype/tiles/config.json",
+      "sha256": "4c106f6aa9d45eefe33be73b6f6faf21563575222a781c7e088234967eaf6e2e",
+      "bytes": 13087
+    },
+    {
+      "path": "prototype/tiles/app.js",
+      "sha256": "8ee5f7dafe276e57fb07fc117f572b622c02b2b1815d990071cdd21fcd74321b",
+      "bytes": 32801
+    },
+    {
+      "path": "prototype/tiles/manual-areas.js",
+      "sha256": "7f2a5b20058ac80059fb8de29bcee7c5e75e0ff92f5a5a27bc420dc81d0191ae",
+      "bytes": 5866
+    }
+  ]
+}

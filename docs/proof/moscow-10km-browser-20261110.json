@@ -1,0 +1,266 @@
+{
+  "date": "2026-11-10",
+  "applicationCommit": "41e45d5986001473d6528399cb7d8e653bdbac10",
+  "initial": {
+    "activity": "Выбранные участки загружены. Остальная карта — по выбору.",
+    "api": "webgpu",
+    "engine": "raster",
+    "error": "",
+    "heading": "NURAY · Москва · сектор 3 × 3 км",
+    "memory": "1162.27 МиБ",
+    "network": "454.51 МиБ",
+    "requests": "379 / 0",
+    "resident": 169,
+    "selected": 169,
+    "tiles": "169 / 0",
+    "url": "https://niemandx.github.io/NURAY/prototype/tiles/?layout=sectors&renderer=webgpu&engine=raster"
+  },
+  "added": {
+    "activity": "Выбранные участки загружены. Остальная карта — по выбору.",
+    "error": "",
+    "network": "503.48 МиБ",
+    "requests": "387 / 0",
+    "resident": 185,
+    "selected": 185,
+    "tiles": "185 / 0"
+  },
+  "reset": {
+    "network": "503.48 МиБ",
+    "requests": "387 / 0",
+    "resident": 169
+  },
+  "cameraMove": {
+    "camera": {
+      "distance": 8505.0012808217,
+      "pitch": 1.493,
+      "target": [
+        263,
+        0,
+        -1556
+      ],
+      "yaw": 0
+    },
+    "error": "",
+    "network": "503.48 МиБ",
+    "requests": "387 / 0",
+    "resident": 169,
+    "selected": 169
+  },
+  "console": [],
+  "networkSample": {
+    "partialCapture": true,
+    "packResponses": [
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 213706801-221859055/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 221859056-229880331/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 236803720-245182161/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 229880332-236803719/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 245182162-253461113/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 253461114-260313104/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 267552777-275877769/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 260313105-267552776/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 275877770-284243632/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 284243633-292275335/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 300489876-307572535/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 292275336-300489875/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 375507207-382028532/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 382028533-388697710/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 397055308-405319652/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 388697711-397055307/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 405319653-413653643/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 413653644-421197111/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 421197112-429505769/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 429505770-437649025/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 437649026-445783061/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 445783062-451366368/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 467298461-468499955/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 472842507-475067298/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 480942908-482052263/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 486172430-488034961/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 492493156-495809405/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 511265515-513850881/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 498820851-501601980/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 504407226-507704691/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 519318469-519431207/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 526548073-526663899/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 532386485-534125017/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 542208364-546004281/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 552627499-554893804/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 2213880363-2222194786/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 2238641186-2247021510/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 2222194787-2230323555/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 2230323556-2238641185/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 2247021511-2255400691/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 2255400692-2262150739/3088057613"
+      },
+      {
+        "status": 206,
+        "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/meshes.pack",
+        "range": "bytes 2262150740-2264901773/3088057613"
+      }
+    ]
+  },
+  "passed": true
+}
