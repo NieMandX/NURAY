@@ -1,0 +1,15 @@
+{
+  "bucket": "nuray-backups-niemandx",
+  "key": "backups/kursk-workbench-20261113-r12.tar.gz",
+  "bytes": 391853331,
+  "sha256": "bd54ba39817569f163f4bf1e5fdb571b34bb6ecb6ef9c686d6531a237c069ae5",
+  "scope": "Latest canonical scene and stage reports; decoded source, survey extraction and original Gaussian PLYs. Runtime files restored separately from the public release manifest. Not an archive of every obsolete scene or every original acquisition response.",
+  "files": 536,
+  "localArchiveRoundTrip": true,
+  "authenticatedUploadRangesVerified": 3,
+  "anonymousHead": [
+    403,
+    403
+  ],
+  "verifiedAt": "2026-11-13T09:06:41.249937+00:00"
+}

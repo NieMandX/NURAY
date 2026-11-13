@@ -210,9 +210,10 @@ try{
     await hydrateAreas(renderer,renderer.manualTiles);
   }
   if(mergedMode&&renderer.modelURL){
-    $('model-link').href=renderer.modelURL.href;
+    const delivery=renderer.assetDelivery;
+    $('model-link').href=new URL(delivery?.merged?.url||renderer.modelURL.href,catalogURL).href;
+    $('model-link').textContent='Общий участок · GLB'+(delivery?.merged?.encoding==='gzip'?' gzip':'');
     if(renderer.mergedFormat==='gltf'){
-      const delivery=config.assetDelivery?.[config.catalog];
       $('model-link').href=new URL(delivery?.merged?.url||renderer.modelURL.href,catalogURL).href;
       $('model-link').textContent='Общий участок · glTF'+(delivery?.merged?.encoding==='gzip'?' gzip':'');
       $('model-buffer-link').href=new URL(delivery?.mergedBuffer?.url||new URL('model.bin',renderer.modelURL).href,catalogURL).href;
