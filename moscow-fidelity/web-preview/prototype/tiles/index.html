@@ -119,7 +119,7 @@ header{flex-wrap:wrap}#water-toggle{white-space:nowrap}#water-panel p{margin:7px
     document.getElementById('activity').textContent = 'Ожидаем открытия через HTTP';
     return;
   }
-  import('./app.js?v=plants-15').catch(error => {
+  import('./app.js?v=plants-16').catch(error => {
     const notice = document.getElementById('error');
     notice.hidden = false; notice.textContent = error.message;
     document.getElementById('loading').hidden = true;

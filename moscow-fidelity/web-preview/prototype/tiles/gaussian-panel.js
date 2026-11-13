@@ -7,7 +7,7 @@ export async function installGaussianPanel(renderer,manifestURL=new URL('./asset
     status.textContent='Показаны полигональные растения. Сплаты доступны в полной сцене WebGPU.';
     return;
   }
-  const {GaussianVegetation}=await import('../../src/district/gaussian/renderer.js?v=gs-15');
+  const {GaussianVegetation}=await import('../../src/district/gaussian/renderer.js?v=gs-16');
   const gs=new GaussianVegetation(renderer);renderer.gaussianVegetation=gs;
   try{
     await gs.open(manifestURL);

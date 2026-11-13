@@ -1,4 +1,4 @@
-import {compactMeshInstances,replacementSet} from './model.js?v=gs-15';
+import {compactMeshInstances,replacementSet} from './model.js?v=gs-16';
 
 export class GaussianVegetation {
   constructor(owner){this.owner=owner;this.enabled=false;this.active=new Set();this.replaced=new Set();this.resources=[];this.reflections=new Map();this.count=0;this.budget=350000;}
@@ -40,7 +40,7 @@ export class GaussianVegetation {
     const errors=(await module.getCompilationInfo()).messages.filter(m=>m.type==='error');if(errors.length)throw Error(errors.map(e=>`${e.lineNum}: ${e.message}`).join('\n'));
     this.pipeline=await d.createRenderPipelineAsync({label:'Gaussian vegetation',layout:'auto',vertex:{module,entryPoint:'vertex'},fragment:{module,entryPoint:'fragment',targets:[{format:this.owner.sceneFormat,blend:{color:{srcFactor:'one',dstFactor:'one-minus-src-alpha'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha'}}}]},primitive:{topology:'triangle-list'},depthStencil:{format:'depth32float',depthWriteEnabled:false,depthCompare:'greater-equal'}});
     this.group=d.createBindGroup({layout:this.pipeline.getBindGroupLayout(0),entries:[this.uniform,this.points,this.transforms,this.order].map((buffer,binding)=>({binding,resource:{buffer}}))});
-    this.worker=new Worker(new URL('./worker.js?v=gs-15',import.meta.url),{type:'module'});
+    this.worker=new Worker(new URL('./worker.js?v=gs-16',import.meta.url),{type:'module'});
     this.worker.onerror=e=>this.fail(e.message);
     this.worker.onmessage=({data})=>{
       if(data.type==='error'){this.fail(data.message);return;}
@@ -52,7 +52,7 @@ export class GaussianVegetation {
         r.capture.key=null;this.owner.revision++;return;
       }
       if(data.type!=='sorted')return;this.busy=false;
-      this.count=data.pairs.length/2;this.sortMs=data.ms;
+      this.count=data.pairs.length/2;this.sortMs=data.ms;this.detail=data.detail;
       if(this.count)d.queue.writeBuffer(this.order,0,data.pairs);
       const active=new Set(data.active.map(i=>this.manifest.instances[i].sourceInstance));
       this.active=active;
@@ -117,7 +117,7 @@ export class GaussianVegetation {
   updateStatus(){
     this.owner.stats.gaussians=this.available()?this.count:0;this.owner.stats.gaussianBytes=this.bytes??0;
     this.owner.stats.gaussianPlants=this.available()?this.active.size:0;
-    this.owner.canvas.dataset.gaussians=JSON.stringify({enabled:this.enabled,active:this.available(),plants:this.active.size,replaced:this.replaced.size,count:this.count,bytes:this.bytes,sortMs:this.sortMs,error:this.error??null});
+    this.owner.canvas.dataset.gaussians=JSON.stringify({enabled:this.enabled,active:this.available(),plants:this.active.size,replaced:this.replaced.size,count:this.count,bytes:this.bytes,sortMs:this.sortMs,detail:this.detail,error:this.error??null});
     this.onStatus?.();
   }
   dispose(){this.worker?.terminate();for(const b of this.resources)b.destroy();this.resources=[];}

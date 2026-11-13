@@ -503,3 +503,10 @@ WebGPU merged raster excludes a constant, validated complete set of polygonal pl
 Validation: 65 JS tests, 6 numerical/preparation Python tests, 7 transport tests. Local interactive rotation proof: `docs/proof/kursk-plants-r8-local-20261113.*`; all 30,842 proxies excluded in every checked view, no WebGPU error. Cloud verification: `docs/proof/kursk-plants-r8-cloud-20261113.json`.
 
 Original four PLYs and four PNG references are also backed up privately in `s3://nuray-backups-niemandx/kursk/20261113-plants-r8/kursk-plants-sources-20261113-r8.tar.gz` (10,762,009 bytes, SHA-256 `888cdb6d05b67e0c5dc3e35a78601582c3ddc1c610aa115a91d6e27793c91530`). Upload integrity verified; private bucket access unchanged. Restore through existing authorized S3 credentials, never a public download URL.
+
+
+### GS detail allocation correction (2026-11-13, gs-16)
+
+User reported reversed detail on zoom. Reproduced: the 8192 request cap BEFORE global scaling kept near crowns at roughly 512 points and global normalization downgraded some approaching visible plants (318 at the 1600 -> 1000 m step in the central review). Requests are now uncapped until allocation; offscreen plants retain their minimum splat representation, with detail spent inside the guarded view. Per-view previous LODs protect approaching visible plants; 2% hysteresis is anchored to the last LOD change, so small zoom-out steps still release detail. The 350000-point hard budget and complete 30842 replacement membership remain unchanged. Main/reflection histories are separate. No asset release or geometry rebuild.
+
+Numerical full-catalog zoom sequence 1600/1000/600/400/200/100/50/25 m: zero approaching-visible downgrades at all steps after correction. Browser wheel sequence 400 -> 279 -> 136 -> 46 -> 279 m: largest crowns 2048 -> 8192 -> full 32768 -> 2048, all replacements retained, no console errors. 68 JS tests passed, including full-resolution near requests, crowded monotonic zoom-in, and 1%-step zoom-out. Previous r8 description of orientation-independent allocation is superseded by guarded-view allocation with temporal preservation; polygonal proxy membership is still constant.

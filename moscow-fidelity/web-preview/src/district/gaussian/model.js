@@ -10,7 +10,7 @@ export function plantBounds(instances,models){
   });
 }
 
-export function selectPlants(instances,models,matrix,width,height,budget=350000,eye=null,bounds=plantBounds(instances,models),includeOffscreen=false){
+export function selectPlants(instances,models,matrix,width,height,budget=350000,eye=null,bounds=plantBounds(instances,models),includeOffscreen=false,previous=null){
   const focal=Math.hypot(matrix[1],matrix[5],matrix[9])*height;
   const planes=new Float64Array(24);
   [[0,1,1.25],[0,-1,1.25],[1,1,1.25],[1,-1,1.25],[2,1,0],[2,-1,1]].forEach(([axis,sign,guard],i)=>{
@@ -19,12 +19,12 @@ export function selectPlants(instances,models,matrix,width,height,budget=350000,
   const chosen=[];
   for(let id=0;id<instances.length;id++){
     const {center,extent,radius}=bounds[id],clip=project(matrix,center);
-    // LOD allocation covers the whole scene and depends on eye distance, not
-    // the set currently inside the frame. Turning the view cannot swap trees.
+    // Keep projected error uncapped until AFTER budget allocation. Capping
+    // first flattens nearby crowns to the same low LOD under crowd pressure.
     const distance=eye?Math.hypot(center[0]-eye[0],center[1]-eye[1],center[2]-eye[2]):Math.abs(clip[3]);
     const size=radius*focal/Math.max(.1,distance);
     const levels=models[instances[id].model].levels;
-    const target=Math.max(1,Math.min(8192,size*size*.65));
+    const target=Math.max(1,size*size*.65);
     let level=levels.length-1;
     while(level>0&&levels[level-1].count<=target)level--;
     let visible=true;
@@ -35,20 +35,27 @@ export function selectPlants(instances,models,matrix,width,height,budget=350000,
       const e=extent[0]*Math.abs(planes[k])+extent[1]*Math.abs(planes[k+1])+extent[2]*Math.abs(planes[k+2]);
       if(d+e<0){visible=false;break;}
     }
-    chosen.push({id,level,size,target,count:levels[level].count,visible});
+    const old=previous?.[id];
+    const floorLevel=old?.visible&&visible&&(size>=old.size||size>=(old.anchorSize??old.size)*.98)?old.level:levels.length-1;
+    if(!visible)level=levels.length-1;
+    level=Math.min(level,floorLevel);
+    chosen.push({id,level,floorLevel,size,target:visible?target:1,count:levels[level].count,visible});
   }
   let total=chosen.reduce((n,x)=>n+x.count,0);
   const minimum=instances.reduce((n,i)=>n+models[i.model].levels.at(-1).count,0);
   if(minimum>budget)throw Error('Gaussian budget cannot cover every plant; add coarser splat LODs');
   if(total>budget){
-    // Share detail proportionally instead of spending it all on a handful of
-    // near crowns and reducing every other visible tree to a single blob.
+    // Preserve detail on approaching visible plants. Outside the guard band
+    // retain a minimal splat (never a mesh), freeing detail for this view.
+    const floorCost=chosen.reduce((n,x)=>n+models[instances[x.id].model].levels[x.floorLevel].count,0);
+    if(floorCost>budget)for(const x of chosen)x.floorLevel=models[instances[x.id].model].levels.length-1;
     const allocate=(scale,apply=false)=>{
       let sum=0;
       for(const x of chosen){
         const levels=models[instances[x.id].model].levels,target=Math.max(1,x.target*scale);
         let level=levels.length-1;
         while(level>0&&levels[level-1].count<=target)level--;
+        level=Math.min(level,x.floorLevel);
         sum+=levels[level].count;if(apply){x.level=level;x.count=levels[level].count;}
       }
       return sum;
@@ -56,6 +63,12 @@ export function selectPlants(instances,models,matrix,width,height,budget=350000,
     let lo=0,hi=1;
     for(let k=0;k<14;k++){const mid=(lo+hi)/2;if(allocate(mid)>budget)hi=mid;else lo=mid;}
     total=allocate(lo,true);
+  }
+  for(const x of chosen){
+    const old=previous?.[x.id];
+    // Anchor hysteresis to the last LOD change, not the previous frame: many
+    // tiny zoom-out steps must eventually release the higher detail.
+    x.anchorSize=old?.level===x.level?(old.anchorSize??old.size):x.size;
   }
   return includeOffscreen?chosen:chosen.filter(x=>x.visible&&x.size>=.4);
 }

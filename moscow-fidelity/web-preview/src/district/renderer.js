@@ -16,7 +16,7 @@ import {renderSize} from './resolution.js?v=moscow-defaults-1';
 import {gpuDeviceLimits} from './gpu-limits.js?v=large-region-1';
 import {withDeadline} from './deadline.js?v=moscow-defaults-1';
 import {WaterHeights} from './ocean/planar-math.js?v=dry-ground-1';
-import {PlanarReflection,cityReflectionLayouts} from './ocean/planar-reflection.js?v=gs-15';
+import {PlanarReflection,cityReflectionLayouts} from './ocean/planar-reflection.js?v=gs-16';
 export const cameraDefaults=()=>({yaw:.64,pitch:.78,distance:160,target:[0,3,0]});
 const vertexLayout={arrayStride:32,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'snorm16x2'},{shaderLocation:2,offset:16,format:'float32x2'},{shaderLocation:3,offset:24,format:'uint32'},{shaderLocation:4,offset:28,format:'float32'}]};
 const median=values=>{const a=[...values].sort((x,y)=>x-y);return a[Math.floor(a.length/2)];};
