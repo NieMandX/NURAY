@@ -235,7 +235,7 @@ try{
   }
   if(config.surfaceEffects?.[config.catalog])await renderer.loadSurfaceEffects(new URL(config.surfaceEffects[config.catalog],assetBase));
   const sourceGeo=sceneGeography(renderer.tileset,config.geography?.[config.catalog]);
-  installWaterPanel(renderer,config.catalog,()=>{renderer.revision++;renderer.gpu=null;renderer.publish(true);});
+  installWaterPanel(renderer,config.settingsCatalogs?.[config.catalog]||config.catalog,()=>{renderer.revision++;renderer.gpu=null;renderer.publish(true);});
   installHeliodon(renderer,sourceGeo,()=>{renderer.revision++;renderer.gpu=null;renderer.tracer.cache.invalidate();renderer.tracer.reset();renderer.publish(true);},defaultSunPreset(params,approvedDefaults));
   const data=renderer.tileset,ox=data.origin[0],oy=data.origin[1],bounds=data.boundsMSK;
   const target=[(bounds[0]+bounds[2])/2-ox,0,oy-(bounds[1]+bounds[3])/2];
@@ -361,7 +361,7 @@ try{
     if(selected)$('view-name').textContent=button.firstChild.textContent;
   });
   if(approvedCamera)$('view-name').textContent='Сохранённый вид';
-  await renderer.updateTiles(renderer.chooseTiles({full:$('streaming').value==='full'}));await installSceneLayers(renderer,config.catalog,applySceneLayers);
+  await renderer.updateTiles(renderer.chooseTiles({full:$('streaming').value==='full'}));await installSceneLayers(renderer,config.settingsCatalogs?.[config.catalog]||config.catalog,applySceneLayers);
   if(params.get('instanceCulling')==='1')(await import('./main-instance-culling.js?v=gs-16')).installInstanceCulling(renderer);
   if(params.get('splats')==='1')await (await import('./gaussian-panel.js?v=gs-16')).installGaussianPanel(renderer,params.has('splatCatalog')?new URL(params.get('splatCatalog'),assetBase):undefined);
   initialized=true;$('measure-scene').disabled=false;$('settings').disabled=false;$('views').disabled=false;$('area-picker').disabled=false;$('loading').hidden=true;renderer.publish(true);

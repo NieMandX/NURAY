@@ -36,3 +36,5 @@ Viewer служит и просмотрщиком большой сцены, и 
 
 
 Kursk vegetation update (2026-11-13): `assets-kursk-splats-20261113-r8` supersedes the six-template central-only catalog above. It contains nine shared templates and covers all 30,842 plants in WebGPU merged raster. Four new generated types: spreading oak/linden, silver birch and thuja. See the r8 section in `HANDOFF.md` for renderer limitations and restoration instructions.
+
+Три городские ссылки: [Москва](https://niemandx.github.io/NURAY/moscow/), [Санкт-Петербург](https://niemandx.github.io/NURAY/spb/), [Курск](https://niemandx.github.io/NURAY/kursk/). Последняя локальная правка Курска: r14/r9, перенос шести деревьев в указанной пользователем полосе; остальные посадки сохранены.

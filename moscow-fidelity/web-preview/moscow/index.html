@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inn.vision · Москва</title>
+<style>body{font:16px system-ui;background:#edf0ed;color:#29322d;max-width:40rem;margin:15vh auto;padding:2rem}a{color:#254f78}</style>
+<h1>Inn.vision · Москва</h1><p>Начальный сектор 3 × 3 км, остальные районы — по выбору.</p>
+<p><a id="viewer" href="../prototype/tiles/?layout=sectors&amp;renderer=webgpu&amp;engine=raster">Открыть Москва</a></p>
+<script>
+const url=new URL(document.getElementById('viewer').href);
+if(!navigator.gpu||matchMedia('(pointer:coarse)').matches){url.searchParams.set('renderer','webgl2');url.searchParams.delete('layout');url.searchParams.set('streaming','camera');}
+for(const [key,value] of new URLSearchParams(location.search))url.searchParams.set(key,value);
+location.replace(url.href);
+</script></html>

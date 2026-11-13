@@ -46,11 +46,15 @@ def prepare(root, splats, manifest):
     for name in sorted(paths):
         p = root / name
         rows.append({'path': root.name + '/' + name, 'bytes': p.stat().st_size, 'sha256': digest(p)})
-    for p in sorted(splats.iterdir()):
+    if (root / 'surface-effects.json').exists():
+        for p in sorted(root.glob('surface-effects*')):
+            if p.is_file():
+                rows.append({'path': root.name + '/' + p.name, 'bytes': p.stat().st_size, 'sha256': digest(p)})
+    for p in sorted(splats.iterdir()) if splats else []:
         if p.is_file() and p.suffix in ('.json', '.gsbin'):
             rows.append({'path': splats.name + '/' + p.name, 'bytes': p.stat().st_size, 'sha256': digest(p)})
     result = {'version': 1, 'baseURL': 'https://storage.yandexcloud.net/nuray-assets-niemandx/',
-              'release': root.name, 'splatRelease': splats.name, 'totalTiles': len(catalog['tiles']),
+              'release': root.name, 'splatRelease': splats.name if splats else None, 'totalTiles': len(catalog['tiles']),
               'geometryChanged': False, 'files': rows,
               'packs': [{'path': root.name + '/meshes.pack', 'bytes': index['bytes'], 'sha256': h.hexdigest()}]}
     manifest.parent.mkdir(parents=True, exist_ok=True)
@@ -63,7 +67,7 @@ def prepare(root, splats, manifest):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root', type=Path)
-    parser.add_argument('--splats', type=Path, required=True)
+    parser.add_argument('--splats', type=Path)
     parser.add_argument('--manifest', type=Path, required=True)
     args = parser.parse_args()
     prepare(args.root, args.splats, args.manifest)

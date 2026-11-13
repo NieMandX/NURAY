@@ -247,6 +247,13 @@
       "timeZone": "Europe/Moscow",
       "utcOffset": 3,
       "label": "Курск"
+    },
+    "assets-kursk-3km-20261113-r14/tileset.json": {
+      "latitude": 51.725354,
+      "longitude": 36.189045,
+      "timeZone": "Europe/Moscow",
+      "utcOffset": 3,
+      "label": "Курск"
     }
   },
   "assetBase": "https://storage.yandexcloud.net/nuray-assets-niemandx/",
@@ -256,7 +263,9 @@
     "assets-moscow-style-20261024-r14/tileset.json": "moscow-mesh-pack.json",
     "assets-moscow-10km-20261108-r1/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/mesh-pack.json",
     "assets-kursk-3km-20261113-r12/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-kursk-3km-20261113-r12/mesh-pack.json",
-    "assets-kursk-3km-20261113-r13/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-kursk-3km-20261113-r13/mesh-pack.json"
+    "assets-kursk-3km-20261113-r13/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-kursk-3km-20261113-r13/mesh-pack.json",
+    "assets-kursk-3km-20261113-r14/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-kursk-3km-20261113-r14/mesh-pack.json",
+    "assets-spb-10km-live-20261024-r13/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-spb-10km-live-20261024-r13/mesh-pack.json"
   },
   "visibilityMetadata": {
     "assets-moscow-style-20261024-r14/tileset.json": "moscow-visibility.json"
@@ -582,6 +591,152 @@
           }
         ]
       }
+    },
+    "assets-kursk-3km-20261113-r14/tileset.json": {
+      "version": 1,
+      "sourceCatalogSha256": "f0b40092cf1a4c33c9754ca1e7c31d884e1a8624a906600acd9af41883a034f0",
+      "excludedBuildFields": [
+        "geometryRevision",
+        "sourceChunks"
+      ],
+      "catalog": {
+        "url": "delivery-20261113-v1/tileset-runtime.json.gz",
+        "encoding": "gzip",
+        "bytes": 4424676,
+        "sha256": "b91a82a47c2880c653cf1c200ed5c9429237c25e8c971bf789e47f9b2c15cbc3",
+        "decodedBytes": 14470081,
+        "decodedSha256": "90b1c1f7b26bedb8707c16fcf233e658f7a79307426deb475554dd13e0a8f3d5",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 65536,
+            "sha256": "ca62f23fb237cb844c23f369050e70e5f331246752f51de693916655aae9291e"
+          },
+          {
+            "offset": 2179570,
+            "bytes": 65536,
+            "sha256": "bb392936adec5c8634e9ea4e86d0eed7adca4e8c2000f7af4f1aa57ec24509d3"
+          },
+          {
+            "offset": 4359140,
+            "bytes": 65536,
+            "sha256": "bff0fd66c6627359b3ed659012df9542a193c81f8defd44651c6216d21fbaf84"
+          }
+        ]
+      },
+      "validation": {
+        "url": "delivery-20261113-v1/validation-summary.json.gz",
+        "encoding": "gzip",
+        "bytes": 93,
+        "sha256": "c40db6d73250582381cea0bb7b65881c4143fc9fa50f179303e42077ff082001",
+        "decodedBytes": 76,
+        "decodedSha256": "49d42b15a8b6da868e0d99798a869806fb213e9f650edb34777298f17e475b0d",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 93,
+            "sha256": "c40db6d73250582381cea0bb7b65881c4143fc9fa50f179303e42077ff082001"
+          }
+        ]
+      },
+      "merged": {
+        "url": "delivery-20261113-v1/model.glb.gz",
+        "encoding": "gzip",
+        "bytes": 353711762,
+        "sha256": "96d40d3758f778236c2f1e15018077947c83988e85278ecab768cc28e71a8d2c",
+        "decodedBytes": 891313004,
+        "decodedSha256": "dfeb61be8308959b5ca5f4a1c0db7ec00aae2f8fbb8bfdf464ffa28e7e914869",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 65536,
+            "sha256": "d4f984459206dcbcd823425e54323e63e86f41fbb1c0797ea4bca1ab39a6ed45"
+          },
+          {
+            "offset": 176823113,
+            "bytes": 65536,
+            "sha256": "00c985a3a107daeaa160b2dd00f80a4e8c85e96d2320a50341c741ac94af5359"
+          },
+          {
+            "offset": 353646226,
+            "bytes": 65536,
+            "sha256": "5c264b3f8054042e8532997874484cd695909260529c43ebd071f50a29d2c01e"
+          }
+        ]
+      }
+    },
+    "assets-spb-10km-live-20261024-r13/tileset.json": {
+      "version": 1,
+      "sourceCatalogSha256": "b9887ceee18543c0ea1d500592c28fe51e23c50321365d9b489dec4db9d9a2c5",
+      "excludedBuildFields": [
+        "geometryRevision",
+        "sourceChunks"
+      ],
+      "catalog": {
+        "url": "delivery-20261113-v1/tileset-runtime.json.gz",
+        "encoding": "gzip",
+        "bytes": 16789969,
+        "sha256": "5ba42a3bbe923715cd12ba84f7652b78b790de46e707476341b7ddb68a76e305",
+        "decodedBytes": 69360428,
+        "decodedSha256": "5def0998f4ac58a64da0e5f4e7cc096180a75247e7d89dd9c4ba8a5cfcb14ca0",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 65536,
+            "sha256": "44dccc240bcbb8e9932ef1fa9c606d431445ad19f7dbdf057742d3a656aadf6f"
+          },
+          {
+            "offset": 8362216,
+            "bytes": 65536,
+            "sha256": "f5139d4c58fec9fc9f12bb3bc6a829909d702df6a8ee25342eedfdd5f4b087db"
+          },
+          {
+            "offset": 16724433,
+            "bytes": 65536,
+            "sha256": "55522ef508f840c57af6d47002e247064bfe2cb4a197d2f11a91d6c44cf678d2"
+          }
+        ]
+      },
+      "validation": {
+        "url": "delivery-20261113-v1/validation-summary.json.gz",
+        "encoding": "gzip",
+        "bytes": 11739,
+        "sha256": "808e0b4696fafc594b7bf6d2762b7d33b3b25e14474936413bdab8d50c870c09",
+        "decodedBytes": 31139,
+        "decodedSha256": "1a3e89a1487a92169d356c02cf65bee0f1cee9ce4b963bf3f30a7a5e07d14980",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 11739,
+            "sha256": "808e0b4696fafc594b7bf6d2762b7d33b3b25e14474936413bdab8d50c870c09"
+          }
+        ]
+      },
+      "merged": {
+        "url": "delivery-20261113-v1/model.glb.gz",
+        "encoding": "gzip",
+        "bytes": 1340440407,
+        "sha256": "c0cc7fec1f1959620e46114be854f6ea81c8c2e9e1a797c3758d7436304c15e7",
+        "decodedBytes": 3914328236,
+        "decodedSha256": "71a76c8eb600d3c7ab1b70f4515ac46e1538284de71f8bdfd44fd75a69e1dfc0",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 65536,
+            "sha256": "f0edf5e327158939c2182dd1a1e607047037d5b82c9319012b1c59dab5713eaf"
+          },
+          {
+            "offset": 670187435,
+            "bytes": 65536,
+            "sha256": "d0ff532f64d0e3c1b4c5dca5d0c2005092d5c8cd4d8991aa0902a65aabb82896"
+          },
+          {
+            "offset": 1340374871,
+            "bytes": 65536,
+            "sha256": "67f00faa572e9951d60775d87c730858b871ed311c572e55d45e62cda054f3bc"
+          }
+        ]
+      }
     }
   },
   "mergedMirrors": {
@@ -603,5 +758,8 @@
         "encoding": "gzip"
       }
     }
+  },
+  "settingsCatalogs": {
+    "assets-kursk-3km-20261113-r14/tileset.json": "assets-kursk-3km-20261113-r13/tileset.json"
   }
 }

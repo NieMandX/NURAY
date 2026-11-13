@@ -2,6 +2,16 @@
 
 Код и интерфейс — [GitHub Pages](https://niemandx.github.io/NURAY/), репозиторий `NieMandX/NURAY`, ветка `main`, папка `moscow-fidelity/web-preview/`. Данные — **Yandex Object Storage**, `https://storage.yandexcloud.net/nuray-assets-niemandx/`. Обращений к Cloud.ru в текущей доставке нет.
 
+## Three city routes and local Kursk correction — 13 November 2026
+
+- Moscow: https://niemandx.github.io/NURAY/moscow/ — unchanged10×10km data, initial3×3km selection.
+- Saint Petersburg: https://niemandx.github.io/NURAY/spb/ — approved r13 full10×10km scene, now delivered from Yandex.
+- Kursk: https://niemandx.github.io/NURAY/kursk/ — r14 scene and r9 Gaussian catalog, six scoped tree relocations.
+
+Kursk upload:82 objects /807,222,767 bytes, all verified. Petersburg upload:185 objects /3,082,405,492 bytes, all verified; this includes the1,108,870,344-byte range pack, losslessly compressed merged GLB, matching trace caches, visibility metadata and surface-effects data. Manifests: `docs/assets-kursk-20261113-r14-manifest.json`, `docs/assets-spb-20261113-manifest.json`. Every upload verifies multipart MD5, whole-source SHA metadata and three remote byte ranges. Independent public HEAD/CORS/Range checks passed; all configured gzip deliveries passed SHA range and immutable-cache checks. Proofs are under `docs/proof/*cloud-20261113.json` and `three-cities-delivery-20261113.json`. None of the private canonical inputs, source observations or DWG extracts were uploaded in these releases.
+
+Local browser QA: full merged Petersburg rendered with its granite quay; relocated Kursk inspected at the user camera. All34 water/light fields remained unchanged. Tests:68 viewer,7 delivery,3 relocation checks passed. GitHub Pages/public-route browser verification follows the deployment run; see the final verification receipt.
+
 ## Выпуск от 10 ноября 2026
 
 `assets-moscow-10km-20261108-r1` содержит Москву **10 × 10 км**. При открытии страницы загружается выбранный пользователем квадрат **3 × 3 км**, 169 готовых тайлов с небольшим запасом по краям. Остальные ячейки добавляются только нажатием в панели «Участки карты». Движение камеры не расширяет выбор. Повторное нажатие убирает добавленную ячейку; «Только начальный участок» сбрасывает выбор.
