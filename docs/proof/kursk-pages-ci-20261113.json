@@ -1,0 +1,13 @@
+{
+  "repository": "NieMandX/NURAY",
+  "commit": "6fc103c1c87b985fa3450451bae115cf60b9fffd",
+  "runId": 43399979070,
+  "jobId": 131800122435,
+  "conclusion": "success",
+  "steps": [
+    "Viewer tests",
+    "Transfer and restoration tests",
+    "Cloud object and byte-range verification",
+    "Pages deploy"
+  ]
+}

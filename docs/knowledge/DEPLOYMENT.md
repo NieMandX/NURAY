@@ -44,7 +44,7 @@ python3 scripts/restore_assets.py --manifest docs/assets-moscow-10km-20261110-ma
 
 GitHub Actions перед публикацией проверяет viewer, целостность облачных объектов и gzip-доставку. Тяжёлые файлы не входят в Pages artifact или Git. `scripts/upload_cloud.py` поддерживает закрытый файл краткосрочного IAM-сеанса; постоянный новый ключ для этой публикации не создавался, файл токена не входит в Git.
 
-Закрытый архив входов `nuray-backups-niemandx/backups/nuray-moscow-build-20261027.tar.gz` относится к старому выпуску и в этой публикации не обновлялся. Не считать его архивом новой 10-километровой сборки. История миграции и старые контрольные суммы: [8 ноября](DEPLOYMENT-20261108.md), [7 ноября](DEPLOYMENT-20261107.md).
+Закрытый архив входов (2026-10-27, private location) относится к старому выпуску и в этой публикации не обновлялся. Не считать его архивом новой 10-километровой сборки. История миграции и старые контрольные суммы: [8 ноября](DEPLOYMENT-20261108.md), [7 ноября](DEPLOYMENT-20261107.md).
 
 
 ## Курск r12 — публикация 13 ноября 2026
@@ -55,6 +55,25 @@ Runtime: `assets-kursk-3km-20261113-r12`, сплаты: `assets-kursk-splats-202
 
 Подготовка: `scripts/prepare_delivery.py`, затем `scripts/prepare_scene_release.py`. Все облачные объекты проверены загрузчиком по размеру/SHA-метаданным и трём диапазонам; публичная проверка CORS/Range — `docs/proof/kursk-cloud-20261113.json`, доставка — `kursk-delivery-20261113.json`. `.gz` и `.pack` выдаются без Content-Encoding, с immutable-кэшем. Вода Ocean, Hosek–Wilkie, 21 июня 2026 / 18:47, 64 сэмпла; вода заморожена. Все значения водного и светового пресета совпадают с утверждённым локальным просмотром.
 
-Рабочий архив подготовлен локально: `.local/kursk-workbench-20261113-r12.tar.gz`, 391 853 331 байт, SHA256 `bd54ba39817569f163f4bf1e5fdb571b34bb6ecb6ef9c686d6531a237c069ae5`, 536 проверенных файлов. Включает текущую canonical-сцену, отчёты этапов, декодированный источник, извлечение съёмки и исходные PLY. Это не копия каждой устаревшей сцены и не полный архив всех первичных ответов провайдера. После отдельного подтверждения пользователя архив и манифест загружены в закрытый `nuray-backups-niemandx`, ключ `backups/kursk-workbench-20261113-r12.tar.gz`. Проверены размер/SHA-метаданные и диапазоны, анонимный HEAD для обоих объектов возвращает 403. Квитанция: `docs/proof/kursk-backup-20261113.json`. Для продолжения работы восстановить этот архив в корне checkout, а runtime — через `restore_assets.py --manifest docs/assets-kursk-20261113-manifest.json --mode all`.
+Private workbench backup: 391,853,331 bytes; 536 verified files. Includes current canonical geometry, stage reports, decoded source, survey extraction and original PLYs. It is not every obsolete build or every original provider response. Uploaded to private Yandex storage after specific user approval. Size, checksum metadata and three byte ranges verified; anonymous HEAD returns 403 for archive and manifest. Exact location/checksum are in the private local receipt `.local/kursk-backup-location.json`; never publish that receipt. Public verification summary: `docs/proof/kursk-backup-20261113.json`. Restore the authorized workbench archive in the checkout root; restore public runtime with `restore_assets.py --manifest docs/assets-kursk-20261113-manifest.json --mode all`.
 
-Pages: ожидает завершения workflow и браузерной проверки. Локальные тесты: 66 JS, 7 доставки, 51 алгоритмов Курска, 4 Gaussian — прошли.
+Основная публикация Pages прошла: commit `4d503f4`, workflow `43398346714`. Исправление совместимости WebGL: commit `d9e303b`, workflow `43399119087`, success. Окончательный код и ссылки скачивания: commit `6fc103c`, workflow `43399979070`, success; опубликованный app.js совпадает с локальным побайтно. Квитанция CI: `docs/proof/kursk-pages-ci-20261113.json`. Публичный WebGPU просмотр загрузил всю сцену и шесть шаблонов из Яндекс Cloud, без ошибок; переключение GS → полигоны → GS проверено. WebGL2 завершает загрузку и показывает полигональные растения; несовместимый параметр instanceCulling безопасно игнорируется. Проверены 67 JS-тестов, 7 доставки, 51 алгоритмов Курска, 4 Gaussian и 3 Float32 clipping. Нативный Safari в этой публикации не проверялся.
+
+Для полностью автономного merged-просмотра после `restore_assets.py --mode all` дополнительно распаковать GLB (утилита восстановления проверяет и сохраняет gzip, но не распаковывает его автоматически):
+
+```sh
+python3 - <<'PY'
+import gzip, shutil
+from pathlib import Path
+root = Path('moscow-fidelity/web-preview/prototype/tiles/assets-kursk-3km-20261113-r12')
+target = root / 'merged/model.glb'
+target.parent.mkdir(parents=True, exist_ok=True)
+if not target.exists():
+    with gzip.open(root / 'delivery-20261113-v1/model.glb.gz', 'rb') as src, target.open('xb') as dst:
+        shutil.copyfileobj(src, dst)
+PY
+```
+
+После этого `python3 scripts/serve.py --port 8776 --local-assets` использует восстановленные локальные данные. Исходный DWG не включён в рабочий архив; сохранены его извлечение, привязка и данные для текущей сборки.
+
+Браузерная проверка окончательной версии: `docs/proof/kursk-pages-20261113.json`. WebGPU загрузил полную карту со сплатами; WebGL2 — 1 подробный и 112 обзорных тайлов в существующем бюджете, с полигональными растениями. Ссылки GLB в обоих режимах ведут на опубликованный gzip. Краткосрочный локальный IAM-файл после передачи удалён.

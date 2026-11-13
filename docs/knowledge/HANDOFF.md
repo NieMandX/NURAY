@@ -2,6 +2,8 @@
 
 ## CURRENT — Kursk r12, central streets and square surfaces (2026-11-13)
 
+Published viewer: https://niemandx.github.io/NURAY/kursk/ . Runtime is in Yandex Object Storage; the separately approved workbench archive is in private Yandex storage. Its location and checksum are retained in a local receipt, not published. See `DEPLOYMENT.md` for verification and restoration instructions. The default Moscow route is unchanged.
+
 Local `assets-kursk-3km-20261113-r12` derives from r10. Street/aerial panorama review covers the whole central territory around Sonina, Alexandra Nevskogo, the circus, cathedral, Philharmonic, May 1 park and lower embankment (19 saved observations, historical imagery 2016/2020/2021). See `KURSK-STREET-REVIEW.md` and `scripts/yandex-source/evidence/kursk-paving-20261113.json`. It is not a current measured reconstruction of every detail.
 
 Source road axes receive longitudinal smoothing while preserving the overall climb; serialized asphalt crossfall remains ≤4.976752°. Sidewalk/verge grades use a continuous harmonic collar, rather than switching to the nearest road's height. This removes the sawtooth seam seen in the intermediate r11. Scope: central 800 m around local (150,180), fading to zero at1000m; off-road collar ends at30m. Underlying terrain, DWG/survey arrays and all3321 retained marks remain unchanged. This is visual surface grading, not certified engineering design. Authored buildings, transport structures, water and plant templates stay byte-identical; only eligible foundations are reseated.
@@ -413,7 +415,7 @@ node --test tests/regional-defaults.test.mjs tests/water-settings.test.mjs tests
 
 ## Менять геометрию
 
-Runtime-GLB не заменяет исходные семантические данные. Для алгоритмической сборки требуется канонический snapshot/входы, а для полной повторной обработки источника — также исходный захват 2ГИС. Резервные build-архивы следует брать из закрытого бакета Яндекс Cloud `nuray-backups-niemandx` под своей учётной записью; они не должны попадать в публичный Git.
+Runtime-GLB не заменяет исходные семантические данные. Для алгоритмической сборки требуется канонический snapshot/входы, а для полной повторной обработки источника — также исходный захват 2ГИС. Резервные build-архивы следует брать из закрытого бакета Яндекс Cloud (private) под своей учётной записью; они не должны попадать в публичный Git.
 
 Python-скрипты находятся в `prototype/tiling`, часть операций требует Blender Python (`bpy`, `mathutils`). Зависимости NumPy, Shapely, pyproj, Pillow, SciPy и ijson устанавливаются в отдельное окружение. `requirements-region.txt` фиксирует дополнительные зависимости исходного окружения; это не универсальный lockfile всех инструментов. Исторические скрипты могут содержать абсолютные пути прежнего компьютера — перед запуском заменить их параметрами своей машины.
 

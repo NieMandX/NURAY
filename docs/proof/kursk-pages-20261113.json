@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-13",
+  "entry": "https://niemandx.github.io/NURAY/kursk/",
+  "codeCommit": "6fc103c1c87b985fa3450451bae115cf60b9fffd",
+  "browser": "Desktop Chromium in-app browser",
+  "viewport": [
+    1280,
+    720
+  ],
+  "canvas": [
+    960,
+    607
+  ],
+  "webgpu": {
+    "layout": "merged",
+    "engine": "raster",
+    "ready": true,
+    "errorPanelHidden": true,
+    "consoleErrorsAndWarnings": [],
+    "wholeSceneLoaded": true,
+    "objects": 12,
+    "geometryBatches": 16,
+    "uniqueTriangles": 9324940,
+    "expandedTriangles": 25311510,
+    "sharedInstances": 31053,
+    "visibleGaussianPlants": 1255,
+    "visibleGaussians": 349952,
+    "gaussianBudget": 350000,
+    "interaction": "GS off shows polygon fallback; GS on restores the same plants. Water/light panel opens and closes."
+  },
+  "webgl2": {
+    "layout": "tiles",
+    "engine": "raster",
+    "ready": true,
+    "errorPanelHidden": true,
+    "detailTiles": 1,
+    "overviewTiles": 112,
+    "geometryMiB": 150.55,
+    "plants": "polygon fallback",
+    "loadState": "Completed with existing camera-streaming geometry budget",
+    "instanceCullingParameter": "Ignored safely; no unsupported-mode initialization error"
+  },
+  "download": {
+    "label": "Общий участок · GLB gzip",
+    "url": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-kursk-3km-20261113-r12/delivery-20261113-v1/model.glb.gz",
+    "verifiedInBothModes": true
+  },
+  "presets": {
+    "lighting": "hosek",
+    "water": "ocean",
+    "sunDate": "2026-06-21",
+    "sunMinute": 1127,
+    "samples": 64,
+    "frozenWater": true
+  },
+  "network": {
+    "runtimeOrigin": "https://storage.yandexcloud.net",
+    "mergedGzipObserved": true,
+    "sixGaussianTemplatesObserved": true,
+    "initialMergedGzipResourceDurationMs": 10371,
+    "timingNote": "Single observed resource duration, not a repeatable benchmark; cross-origin byte counters were unavailable."
+  },
+  "limitations": [
+    "Native Safari/mobile hardware not tested",
+    "Static frame GPU readings are not rotation benchmarks"
+  ],
+  "recoveredIssue": "One immediate post-deployment module request failed transiently. Public app.js then returned HTTP 200 and matched local bytes; tab reload completed normally."
+}
