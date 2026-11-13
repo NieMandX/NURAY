@@ -141,6 +141,18 @@ try{
   $('catalog-link').href=catalogURL.href;$('validation-link').href=new URL((!mergedMode&&config.assetDelivery?.[config.catalog]?.validation?.url)||validationURL.href,catalogURL).href;
   if(mergedMode)config.canonicalModel=config.catalog.replace('tileset.json','merged/model.glb');
   if(config.canonicalModel)$('model-link').href=new URL(config.canonicalModel,assetBase).href;else $('model-link').hidden=true;
+  const downloadDelivery=config.assetDelivery?.[config.catalog];
+  if(downloadDelivery?.merged){
+    const format=/\.gltf(?:\.gz)?(?:\?|$)/.test(downloadDelivery.merged.url)?'glTF':'GLB';
+    $('model-link').hidden=false;
+    $('model-link').href=new URL(downloadDelivery.merged.url,catalogURL).href;
+    $('model-link').textContent=`Общий участок · ${format}`+(downloadDelivery.merged.encoding==='gzip'?' gzip':'');
+    if(downloadDelivery.mergedBuffer){
+      $('model-buffer-link').href=new URL(downloadDelivery.mergedBuffer.url,catalogURL).href;
+      $('model-buffer-link').textContent='Буфер BIN'+(downloadDelivery.mergedBuffer.encoding==='gzip'?' gzip':'');
+      $('model-buffer-link').hidden=false;
+    }
+  }
   if(manualMode){
     const delivery=config.assetDelivery?.[config.catalog];
     $('model-link').href=new URL(delivery?.merged?.url||'merged/model.gltf',catalogURL).href;$('model-link').textContent='Вся Москва · glTF'+(delivery?.merged?.encoding==='gzip'?' gzip':'');
