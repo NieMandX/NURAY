@@ -240,6 +240,13 @@
       "timeZone": "Europe/Moscow",
       "utcOffset": 3,
       "label": "Курск"
+    },
+    "assets-kursk-3km-20261113-r13/tileset.json": {
+      "latitude": 51.725354,
+      "longitude": 36.189045,
+      "timeZone": "Europe/Moscow",
+      "utcOffset": 3,
+      "label": "Курск"
     }
   },
   "assetBase": "https://storage.yandexcloud.net/nuray-assets-niemandx/",
@@ -248,7 +255,8 @@
   "meshPacks": {
     "assets-moscow-style-20261024-r14/tileset.json": "moscow-mesh-pack.json",
     "assets-moscow-10km-20261108-r1/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/mesh-pack.json",
-    "assets-kursk-3km-20261113-r12/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-kursk-3km-20261113-r12/mesh-pack.json"
+    "assets-kursk-3km-20261113-r12/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-kursk-3km-20261113-r12/mesh-pack.json",
+    "assets-kursk-3km-20261113-r13/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-kursk-3km-20261113-r13/mesh-pack.json"
   },
   "visibilityMetadata": {
     "assets-moscow-style-20261024-r14/tileset.json": "moscow-visibility.json"
@@ -498,6 +506,79 @@
             "offset": 353646059,
             "bytes": 65536,
             "sha256": "61803d85803494a31295696dd61b48ddc54c98e5c5d9cfda384065038955c937"
+          }
+        ]
+      }
+    },
+    "assets-kursk-3km-20261113-r13/tileset.json": {
+      "version": 1,
+      "sourceCatalogSha256": "751d9d5aeb6040ea6c737c8b3d985d5cc6f326ad87e89a96d200451e107935fd",
+      "excludedBuildFields": [
+        "geometryRevision",
+        "sourceChunks"
+      ],
+      "catalog": {
+        "url": "delivery-20261113-v1/tileset-runtime.json.gz",
+        "encoding": "gzip",
+        "bytes": 4425514,
+        "sha256": "7347087b08749f602a70279d7eea920a582ccaacbeaac5e5c53e7db8f231c5bd",
+        "decodedBytes": 14471913,
+        "decodedSha256": "a75c97df921c3a92cd4b4185536ca29c913cc695596699fab7eaf128bb33b101",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 65536,
+            "sha256": "ca62f23fb237cb844c23f369050e70e5f331246752f51de693916655aae9291e"
+          },
+          {
+            "offset": 2179989,
+            "bytes": 65536,
+            "sha256": "e9141662c872fed8ede7e9aed3b5557fb438ae0e6bfcfb57900b287a6d02ed83"
+          },
+          {
+            "offset": 4359978,
+            "bytes": 65536,
+            "sha256": "b4ba9eaf67f53c3b5a5a29de55cb7416bf48c7d78ee2836386018478fc4f8814"
+          }
+        ]
+      },
+      "validation": {
+        "url": "delivery-20261113-v1/validation-summary.json.gz",
+        "encoding": "gzip",
+        "bytes": 93,
+        "sha256": "c40db6d73250582381cea0bb7b65881c4143fc9fa50f179303e42077ff082001",
+        "decodedBytes": 76,
+        "decodedSha256": "49d42b15a8b6da868e0d99798a869806fb213e9f650edb34777298f17e475b0d",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 93,
+            "sha256": "c40db6d73250582381cea0bb7b65881c4143fc9fa50f179303e42077ff082001"
+          }
+        ]
+      },
+      "merged": {
+        "url": "delivery-20261113-v1/model.glb.gz",
+        "encoding": "gzip",
+        "bytes": 353711781,
+        "sha256": "8c1edec2891c8e49905d4fb8bceb4a4a428e5d3a22920af018ad697e61edbcff",
+        "decodedBytes": 891316932,
+        "decodedSha256": "1a32a9a77d989dfdb3c15a1aa84484474eeb6933ab8d392e47ae4c2c53c8d9f3",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 65536,
+            "sha256": "5b15d6069d5b842aba4013313a6715993576da93b754f105f29c63bf724b442b"
+          },
+          {
+            "offset": 176823122,
+            "bytes": 65536,
+            "sha256": "b1a3149d820e43ca28119d4d31b62e042ff8f9d559f91d8bad2265b2e505a664"
+          },
+          {
+            "offset": 353646245,
+            "bytes": 65536,
+            "sha256": "7bfdd34fa23d6cc08313773269de4686fff4cd1c5f0bf9e27aa31be3f3bd70d8"
           }
         ]
       }

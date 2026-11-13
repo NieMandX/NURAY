@@ -16,6 +16,10 @@ def digest(p):
     return h.hexdigest()
 
 def verify(root):
+    retained={}
+    if (root/'industrial-chimneys.json').exists():
+        from verify_chimneys import verify as verify_chimneys
+        retained=verify_chimneys(root)
     receipt=json.loads((root/'paved-grade.json').read_text());base=root.parent/receipt['parent']
     scene=json.loads((root/'canonical/full/scene.json').read_text());parent=json.loads((base/'canonical/full/scene.json').read_text())
     unchanged=[]
@@ -68,6 +72,8 @@ def verify(root):
             rigid.append(c['id'])
         if c['name'] not in ('buildings','survey-model-foundations'):continue
         a,am,ac=unpack(base/'canonical/full',p);b,bm,bc=unpack(root/'canonical/full',c)
+        if str(c['id']) in retained:
+            ids=retained[str(c['id'])];a,am,ac=a[ids],am[ids],ac[ids]
         assert np.array_equal(am,bm) and np.array_equal(ac,bc)
         assert np.array_equal(a[:,:,[0,2]],b[:,:,[0,2]])
         xy=a[:,:,[0,2]]*[1,-1];q=xy.reshape(-1,2)

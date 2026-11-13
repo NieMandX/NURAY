@@ -137,7 +137,7 @@ class Builder:
         t=np.concatenate([p[0] for p in parts]);m=np.concatenate([p[1] for p in parts]);tint=np.concatenate([p[2] for p in parts]);self.batches[name]=[];self.batch_counts[name]=0
         idx=len(self.chunks);file=f'mesh-{idx:03}.bin.gz';info=pack(t,m,self.full/file,tints=None if np.all(tint==1) else tint)
         if info:
-            self.chunks.append(dict(id=idx,name=name,category='building' if name in ('buildings','landmarks') else 'fence' if name=='street-fences' else name,file=file,**info))
+            self.chunks.append(dict(id=idx,name=name,category='building' if name in ('buildings','landmarks','industrial-chimneys') else 'fence' if name=='street-fences' else name,file=file,**info))
             self.instances.append(dict(mesh=idx,matrix=IDENTITY))
     def surface(self,g,mat,name,offset=0,height=None):
         # Clip against the actual DEM triangles, not a coarse resampling grid.
@@ -386,8 +386,14 @@ class Builder:
         self.paint_audit={'sourceFeatures':len(self.paint),'renderedAreaM2':kept,'clippedOutsideRoadM2':discard,'policy':'Clip to own-level road footprint; height from same-level source 3D surface or shared ground'}
         print('PAINT',self.paint_audit,flush=True)
     def buildings_mesh(self):
+        from industrial_chimneys import detect,emit
+        chimneys=detect(self.buildings)
+        chimney_parts={p['index'] for group in chimneys for p in group['parts']}
+        emit(self,chimneys)
+        self.audit['industrialChimneys']=len(chimneys)
         missing=0;count=0
-        for f,g in self.buildings:
+        for building_index,(f,g) in enumerate(self.buildings):
+            if building_index in chimney_parts:continue
             height=f['attributes'].get('height')
             if not isinstance(height,(int,float)) or height<=0:height=3.;missing+=1
             for p in polygons(g):
