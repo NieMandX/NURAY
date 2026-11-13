@@ -13,7 +13,7 @@ header{flex-wrap:wrap}#water-toggle{white-space:nowrap}#water-panel p{margin:7px
 #lighting-control,#water-model-control{display:grid;gap:4px;margin:0;font-size:11px;color:#b9c9d7}#lighting-model,#water-model{min-width:154px;padding:6px;font-size:12px}#water-fields label:has(input:disabled){opacity:.45}
 .water-color{display:flex;align-items:center;gap:10px;margin-top:5px}#water-fields .water-color input[type=color]{width:48px;height:30px;padding:2px}#water-fields .water-color input[type=text]{width:104px;padding:5px 8px;background:#25313b;border:1px solid #526270;border-radius:5px;color:#dce8ef;font-family:monospace}#water-fields small{display:block;color:#aec2d0;line-height:1.45;margin-top:8px}
 #area-picker{margin:18px 0;padding:12px;border:1px solid #435261;border-radius:8px}#area-grid{display:grid;gap:3px;margin:10px 0}#area-grid button{padding:0;height:24px;min-width:0;font-size:9px;border-radius:3px}#area-grid button[data-initial=true]{border-color:#f18b79}#area-grid button[aria-pressed=true]{background:#416f61;color:#fff;border-color:#9bdfb9}#area-grid button:disabled{opacity:1;cursor:default}#areas-reset{width:100%;font-size:12px}
-</style><link rel="stylesheet" href="./viewer-shell.css?v=inn-vision-1"></head><body>
+</style><link rel="stylesheet" href="./viewer-shell.css?v=ssa-kursk-1"></head><body>
 <header class="viewer-header">
 <div class="viewer-identity"><h1>Inn.vision</h1><p id="region-title">Городская сцена</p></div>
 <nav class="viewer-actions" aria-label="Настройки сцены">
@@ -119,7 +119,7 @@ header{flex-wrap:wrap}#water-toggle{white-space:nowrap}#water-panel p{margin:7px
     document.getElementById('activity').textContent = 'Ожидаем открытия через HTTP';
     return;
   }
-  import('./app.js?v=plants-16').catch(error => {
+  import('./app.js?v=ssa-kursk-1').catch(error => {
     const notice = document.getElementById('error');
     notice.hidden = false; notice.textContent = error.message;
     document.getElementById('loading').hidden = true;

@@ -3,8 +3,10 @@
 body{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 .viewer-header{height:var(--shell-top);min-height:var(--shell-top);padding:0 16px;flex-wrap:nowrap;gap:16px;background:#13191ef5;border-bottom:1px solid var(--shell-border);z-index:40}
 .viewer-identity{display:flex;align-items:center;gap:16px;min-width:0}
-.viewer-identity h1{font-size:20px;line-height:1;letter-spacing:-.65px;font-weight:550;color:#f4f6f7;white-space:nowrap}
+.viewer-identity h1,.viewer-header-centered .viewer-identity #region-title{font-size:20px;line-height:1;letter-spacing:-.65px;font-weight:550;color:#f4f6f7;white-space:nowrap}
 .viewer-identity #region-title{margin:0;padding-left:16px;border-left:1px solid #ffffff26;font-size:11px;font-weight:400;color:#aebbc3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.viewer-header-centered{position:relative}
+.viewer-header-centered .viewer-identity #region-title{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;padding:0;border:0;max-width:calc(100% - 240px);text-align:center}
 .viewer-actions{display:flex;gap:8px;flex-shrink:0}
 .viewer-actions button{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;background:transparent;border-color:#ffffff20;border-radius:6px;color:#d7e0e5}
 .viewer-actions button span{display:none}
@@ -58,3 +60,5 @@ input[type=checkbox]{accent-color:#9cbdca}
 #error{top:24px;z-index:10}#loading{font-size:13px}
 @media(max-width:760px){:root{--shell-edge:10px}.viewer-header{padding:0 10px;gap:10px;align-items:center}.viewer-identity{gap:10px;min-width:0}.viewer-identity h1{font-size:18px}.viewer-identity #region-title{padding:0;border:0;margin:0;font-size:10px}.viewer-actions{gap:5px}main{display:block;min-height:0;height:auto}.stage{height:100%}.viewer-panel{width:360px}.sun-panel{width:360px}.panel-scroll{padding:16px}#heliodon{grid-template-columns:1fr;min-width:0;width:100%}#water-panel{position:static;width:100%;max-height:none;top:auto;right:auto}.stage-hud .badge{display:none}}
 @media(prefers-reduced-motion:reduce){.viewer-panel{transition:none}}
+@media(max-width:760px){.viewer-header-centered .viewer-identity #region-title{font-size:18px;max-width:calc(100% - 220px)}}
+@media(max-width:360px){.viewer-header-centered .viewer-identity h1,.viewer-header-centered .viewer-identity #region-title{font-size:15px}.viewer-header-centered .viewer-identity #region-title{max-width:calc(100% - 208px)}}

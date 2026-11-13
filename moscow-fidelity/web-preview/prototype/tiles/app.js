@@ -248,7 +248,10 @@ try{
   if(isGL)for(const button of document.querySelectorAll('[data-view="overview"]'))button.textContent='Обзор окрестностей';
   views.center.target=mergedMode?target:[bounds[0]+data.tileSizeM*Math.floor((data.grid?.columns??2)/2)-ox,0,oy-bounds[1]-data.tileSizeM*Math.floor((data.grid?.rows??2)/2)];
   const title=manualMode?'Москва · сектор 3 × 3 км':data.radiusM?`${data.regionName} · радиус ${data.radiusM/1000} км`:`${data.regionName||'Участок'} · ${data.extentMetres/1000} × ${data.extentMetres/1000} км`;
-  document.title=`Inn.vision · ${title}`;$('region-title').textContent=title;
+  const isKursk=approvedDefaults.id.startsWith('kursk-');
+  document.title=`Inn.vision · ${title}`;
+  $('region-title').textContent=isKursk?'SSA · KURSK':title;
+  document.querySelector('.viewer-header').classList.toggle('viewer-header-centered',isKursk);
   const regionName=data.regionName||'Кутузовская',isMoscow=approvedDefaults.id.startsWith('moscow-');
   $('region-subtitle').textContent=mergedMode?`${regionName} · единая сцена · ${data.nodes} объекта`:`${regionName} · ${data.tiles.length} тайлов по ${data.tileSizeM} м`;
   if(manualMode){
