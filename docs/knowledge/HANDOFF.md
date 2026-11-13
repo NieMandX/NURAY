@@ -1,5 +1,9 @@
 # Продолжение на другом компьютере
 
+## Viewer interface — Inn.vision (2026-11-13)
+
+The viewer now uses a 36px header with the Inn.vision name, scene name and three icon-only buttons: sun/date, general settings and fullscreen. Sun/date opens a compact panel; general settings opens a scrolling drawer over the unchanged canvas. Only one panel opens at a time; Escape, close buttons and repeat clicks close it. Every load starts with panels and performance HUD hidden; scene parameters still use existing city-specific persistence. Fullscreen uses a separate user-triggered button with an exit action. Settings, materials, geometry and rendering presets are unchanged. Implementation: `prototype/tiles/viewer-shell.{js,css}` plus the shared page markup. Desktop and 390px viewport interactions are checked in Chromium; this is not a native Safari certification.
+
 ## CURRENT — Kursk r12, central streets and square surfaces (2026-11-13)
 
 Published viewer: https://niemandx.github.io/NURAY/kursk/ . Runtime is in Yandex Object Storage; the separately approved workbench archive is in private Yandex storage. Its location and checksum are retained in a local receipt, not published. See `DEPLOYMENT.md` for verification and restoration instructions. The default Moscow route is unchanged.

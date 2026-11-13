@@ -1,0 +1,60 @@
+/* The controls overlay a stable canvas: opening a panel never resizes the scene. */
+:root{--shell-top:36px;--shell-edge:16px;--shell-border:#ffffff1c;--shell-muted:#9aa7b2}
+body{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+.viewer-header{height:var(--shell-top);min-height:var(--shell-top);padding:0 16px;flex-wrap:nowrap;gap:16px;background:#13191ef5;border-bottom:1px solid var(--shell-border);z-index:40}
+.viewer-identity{display:flex;align-items:center;gap:16px;min-width:0}
+.viewer-identity h1{font-size:20px;line-height:1;letter-spacing:-.65px;font-weight:550;color:#f4f6f7;white-space:nowrap}
+.viewer-identity #region-title{margin:0;padding-left:16px;border-left:1px solid #ffffff26;font-size:11px;font-weight:400;color:#aebbc3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.viewer-actions{display:flex;gap:8px;flex-shrink:0}
+.viewer-actions button{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;background:transparent;border-color:#ffffff20;border-radius:6px;color:#d7e0e5}
+.viewer-actions button span{display:none}
+.viewer-actions button:hover{background:#ffffff09;border-color:#ffffff40}
+.viewer-actions button[aria-expanded=true]{background:#e3edf2;color:#15232c;border-color:#e3edf2}
+.viewer-actions #fullscreen-toggle{width:30px;padding:0}
+.fullscreen-exit{display:none}#fullscreen-toggle[aria-pressed=true] .fullscreen-enter{display:none}#fullscreen-toggle[aria-pressed=true] .fullscreen-exit{display:block}
+.shell-notice{position:fixed;z-index:45;top:calc(var(--shell-top) + 12px);right:16px;max-width:calc(100vw - 32px);padding:12px 16px;margin:0;border:1px solid var(--shell-border);border-radius:9px;background:#1c262ff5;font-size:12px;color:#e2eaf0}
+.viewer-actions svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #d5b575;outline-offset:3px}
+main{display:block;flex:1;min-height:0;height:auto;position:relative}
+.stage{height:100%;min-height:0;width:100%;overflow:hidden}
+.stage-hud{display:none}
+body[data-show-performance=true] .stage-hud{display:flex}
+.stage .caption{display:none}
+.viewer-panel{position:fixed;z-index:35;right:var(--shell-edge);top:calc(var(--shell-top) + var(--shell-edge));width:360px;max-width:calc(100vw - 2 * var(--shell-edge));max-height:calc(100dvh - var(--shell-top) - 2 * var(--shell-edge));display:flex;flex-direction:column;padding:0;overflow:hidden;background:#192128f5;border:1px solid var(--shell-border);border-radius:12px;box-shadow:0 16px 48px #0004;backdrop-filter:blur(16px);visibility:hidden;opacity:0;transform:translateX(calc(100% + 24px));transition:transform .22s ease,opacity .18s ease,visibility 0s linear .22s}
+.viewer-panel[data-open=true]{visibility:visible;opacity:1;transform:translateX(0);transition-delay:0s}
+.general-panel{bottom:var(--shell-edge)}
+.sun-panel{width:380px;transform:translateY(-14px)}
+.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px;border-bottom:1px solid var(--shell-border);flex-shrink:0}
+.panel-heading h2{margin:0;font-size:15px;font-weight:550;letter-spacing:-.1px}
+.panel-heading button{height:32px;width:32px;padding:0;font-size:23px;line-height:1;color:#b5c2cb;border-color:transparent;background:transparent;border-radius:7px}
+.panel-heading button:hover{background:#ffffff0d;color:#fff}
+.panel-scroll{padding:18px;overflow:auto;overscroll-behavior:contain;min-height:0;scrollbar-width:thin;scrollbar-color:#53616c transparent}
+.panel-scroll>p:first-child{margin-top:0}
+.viewer-panel label{font-size:12px;color:#c7d1d8}
+.viewer-panel select{width:100%;font-size:12px;min-height:37px;background:#242e37;border-color:#ffffff22;border-radius:7px}
+.viewer-panel legend{font-size:13px;color:#e4eaee}
+.viewer-panel fieldset{margin-bottom:20px}
+.viewer-panel .muted{font-size:11px;color:var(--shell-muted)}
+.performance-toggle{display:flex;align-items:center;gap:7px;padding:14px 0;border-bottom:1px solid var(--shell-border);margin:0 0 18px}
+input[type=checkbox]{accent-color:#9cbdca}
+.environment-settings{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;padding-bottom:18px;border-bottom:1px solid var(--shell-border)}
+.environment-settings #water-model-control{grid-column:2;grid-row:1;text-align:right;font-size:11px;color:var(--shell-muted);align-self:center}
+.environment-settings #water-model-control strong{color:#c8d7e0;font-size:12px;font-weight:500}
+.environment-settings #lighting-control{grid-column:1;grid-row:1;font-size:12px}
+.environment-settings #water-toggle{grid-column:1/-1;width:100%;background:#25323b;border-color:#ffffff24;min-height:37px;font-size:12px}
+#water-panel{position:static;grid-column:1/-1;width:100%;max-width:100%;max-height:none;padding:0;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;background:none;overflow:visible}
+#water-fields{overflow:visible;flex:none;padding:0}
+.water-heading h2{font-size:14px}.water-heading button{font-size:20px;background:transparent;border-color:transparent}
+#water-panel .muted,#water-panel #water-state{font-size:11px}
+#water-fields input[type=range]{margin:8px 0 0}
+.water-playback button,#water-reset{font-size:12px}
+#heliodon{min-width:0;width:100%;display:grid;grid-template-columns:1fr;gap:22px;margin:0}
+#heliodon label{font-size:12px;gap:8px;color:#b9c7d0}
+.sun-date-row{gap:8px}#sun-date{font-size:14px;min-height:39px;padding:8px 10px;background:#242e37;border-color:#ffffff26;border-radius:7px;color:#e2e9ed}
+#sun-today{width:40px;background:#242e37;border-color:#ffffff26;border-radius:7px}
+#sun-hour{font-size:23px;font-weight:500;letter-spacing:-.5px;color:#edcd90}
+#sun-time{height:22px;margin:4px 0;accent-color:#dbbc7d}
+.sun-ends{font-size:11px}#sun-status{border-top:1px solid var(--shell-border);padding-top:14px;font-size:11px;color:var(--shell-muted);line-height:1.6}
+#error{top:24px;z-index:10}#loading{font-size:13px}
+@media(max-width:760px){:root{--shell-edge:10px}.viewer-header{padding:0 10px;gap:10px;align-items:center}.viewer-identity{gap:10px;min-width:0}.viewer-identity h1{font-size:18px}.viewer-identity #region-title{padding:0;border:0;margin:0;font-size:10px}.viewer-actions{gap:5px}main{display:block;min-height:0;height:auto}.stage{height:100%}.viewer-panel{width:360px}.sun-panel{width:360px}.panel-scroll{padding:16px}#heliodon{grid-template-columns:1fr;min-width:0;width:100%}#water-panel{position:static;width:100%;max-height:none;top:auto;right:auto}.stage-hud .badge{display:none}}
+@media(prefers-reduced-motion:reduce){.viewer-panel{transition:none}}
