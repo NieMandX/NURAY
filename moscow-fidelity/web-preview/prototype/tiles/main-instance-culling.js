@@ -11,7 +11,7 @@ export class MainInstanceCulling {
     owner.streamStats.peakResidentBytes=Math.max(owner.streamStats.peakResidentBytes,owner.streamStats.residentBytes);
   }
   prepare(matrix){
-    const o=this.owner,gs=o.gaussianVegetation,replaced=gs?.available()?gs.active:EMPTY;
+    const o=this.owner,gs=o.gaussianVegetation,replaced=gs?.available()?gs.replaced:EMPTY;
     const cull=this.enabled&&o.state.culling;
     const key=Array.from(matrix).join(',')+','+cull;
     if(key===this.key&&replaced===this.replaced)return;

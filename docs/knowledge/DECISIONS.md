@@ -112,3 +112,5 @@ Ocean регулирует волны, рябь, пену, мутность и �
 Физические газоны и парковки источника имеют приоритет над обобщённым контуром площади. Сохранять явные дорожки, лестницы и проезды. Ранее отклонённые растения можно вернуть только по исходным координатам и после проверки препятствий и посадки. Открытые травяные склоны у цирка не заполнять сплошным лесом. Подробности и ссылки: `KURSK-STREET-REVIEW.md`.
 
 - 2026-11-13: пользователь утвердил публикацию последнего Курска r12. Код/рецепты/отчёты — NURAY; тяжёлые runtime-данные — Yandex Object Storage. Отдельный маршрут `/kursk/`, московский стартовый сектор сохраняется. При публикации геометрия не пересчитывается.
+
+- 2026-11-13: User requires visible Kursk plants to remain Gaussian splats during rotation; polygonal templates serve fast solar shadows. GS r8 covers all 30,842 plants in merged WebGPU raster, including reflections. Add spreading oak/linden, birch and thuja. Widen mature broadleaf crowns up to x2 with obstacle limits and stable variants. Far covariance LODs keep every plant represented under a bounded budget. Legacy WebGL/tile/trace remain polygonal pending their own GS support.

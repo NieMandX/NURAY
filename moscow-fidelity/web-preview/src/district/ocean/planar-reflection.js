@@ -36,14 +36,17 @@ export class PlanarReflection {
   const o=this.o,p=reflectionParameters(o.waterSettings,this.ground),state=reflectionState(o,matrix,o.eye,this.ground),data=new Float32Array(24);
   if(state){
    this.resize(state.size);data.set(state.matrix);data.set([state.height,p.strength,p.blur,p.distortion],16);data.set([...state.size,1,0],20);
-   if(state.key!==this.key||this.chunks!==o.chunks){
+   const gs=o.gaussianVegetation,gsKey=!!gs?.available();
+   if(state.key!==this.key||this.chunks!==o.chunks||this.gsKey!==gsKey){
     const frame=new Float32Array(o.frameData);frame.set(state.matrix);frame.set([...state.eye,0],32);frame[47]=state.height;
     this.d.queue.writeBuffer(this.frame,0,frame);
     const pass=encoder.beginRenderPass({...o.timer.pass(slot,this.name),colorAttachments:[{view:this.color.createView(),clearValue:[0,0,0,0],loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:this.depth.createView(),depthClearValue:0,depthLoadOp:'clear',depthStoreOp:'store'}});
-    pass.setPipeline(this.pipeline);pass.setBindGroup(0,this.cityGroup);pass.setBindGroup(1,o.ocean.cityGroups[o.ocean.foamCur]);
-    const meshes=reflectionChunks(o,state.matrix,state.height,this.ground);this.triangles=0;
+    pass.setPipeline(this.pipeline);pass.setBindGroup(0,gsKey?gs.reflectionGroup(this):this.cityGroup);pass.setBindGroup(1,o.ocean.cityGroups[o.ocean.foamCur]);
+    let meshes=reflectionChunks(o,state.matrix,state.height,this.ground);if(gsKey)meshes=gs.chunks(meshes);this.triangles=0;
     for(const c of meshes){pass.setVertexBuffer(0,c.vertex,c.vertexOffset??0,c.vertexBytes);pass.setIndexBuffer(c.index,'uint32',c.indexOffset??0,c.indexBytes);pass.drawIndexed(c.triangles*3,c.instanceCount,0,0,c.instanceFirst);this.triangles+=c.triangles*c.instanceCount;}
-    pass.end();o.stats.draws+=meshes.length;this.updates++;this.key=state.key;this.chunks=o.chunks;
+    pass.end();o.stats.draws+=meshes.length;
+    if(gsKey&&(this.ground?o.waterSettings.groundReflectionDetail:o.waterSettings.reflectionDetail))gs.drawReflection(encoder,this,state);
+    this.updates++;this.key=state.key;this.chunks=o.chunks;this.gsKey=gsKey;
    }
   }
   this.d.queue.writeBuffer(this.uniform,0,data);

@@ -85,6 +85,10 @@ def merge_voxels(pos, cov, color, alpha, cell):
 
 
 def lod(pos, cov, color, alpha, target):
+    if target == 1:
+        origin=pos.min(axis=0)-1e-6
+        p,c,rgb,a=merge_voxels(pos-origin,cov,color,alpha,float(np.ptp(pos,axis=0).max()+1))
+        return p+origin,c,rgb,a
     lo, hi = .0001, 2.
     for _ in range(22):
         mid = (lo+hi)/2
@@ -117,7 +121,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     pos, cov, color, alpha, raw_count = read_ply(args.ply)
     pos, cov, orientation = normalize(pos, cov, args.up)
-    levels = [(pos, cov, color, alpha)] + [lod(pos, cov, color, alpha, n) for n in [8192, 2048, 512, 128]]
+    levels = [(pos, cov, color, alpha)] + [lod(pos, cov, color, alpha, n) for n in [8192, 2048, 512, 128, 32, 8, 1]]
     arrays, records, offset = [], [], 0
     for i, values in enumerate(levels):
         arr = packed(*values)

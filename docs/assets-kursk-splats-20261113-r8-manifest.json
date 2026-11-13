@@ -1,0 +1,138 @@
+{
+  "release": "assets-kursk-splats-20261113-r8",
+  "baseURL": "https://storage.yandexcloud.net/nuray-assets-niemandx/",
+  "sourceScene": "assets-kursk-3km-20261113-r13",
+  "sourceHeaderSha256": "aa529c44353a8b98ad09c8c30bc485a4e966aef0c635f7b31183abb8b9d5f928",
+  "files": [
+    {
+      "path": "assets-kursk-splats-20261113-r8/PROVENANCE.json",
+      "bytes": 3149,
+      "sha256": "3771416f7bf98dbddaa3af8eecdd892ae9e00bf58544f6f5075a8257512ec28e"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/park-thuja.gsbin",
+      "bytes": 2794624,
+      "sha256": "75b8cdc202513b37e66789f399b96fc276cf2af9ef4b9c61010764a134523e06"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/park-thuja.json",
+      "bytes": 1422,
+      "sha256": "2bb0218c580410bc641e9a0777ca788906756cfad0eefb390ee54131e52fbbe4"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/ravine-broad.gsbin",
+      "bytes": 2793536,
+      "sha256": "ca514caf459a27acc51da6986844f2c09ec9c2a308791026fbe05eb8dce3fc01"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/ravine-broad.json",
+      "bytes": 1434,
+      "sha256": "3993999ef744292db82aaf7ac12780c7841241af69f22e340bb7c0c6fbe0b715"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/ravine-provenance.json",
+      "bytes": 2874,
+      "sha256": "f8dd2a5e5150c0907c86b7ba3a065691115b2f8db2875fc57e3ebe2908ce7a0e"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/ravine-thicket.gsbin",
+      "bytes": 2791872,
+      "sha256": "b3b690b41bda70bb1eb8546ec0326cbfb2daac91171186d7c6234f46646142a3"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/ravine-thicket.json",
+      "bytes": 1439,
+      "sha256": "a9e16ec1453824298d2621f5c9f63daf166b0c0ebe612bdbe877bdfa73f46819"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/ravine-young.gsbin",
+      "bytes": 2791360,
+      "sha256": "3ba2051eaccf844513e2de5b2d9882aab631c5ef9052dded6c27596a9f82bc35"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/ravine-young.json",
+      "bytes": 1433,
+      "sha256": "57b672a2d8208eaf852348076893766614c14f7e8e194afda9fdbd73386e20b7"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/shrub.gsbin",
+      "bytes": 2794368,
+      "sha256": "94dccce60baca7db2b39fe3ec579ecbb9ec8dd995b03788de71bcb3774233d38"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/shrub.json",
+      "bytes": 1418,
+      "sha256": "eed28a48280eed3e26ef93ec28725d0d7f987bc4f49c6c027908927628046f20"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/silver-birch.gsbin",
+      "bytes": 2674944,
+      "sha256": "c08cae2bc5ff63c020e2f9a606b7a219f40f9f377368b769c5a86c4caec8219e"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/silver-birch.json",
+      "bytes": 1429,
+      "sha256": "26e5226fdee789a5966840e005fca659eb9b19a52e81b1c341ceb09690f042f6"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/spreading-linden.gsbin",
+      "bytes": 2796032,
+      "sha256": "63b23db155263ff91f611a8ab68c6104a48fc5c275c2b834fe3189031ca1229b"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/spreading-linden.json",
+      "bytes": 1436,
+      "sha256": "b69a80617142d4ebe7bf290360a310af950eb49ddb89a6b6e862a594a9adc7e7"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/spreading-oak.gsbin",
+      "bytes": 2793728,
+      "sha256": "6c3f4dce451b469eb25502c092efb109542c7f9ebb8c7daa3d69cdd7d89a1e82"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/spreading-oak.json",
+      "bytes": 1422,
+      "sha256": "0bfb7d3d2d2571367f3100bf2b92c10acca5edfc227bfc11402e3dc83355a47d"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/spruce.gsbin",
+      "bytes": 2789248,
+      "sha256": "f3b24625547f25eeda0993a0be64a17c89fec91412c2ea0fd506b58cfaca6f62"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/spruce.json",
+      "bytes": 1427,
+      "sha256": "0bb4bc64a1fe8bfccce86b30ab2ff69f513e49cff5b6bbb49c54c115993e4b3d"
+    },
+    {
+      "path": "assets-kursk-splats-20261113-r8/vegetation.json",
+      "bytes": 8089363,
+      "sha256": "9a87aed7665f899065aea43f1dcad19c9d9f740056d261977010e63760d3847b"
+    }
+  ],
+  "storageBytes": 33127958,
+  "coverage": {
+    "sourcePlants": 30842,
+    "replacements": 30842,
+    "complete": true
+  },
+  "canopyWidth": {
+    "requested": 2.0,
+    "fullWidth": 11164,
+    "limited": 376,
+    "totalMatureBroadleaf": 11540,
+    "policy": "Limit added width at buildings and low-crown surface conflicts; preserve roots and height"
+  },
+  "models": 9,
+  "modelInstances": {
+    "silver-birch.json": 76,
+    "shrub.json": 11434,
+    "ravine-thicket.json": 71,
+    "spreading-oak.json": 5655,
+    "spreading-linden.json": 5651,
+    "ravine-broad.json": 234,
+    "ravine-young.json": 6013,
+    "spruce.json": 1684,
+    "park-thuja.json": 24
+  }
+}

@@ -12,13 +12,24 @@ struct Out {@builtin(position) clip:vec4f,@location(0) uv:vec2f,@location(1) col
   let clip=frame.vp*vec4f(world,1);
   var out:Out;out.clip=vec4f(2,2,2,1);out.uv=vec2f(4);out.color=vec4f(0);
   if(clip.w<=.01||clip.z<0||clip.z>clip.w){return out;}
+  if(frame.screen.w>0.5&&world.y<frame.screen.z){return out;}
   let r0=vec3f(frame.vp[0].x,frame.vp[1].x,frame.vp[2].x);
   let r1=vec3f(frame.vp[0].y,frame.vp[1].y,frame.vp[2].y);
   let r3=vec3f(frame.vp[0].w,frame.vp[1].w,frame.vp[2].w);
-  let jx=(r0-r3*clip.x/clip.w)*(frame.screen.x*.5/clip.w);
-  let jy=(r1-r3*clip.y/clip.w)*(frame.screen.y*.5/clip.w);
   let a=mat3x3f(vec3f(m.x.x,m.y.x,m.z.x),vec3f(m.x.y,m.y.y,m.z.y),vec3f(m.x.z,m.y.z,m.z.z));
   let cov=mat3x3f(vec3f(g.ca.x,g.ca.y,g.ca.z),vec3f(g.ca.y,g.ca.w,g.cb.x),vec3f(g.ca.z,g.cb.x,g.cb.y));
+  // All-scene order remains ready during camera motion. Cull each ellipsoid
+  // in homogeneous space before perspective EWA; offscreen near-eye splats
+  // must not expand into giant screen-covering quads.
+  let planes=array<vec3f,4>(r3+r0,r3-r0,r3+r1,r3-r1);
+  let distances=vec4f(clip.w+clip.x,clip.w-clip.x,clip.w+clip.y,clip.w-clip.y);
+  for(var k=0u;k<4u;k++){
+    let q=transpose(a)*planes[k];
+    if(distances[k]+3.0*sqrt(max(dot(q,cov*q),0.0))<0.0){return out;}
+  }
+  let ndc=clamp(clip.xy/clip.w,vec2f(-1.3),vec2f(1.3));
+  let jx=(r0-r3*ndc.x)*(frame.screen.x*.5/clip.w);
+  let jy=(r1-r3*ndc.y)*(frame.screen.y*.5/clip.w);
   let bx=transpose(a)*jx;let by=transpose(a)*jy;
   let xx=dot(bx,cov*bx);let xy=dot(bx,cov*by);let yy=dot(by,cov*by);
   let aa=xx+.3;let cc=yy+.3;let mid=(aa+cc)*.5;

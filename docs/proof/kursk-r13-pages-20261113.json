@@ -1,0 +1,17 @@
+{
+  "url": "https://niemandx.github.io/NURAY/prototype/tiles/?catalog=assets-kursk-3km-20261113-r13%2Ftileset.json&layout=merged&renderer=webgpu&engine=raster&view=chimney-review&splats=1&splatCatalog=assets-kursk-splats-20261113-r7%2Fvegetation.json&instanceCulling=1",
+  "canvas": {
+    "backend": "webgpu",
+    "camera": "{\"yaw\":-4.57,\"pitch\":0.25,\"distance\":340,\"target\":[662.697572390236,70.54018196297872,-660.6191282063904]}",
+    "gaussians": "{\"enabled\":true,\"active\":true,\"plants\":684,\"count\":349824,\"bytes\":19636384,\"sortMs\":35.19999980926514,\"error\":null}",
+    "groundReflection": "{\"enabled\":false,\"size\":[1,1],\"updates\":0,\"triangles\":0,\"gpuMs\":null,\"bytes\":12}",
+    "instanceCulling": "{\"enabled\":true,\"total\":31053,\"visible\":8927,\"culled\":21442,\"substituted\":684,\"prepareMs\":3.5999999046325684,\"bytes\":1490592}",
+    "reflection": "{\"enabled\":true,\"height\":-6.810754617055257,\"size\":[1280,684],\"updates\":2,\"triangles\":25311674,\"gpuMs\":6.160384,\"bytes\":10506240}",
+    "residency": "{\"modes\":[[\"whole\",\"full\"]],\"bytes\":797711940,\"released\":0,\"revision\":11,\"gpuPages\":4,\"gpuPageLimit\":1073741824,\"wholeSceneTrace\":false}",
+    "sceneLayers": "{\"vegetation\":true,\"fences\":true,\"playgrounds\":true,\"lights\":true}",
+    "water": "{\"time\":48.38810000000599,\"renders\":5,\"updates\":1,\"animated\":false,\"backend\":\"FFT\",\"waterModel\":\"ocean\",\"lighting\":\"hosek\",\"lightingMix\":50,\"sunIntensity\":15,\"shadowStrength\":100,\"settings\":1}"
+  },
+  "errors": [],
+  "commit": "f8b12afb59245f86b93becddae27a0eef6e3af8d",
+  "workflow": 43416314113
+}

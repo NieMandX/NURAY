@@ -86,3 +86,7 @@ PY
 Манифест: `docs/assets-kursk-20261113-r13-manifest.json`. 73 облачных объекта, 788 609 504 байта. Полный GLB — 891 316 932 байта, gzip — 353 711 781 байт. 8 287 блоков тайлов упакованы в `meshes.pack` (282 689 955 байт). Все объекты загружены и проверены; публичные CORS/Range/размеры: `docs/proof/kursk-r13-cloud-20261113.json`. Gzip/immutable-кеш/контрольные диапазоны: `docs/proof/kursk-r13-delivery-20261113.json`. 61 JavaScript- и 7 Python-тестов передачи прошли перед публикацией. Ранее выполнены полные проверки геометрии и три теста построения трубы.
 
 Восстановление: `python3 scripts/restore_assets.py --manifest docs/assets-kursk-20261113-r13-manifest.json --mode all`; для локального merged-просмотра распаковать `delivery-20261113-v1/model.glb.gz` в `merged/model.glb`, как в примере r12 выше. Частный workbench-архив r12 не обновлялся; алгоритм и инструкция применения r13 сохранены в Git.
+
+Публикация r13 завершена: commit `f8b12af`, workflow `43416314113`, success. Публичный маршрут загрузил полную сцену и r7 сплаты без ошибок консоли, с прежними водой/светом и закрытыми панелями. Квитанция: `docs/proof/kursk-r13-pages-20261113.json`, изображение: `kursk-r13-published-20261113.png`.
+
+- Kursk GS r8 (2026-11-13): new immutable prefix `assets-kursk-splats-20261113-r8/`, 21 objects / 33,127,958 bytes. `/kursk/` selects r8 with the existing r13 GLB. Workflow validates its new manifest before deployment. Old r7 and r13 objects retained; bucket access unchanged.

@@ -1,0 +1,90 @@
+{
+  "date": "2026-11-13",
+  "provider": "Weavy / Nano Banana Pro image reference / tripo3d/triposplat",
+  "rawGaussiansPerNewModel": 32768,
+  "trainingSettings": {
+    "seed": 42,
+    "steps": 20,
+    "guidance": 3,
+    "format": "ply"
+  },
+  "newModels": [
+    {
+      "name": "spreading-oak",
+      "description": "Mature oak, broad asymmetric spreading crown, reference 18m high / 18m wide",
+      "plySHA256": "5d50eb9e055f3d6bad44c5740635728aab27b4d301001892f58e1b73bc810441",
+      "referenceSHA256": "7243805903cd93fcc5ae754b0df432d7578937bd87eaf02075f32a2b4e5dc97c",
+      "bytes": 2228639
+    },
+    {
+      "name": "spreading-linden",
+      "description": "Mature linden, dense broad lobed crown, reference 20m high / 19m wide",
+      "plySHA256": "e939cd6ffb8f8adf4fa1ba06367139c3610bf1e0b621193ad521d6538645836d",
+      "referenceSHA256": "84f5f3deb719b7d565cba76d375a4852e28d8377682aaf8f3e2b8cb398cf3a56",
+      "bytes": 2228639
+    },
+    {
+      "name": "silver-birch",
+      "description": "Birch with white and dark bark, open crown, reference 16m high / 9m wide",
+      "plySHA256": "18abd12dd72b0da993f26d3313c1d44069c679e545915e739ba291b4f261fb66",
+      "referenceSHA256": "84f5f3deb719b7d565cba76d375a4852e28d8377682aaf8f3e2b8cb398cf3a56",
+      "bytes": 2228639
+    },
+    {
+      "name": "park-thuja",
+      "description": "Upright dense evergreen thuja, reference 7m high / 3m wide",
+      "plySHA256": "61661f17b04bb3ae649059c19aca8f1c1872988edb7497ef70352b9f0af5ca42",
+      "referenceSHA256": "84f5f3deb719b7d565cba76d375a4852e28d8377682aaf8f3e2b8cb398cf3a56",
+      "bytes": 2228639
+    }
+  ],
+  "placement": {
+    "rootsAndHeight": "Existing approved r13 transforms retained. Broadleaf width requested x2, limited at buildings and low-crown conflicts.",
+    "coverage": {
+      "sourcePlants": 30842,
+      "replacements": 30842,
+      "complete": true
+    },
+    "canopyWidth": {
+      "requested": 2.0,
+      "fullWidth": 11164,
+      "limited": 376,
+      "totalMatureBroadleaf": 11540,
+      "policy": "Limit added width at buildings and low-crown surface conflicts; preserve roots and height"
+    },
+    "variants": {
+      "nuray-approved-open": [
+        "spreading-linden",
+        "spreading-oak"
+      ],
+      "nuray-approved-spruce": [
+        "spruce"
+      ],
+      "nuray-approved-bush": [
+        "shrub"
+      ],
+      "nuray-approved-birch": [
+        "silver-birch"
+      ],
+      "nuray-approved-compact": [
+        "spreading-oak",
+        "spreading-linden"
+      ],
+      "nuray-approved-growth": [
+        "ravine-young"
+      ],
+      "nuray-approved-low": [
+        "ravine-young"
+      ],
+      "nuray-approved-thuja": [
+        "park-thuja"
+      ]
+    }
+  },
+  "runtime": "Shared templates, moment covariance LODs, full-scene plant replacement in WebGPU merged raster. Polygonal proxies retained for solar shadows. WebGL/tile/raytrace legacy renderers retain meshes.",
+  "limitations": [
+    "Generated appearance, not a measured individual tree",
+    "Baked SH0 colors; not physically relightable foliage",
+    "Approximate covariance LODs trade distant detail for bounded GPU cost"
+  ]
+}

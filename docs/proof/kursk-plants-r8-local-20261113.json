@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-13",
+  "url": "http://127.0.0.1:8786/prototype/tiles/?catalog=assets-kursk-3km-20261113-r13%2Ftileset.json&layout=merged&renderer=webgpu&engine=raster&view=central-streets-review&splats=1&splatCatalog=assets-kursk-splats-20261113-r8%2Fvegetation.json&instanceCulling=1&camera=%7B%22yaw%22%3A-0.8%2C%22pitch%22%3A0.6%2C%22distance%22%3A200%2C%22target%22%3A%5B75%2C16%2C-125%5D%7D",
+  "rotationChecks": [
+    {
+      "active": true,
+      "bytes": 30790800,
+      "count": 349552,
+      "enabled": true,
+      "error": null,
+      "plants": 12923,
+      "replaced": 30842,
+      "sortMs": 60.40000009536743
+    },
+    {
+      "active": true,
+      "bytes": 33590880,
+      "count": 280445,
+      "enabled": true,
+      "error": null,
+      "plants": 572,
+      "replaced": 30842,
+      "sortMs": 37
+    },
+    {
+      "active": true,
+      "bytes": 33590880,
+      "count": 265096,
+      "enabled": true,
+      "error": null,
+      "plants": 2899,
+      "replaced": 30842,
+      "sortMs": 29.5
+    }
+  ],
+  "final": {
+    "backend": "webgpu",
+    "camera": "{\"yaw\":3.7600000000000007,\"pitch\":0.5399999999999999,\"distance\":200,\"target\":[75,16,-125]}",
+    "gaussians": "{\"enabled\":true,\"active\":true,\"plants\":2899,\"replaced\":30842,\"count\":265096,\"bytes\":33590880,\"sortMs\":29.5,\"error\":null}",
+    "groundReflection": "{\"enabled\":false,\"size\":[1,1],\"updates\":0,\"triangles\":0,\"gpuMs\":null,\"bytes\":12}",
+    "instanceCulling": "{\"enabled\":true,\"total\":31053,\"visible\":42,\"culled\":169,\"substituted\":30842,\"prepareMs\":1.4000000953674316,\"bytes\":1490592}",
+    "reflection": "{\"enabled\":true,\"height\":-7.3076536655426025,\"size\":[1133,1269],\"updates\":23,\"triangles\":9348974,\"gpuMs\":2.228224,\"bytes\":17253324}",
+    "residency": "{\"modes\":[[\"whole\",\"full\"]],\"bytes\":797711940,\"released\":0,\"revision\":68,\"gpuPages\":4,\"gpuPageLimit\":1073741824,\"wholeSceneTrace\":false}",
+    "sceneLayers": "{\"vegetation\":true,\"fences\":true,\"playgrounds\":true,\"lights\":true}",
+    "water": "{\"time\":48.38810000000599,\"renders\":33,\"updates\":1,\"animated\":false,\"backend\":\"FFT\",\"waterModel\":\"ocean\",\"lighting\":\"hosek\",\"lightingMix\":50,\"sunIntensity\":15,\"shadowStrength\":100,\"settings\":1}"
+  },
+  "errors": []
+}

@@ -6,9 +6,17 @@ from pathlib import Path
 import numpy as np
 
 from prepare_gaussian_vegetation import read_ply, normalize, merge_voxels, lod, packed
+from prepare_gaussian_placements import transform_key, variant_for
 
 
 class GaussianVegetationTests(unittest.TestCase):
+    def test_variant_selection_survives_instance_reordering(self):
+        names=['oak','linden']
+        keys=[transform_key('nuray-approved-open',np.arange(12,dtype=float)+i) for i in range(30)]
+        forward={key:variant_for(key,names) for key in keys}
+        self.assertEqual(forward,{key:variant_for(key,names) for key in reversed(keys)})
+        self.assertEqual(set(forward.values()),set(names))
+
     def test_ply_log_parameters_and_quaternion(self):
         names = ['x', 'y', 'z', 'nx', 'ny', 'nz', 'f_dc_0', 'f_dc_1',
                  'f_dc_2', 'opacity', 'scale_0', 'scale_1', 'scale_2',
@@ -58,6 +66,15 @@ class GaussianVegetationTests(unittest.TestCase):
         np.testing.assert_allclose(rgb[0], weights @ color)
         self.assertTrue(np.linalg.eigvalsh(sigma).min() > 0)
         self.assertTrue(np.all((a > 0) & (a <= .995)))
+
+    def test_single_gaussian_far_lod_keeps_the_complete_plant(self):
+        pos=np.array([[-.5,0,-.5],[.5,1,.5],[0,.4,0]])
+        cov=np.repeat(np.eye(3)[None]*.01,3,axis=0)
+        p,s,c,a=lod(pos,cov,np.ones((3,3))*.3,np.ones(3)*.8,1)
+        self.assertEqual(len(p),1)
+        np.testing.assert_allclose(p[0],pos.mean(axis=0),atol=1e-12)
+        self.assertTrue(np.linalg.eigvalsh(s).min()>0)
+        self.assertTrue(np.isfinite(packed(p,s,c,a)).all())
 
     def test_low_detail_output_is_finite_within_budget(self):
         rng = np.random.default_rng(42)

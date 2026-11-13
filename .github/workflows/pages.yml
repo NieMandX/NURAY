@@ -27,6 +27,7 @@ jobs:
         run: |
           python3 scripts/verify_cloud.py --manifest docs/assets-moscow-10km-20261110-manifest.json
           python3 scripts/verify_cloud.py --manifest docs/assets-kursk-20261113-r13-manifest.json
+          python3 scripts/verify_cloud.py --manifest docs/assets-kursk-splats-20261113-r8-manifest.json
           python3 scripts/verify_delivery.py --require-cache
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

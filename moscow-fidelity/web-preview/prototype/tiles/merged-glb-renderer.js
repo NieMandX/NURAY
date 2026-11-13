@@ -1,5 +1,5 @@
 import {MergedFenceVisibility,validateVisibility} from './merged-visibility.js?v=scene-layers-1';
-import {TileRenderer} from './tile-renderer.js?v=gs-11';
+import {TileRenderer} from './tile-renderer.js?v=gs-15';
 import {loadCityMaterials} from '../../src/district/city-materials.js?v=large-region-1';
 import {orthographic,lookAt,multiply} from '../../src/district/math.js?v=moscow-defaults-1';
 import {planMergedTrace,mergedInstances,sha256} from './merged-trace.js?v=large-region-1';

@@ -1,12 +1,12 @@
 import {installSceneLayers} from './scene-layers.js?v=scene-layers-1';
 import {installWaterPanel} from './water-panel.js?v=kursk-water-1';
 import {installHeliodon,sceneGeography} from './heliodon.js?v=moscow-defaults-1';
-import {MergedGlbRenderer} from './merged-glb-renderer.js?v=gs-11';
-import {TileRenderer} from './tile-renderer.js?v=gs-11';
-import {WebGLTileRenderer} from './webgl-renderer.js?v=gs-11';
+import {MergedGlbRenderer} from './merged-glb-renderer.js?v=gs-15';
+import {TileRenderer} from './tile-renderer.js?v=gs-15';
+import {WebGLTileRenderer} from './webgl-renderer.js?v=gs-15';
 import {areaTileIds,hydrateAreas,installAreaPicker,drawAreaOutline} from './manual-areas.js?v=manual-areas-1';
 import {bindCameraInput} from './camera-input.js?v=moscow-defaults-1';
-import {createStatsPanel} from './viewer-stats.js?v=gs-11';
+import {createStatsPanel} from './viewer-stats.js?v=gs-15';
 import {viewerDefaults,catalogKey,defaultSunPreset} from '../../src/district/viewer-defaults.js?v=kursk-water-1';
 import {readAssetJSON} from '../../src/district/asset-fetch.js?v=asset-delivery-1';
 const $=id=>document.getElementById(id),showStats=createStatsPanel();
@@ -359,8 +359,8 @@ try{
   });
   if(approvedCamera)$('view-name').textContent='Сохранённый вид';
   await renderer.updateTiles(renderer.chooseTiles({full:$('streaming').value==='full'}));await installSceneLayers(renderer,config.catalog,applySceneLayers);
-  if(params.get('instanceCulling')==='1')(await import('./main-instance-culling.js?v=gs-13')).installInstanceCulling(renderer);
-  if(params.get('splats')==='1')await (await import('./gaussian-panel.js?v=gs-12')).installGaussianPanel(renderer,params.has('splatCatalog')?new URL(params.get('splatCatalog'),assetBase):undefined);
+  if(params.get('instanceCulling')==='1')(await import('./main-instance-culling.js?v=gs-15')).installInstanceCulling(renderer);
+  if(params.get('splats')==='1')await (await import('./gaussian-panel.js?v=gs-15')).installGaussianPanel(renderer,params.has('splatCatalog')?new URL(params.get('splatCatalog'),assetBase):undefined);
   initialized=true;$('measure-scene').disabled=false;$('settings').disabled=false;$('views').disabled=false;$('area-picker').disabled=false;$('loading').hidden=true;renderer.publish(true);
 }catch(e){fail(e.message);}
 window.addEventListener('pagehide',()=>renderer?.dispose(),{once:true});
