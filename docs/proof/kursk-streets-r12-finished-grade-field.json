@@ -1,0 +1,9 @@
+{
+  "method": "harmonic off-road collar",
+  "gridStepM": 2.0,
+  "collarM": 30,
+  "unknownVertices": 603872,
+  "solverInfo": 0,
+  "residualMaxM": 2.8580970479197276e-08,
+  "inputSignature": "c5d101cd2b2a7da32620641cde038bc16f340416cbb1c079910caee101915b2f"
+}

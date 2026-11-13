@@ -48,12 +48,33 @@ export const MOSCOW_DEFAULTS=Object.freeze({
   }),
 });
 
+// Kursk uses the approved Moscow water, with its existing sky/light unchanged.
+export const WATER_ONLY_KEYS=Object.freeze([
+  'windSpeed','windDir','fetchKm','swellHs','swellLength','swellDir','swellSpread','choppy',
+  'turbidity','absorptionColor','scatteringColor','attenuationDistance','waterIOR','foam','shoreFoam','animated','waterModel',
+  'reflectionEnabled','reflectionQuality','reflectionStrength','reflectionBlur','reflectionDistortion','reflectionDetail',
+]);
+export const KURSK_DEFAULTS=Object.freeze({
+  ...VIEWER_DEFAULTS,id:'kursk-moscow-water-20261113-01',
+  sun:Object.freeze({date:'2026-06-21',minute:1127}),
+  display:Object.freeze({...VIEWER_DEFAULTS.display,engine:'raster'}),
+  waterTime:MOSCOW_DEFAULTS.waterTime,
+  water:Object.freeze({...VIEWER_DEFAULTS.water,...Object.fromEntries(WATER_ONLY_KEYS.map(k=>[k,MOSCOW_DEFAULTS.water[k]]))}),
+});
+export function migrateKurskWater(previous={}){
+  const saved={...previous,waterTime:KURSK_DEFAULTS.waterTime};
+  for(const key of WATER_ONLY_KEYS)saved[key]=KURSK_DEFAULTS.water[key];
+  return saved;
+}
+
 // A cloud prefix must not change a scene's visual identity or saved defaults.
 export function catalogKey(catalog=''){
   return String(catalog).split(/[?#]/)[0].split('/').slice(-2).join('/');
 }
 export function viewerDefaults(catalog=''){
-  return MOSCOW_DEFAULTS.scene.catalogs.includes(catalogKey(catalog))?MOSCOW_DEFAULTS:VIEWER_DEFAULTS;
+  const key=catalogKey(catalog);
+  if(/^assets-kursk-3km-[^/]+\/tileset\.json$/.test(key))return KURSK_DEFAULTS;
+  return MOSCOW_DEFAULTS.scene.catalogs.includes(key)?MOSCOW_DEFAULTS:VIEWER_DEFAULTS;
 }
 export function defaultSunPreset(params,defaults=VIEWER_DEFAULTS){
   const date=params.get('sunDate')??defaults.sun.date;

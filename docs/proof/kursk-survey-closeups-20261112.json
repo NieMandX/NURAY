@@ -1,0 +1,6 @@
+{
+  "foundationsUrl": "http://127.0.0.1:8786/prototype/tiles/?catalog=assets-kursk-3km-20261112-r5%2Ftileset.json&layout=merged&renderer=webgpu&engine=raster&view=survey-review&sunDate=2026-06-21&sunMinute=1206&camera=%7B%22yaw%22%3A-1.3%2C%22pitch%22%3A0.25%2C%22distance%22%3A190%2C%22target%22%3A%5B120%2C15%2C-230%5D%7D",
+  "seamUrl": "http://127.0.0.1:8786/prototype/tiles/?catalog=assets-kursk-3km-20261112-r5%2Ftileset.json&layout=merged&renderer=webgpu&engine=raster&view=survey-review&sunDate=2026-06-21&sunMinute=1206&camera=%7B%22yaw%22%3A-1.9%2C%22pitch%22%3A0.6%2C%22distance%22%3A240%2C%22target%22%3A%5B0%2C12%2C-400%5D%7D",
+  "waterLightPreserved": true,
+  "console": []
+}

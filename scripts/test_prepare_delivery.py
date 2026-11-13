@@ -10,6 +10,12 @@ from prepare_delivery import runtime_catalog, validation_summary, compressed_fil
 
 
 class DeliveryTests(unittest.TestCase):
+    def test_regional_validation_keeps_viewer_fields(self):
+        record = {'adapter': 'yandex-2gis', 'passed': True, 'chunks': 17,
+                  'plantInstances': 42, 'largeBuildAudit': [1, 2, 3]}
+        self.assertEqual(validation_summary(record),
+                         {k: v for k, v in record.items() if k != 'largeBuildAudit'})
+
     def test_external_merged_scene_preserves_header_and_binary(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d); source = root / 'scene'; (source / 'merged').mkdir(parents=True)

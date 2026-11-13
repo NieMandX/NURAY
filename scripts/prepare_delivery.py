@@ -41,6 +41,8 @@ def runtime_catalog(catalog):
 
 
 def validation_summary(v):
+    if v.get('adapter') == 'yandex-2gis':
+        return {k: v[k] for k in ('adapter', 'passed', 'chunks', 'plantInstances') if k in v}
     result = {k: v[k] for k in ('passed', 'meshes') if k in v}
     fields = {'seams': ['maxGapM'], 'roadInterfaces': ['passed', 'interfaces'],
               'roadSeams': ['passed', 'passages'], 'roadPaint': ['passed', 'trianglesChecked']}

@@ -1,0 +1,119 @@
+{
+  "scope": "Static 48-frame GPU timing, same camera and settings; not a motion/FPS claim",
+  "culled": {
+    "culling": {
+      "bytes": 1440480,
+      "culled": 22564,
+      "enabled": true,
+      "prepareMs": 3.0999999046325684,
+      "substituted": 208,
+      "total": 30009,
+      "visible": 7237
+    },
+    "gs": {
+      "active": true,
+      "bytes": 11203648,
+      "count": 111872,
+      "enabled": true,
+      "error": null,
+      "plants": 208,
+      "sortMs": 9.899999856948853
+    },
+    "result": {
+      "buildMs": 5449.799999952316,
+      "bvhBuildMs": 0,
+      "bvhBytes": 106267552,
+      "camera": {
+        "distance": 34,
+        "pitch": 0.45,
+        "target": [
+          -19.681378193706102,
+          -2.7901216128623023,
+          19.08138976322287
+        ],
+        "yaw": -0.26778173980968867
+      },
+      "draws": 20,
+      "frame": 16.69999999999709,
+      "frameMeasured": true,
+      "gaussianBytes": 11203648,
+      "gaussianPlants": 208,
+      "gaussians": 111872,
+      "geometryBytes": 593780140,
+      "gpu": 3.473408,
+      "layout": "merged-glb",
+      "materials": 73,
+      "meshCount": 15,
+      "oceanBytes": 94806016,
+      "resolution": "813 × 1137",
+      "shadowMs": 15.990784,
+      "sharedInstances": 30009,
+      "submitted": 13134308,
+      "tabHidden": false,
+      "textureBytes": 103659902.66666666,
+      "triangles": 24566392,
+      "uniqueTriangles": 9142162,
+      "uploadMs": 2847.800000190735,
+      "vertices": 14951634,
+      "waterFrozen": true
+    }
+  },
+  "unculled": {
+    "culling": {
+      "bytes": 1440480,
+      "culled": 0,
+      "enabled": false,
+      "prepareMs": 4.3999998569488525,
+      "substituted": 208,
+      "total": 30009,
+      "visible": 29801
+    },
+    "gs": {
+      "active": true,
+      "bytes": 11203648,
+      "count": 111872,
+      "enabled": true,
+      "error": null,
+      "plants": 208,
+      "sortMs": 9.899999856948853
+    },
+    "result": {
+      "buildMs": 5449.799999952316,
+      "bvhBuildMs": 0,
+      "bvhBytes": 106267552,
+      "camera": {
+        "distance": 34,
+        "pitch": 0.45,
+        "target": [
+          -19.681378193706102,
+          -2.7901216128623023,
+          19.08138976322287
+        ],
+        "yaw": -0.26778173980968867
+      },
+      "draws": 20,
+      "frame": 16.70000000001164,
+      "frameMeasured": true,
+      "gaussianBytes": 11203648,
+      "gaussianPlants": 208,
+      "gaussians": 111872,
+      "geometryBytes": 593780140,
+      "gpu": 6.291455999999999,
+      "layout": "merged-glb",
+      "materials": 73,
+      "meshCount": 15,
+      "oceanBytes": 94806016,
+      "resolution": "813 × 1137",
+      "shadowMs": 15.990784,
+      "sharedInstances": 30009,
+      "submitted": 24438074,
+      "tabHidden": false,
+      "textureBytes": 103659902.66666666,
+      "triangles": 24566392,
+      "uniqueTriangles": 9142162,
+      "uploadMs": 2847.800000190735,
+      "vertices": 14951634,
+      "waterFrozen": true
+    }
+  }
+}

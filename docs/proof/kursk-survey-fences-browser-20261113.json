@@ -1,0 +1,54 @@
+{
+  "camera": {
+    "distance": 26,
+    "pitch": 0.48,
+    "target": [
+      126.77853556307971,
+      -1.8795488462719905,
+      114.00846708987169
+    ],
+    "yaw": -0.6
+  },
+  "date": "2026-06-21",
+  "minute": "1206",
+  "residency": {
+    "bytes": 698555996,
+    "gpuPageLimit": 1073741824,
+    "gpuPages": 4,
+    "modes": [
+      [
+        "whole",
+        "full"
+      ]
+    ],
+    "released": 0,
+    "revision": 17,
+    "wholeSceneTrace": false
+  },
+  "settings": "Отображение\nГрафика\nАвтоматически\nWebGPU\nWebGL 2 · совместимый\n\nWebGPU · объединённая карта. Растр, рейтрейс и каскады используют включённые объекты всей карты, включая объекты вне кадра.\n\nДвижок\nPBR · растеризация\nNURAY · рейтрейс\nNURAY · каскады\nРазрешение\n180 тыс. пикселей\n700 тыс. пикселей\nПо размеру страницы\nСэмплы\n4\n8\n16\n32\n64\n256\n2048\n5000\nОбъекты сцены\nДеревья и кустарники\nЗаборы\nОборудование детских площадок\nФонари\nКонтактные тени\nСолнечные тени\nЗагрузка\nПо положению камеры\nВся карта · единая сцена\nРастения · пробный 3DGS\nСплаты растений · центральный участок\n\n321 растений · 147 070 сплатов · 12.0 МиБ. Видимые деревья — сплаты; тени и отражения — прежние модели.",
+  "stats": "Производительность\nFPS\nСтоп-кадр\nИнтервал кадра\n—\nGPU · весь кадр\n6.29 мс\nТреугольников в кадре\n24 353 088\nВызовы отрисовки\n17\nУникальные треугольники\n9 141 746\nС учётом инстансов\n24 537 712\nБлоки геометрии\n12\nЭкземпляры общих моделей\n29 798\nМатериалы\n73\nРазрешение\n813 × 1137\n\nСтоп-кадр: GPU показывает время последней отрисовки. Пока камера и настройки неподвижны, новые кадры не отправляются.\n\nПамять и подготовка\n\nСчётчики относятся к включённым объектам всей карты. Рейтрейс учитывает их и вне кадра; отключённые объекты не видны лучам.",
+  "storagePreserved": true,
+  "url": "http://127.0.0.1:8786/prototype/tiles/?catalog=assets-kursk-3km-20261113-r7%2Ftileset.json&layout=merged&renderer=webgpu&engine=raster&view=survey-outlier-1-review&sunDate=2026-06-21&sunMinute=1206&camera=%7B%22yaw%22%3A0.8641163167403604%2C%22pitch%22%3A0.35%2C%22distance%22%3A85%2C%22target%22%3A%5B283.8234584602136%2C15.317818672702856%2C-134.33914370781224%5D%7D&splats=1&splatCatalog=assets-kursk-splats-20261113-r2%2Fvegetation.json",
+  "historicalConsoleMessages": [
+    {
+      "level": "error",
+      "message": "Error while parsing WGSL: :10:7 error: 'ref' is a reserved keyword\n  let ref=order[index];let g=gaussians[ref.x];let m=instances[ref.y];\n      ^^^\n\n\n - While calling [Device].CreateShaderModule([ShaderModuleDescriptor \"\"Vegetation 3DGS\"\"]).\n",
+      "timestamp": "2026-11-13T00:12:16.117Z",
+      "url": "http://127.0.0.1:8786/prototype/tiles/app.js?v=gs-1"
+    },
+    {
+      "level": "warn",
+      "message": "Сплаты не подключены: 10: 'ref' is a reserved keyword",
+      "timestamp": "2026-11-13T00:12:16.117Z",
+      "url": "http://127.0.0.1:8786/prototype/tiles/gaussian-panel.js?v=gs-1"
+    }
+  ],
+  "newConsoleMessages": [],
+  "checks": {
+    "waterLightAndLayersPreserved": true,
+    "threeFenceFamiliesVisuallyInspected": true,
+    "matchedGSInstances": 737,
+    "plantTransformsUnchanged": true,
+    "sourceHeaderMatched": true
+  }
+}

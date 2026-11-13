@@ -1,0 +1,27 @@
+{
+  "sourceRoadLineEastNorth": [
+    [
+      324.85317658,
+      145.08672536
+    ],
+    [
+      358.95282018,
+      185.90999457
+    ],
+    [
+      384.20289525,
+      215.93659351
+    ],
+    [
+      401.25216064,
+      238.17835301
+    ]
+  ],
+  "samples": 121,
+  "spacingM": 1.0037339964185858,
+  "oldSecondDifferenceRms": 0.033372051736764274,
+  "newSecondDifferenceRms": 0.0012197056223877277,
+  "oldEndRiseM": 2.8140501266270554,
+  "newEndRiseM": 3.130177457744278,
+  "newMaxDistanceToRoadM": 0.0
+}

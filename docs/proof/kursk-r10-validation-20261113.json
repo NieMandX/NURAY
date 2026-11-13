@@ -1,0 +1,104 @@
+{
+  "passed": true,
+  "adapter": "yandex-2gis",
+  "checks": {
+    "canonicalSourceChecks": true,
+    "allMeshHashes": true,
+    "allBVHLeaves": true,
+    "materialsAndLineage": true,
+    "instanceTransformsAndCounts": true,
+    "staticAreaConservation": true
+  },
+  "tiles": 576,
+  "chunks": 8320,
+  "triangles": 9432528,
+  "nodes": 3323218,
+  "sourceAreaM2": 41204651.22092653,
+  "transportAreaM2": 41204651.14354957,
+  "maxPrimitiveAreaErrorM2": 0.015348230812151087,
+  "maxPlaneErrorM": 0.00012187334952249752,
+  "plantInstances": 30430,
+  "otherSharedInstances": 211,
+  "plantCollisions": {
+    "building": 0,
+    "water": 0,
+    "road": 0,
+    "walkway": 0,
+    "greenCurb": 0,
+    "waterfrontParapet": 0,
+    "buildingCanopy": 0
+  },
+  "plantSourceXYPreserved": "existing source plants unchanged; additional approximate infill separately audited",
+  "plantRootsOnTerrainOrRaisedLawn": true,
+  "generatedFaceOrientation": {
+    "checkedNondegenerateFaces": 6779900,
+    "normalWindingDisagreements": 0,
+    "collapsedClippedFaces": 0
+  },
+  "roadCrossfall": {
+    "triangles": 249390,
+    "areaM2": 2256209.7958521387,
+    "maxDegrees": 4.97675142757006,
+    "percentiles": [
+      1.7141960539411918,
+      4.899940213971387,
+      4.900001022530329,
+      4.900078860883932
+    ],
+    "areaOver5M2": 0.0,
+    "omittedSliverAreaM2": 1.0364294022805622,
+    "minimumTriangleAreaM2": 0.001,
+    "scope": "Generated ground asphalt; source elevated structures unchanged",
+    "edgeContinuityConstraints": 284,
+    "edgeContinuityMaxErrorM": 5.439348367815918e-06
+  },
+  "surveyLamps": {
+    "passed": true,
+    "lamps": 211,
+    "sourcePoints": 246,
+    "deferred": 35,
+    "parentInstanceCount": 29888,
+    "parentInstancesIdentical": true,
+    "terrainSurveyAndRoadFieldsIdentical": true,
+    "sourceXYPreserved": true,
+    "allPolesUpright": true,
+    "groundContactMaxErrorM": 0.0,
+    "waterBuildingRoadRootCollisions": 0,
+    "luminaireBuildingCollisions": 0,
+    "dimensionsAndOrientation": "display estimates; not survey measurements"
+  },
+  "surveyPlants": {
+    "passed": true,
+    "addedPlants": 164,
+    "sourcePoints": 945,
+    "deferred": 781,
+    "parentMeshCount": 101,
+    "parentInstances": 30099,
+    "existingMeshesInstancesAndMaterialsIdentical": true,
+    "terrainSurveyRoadAndMasksIdentical": true,
+    "sourceXYPreserved": true,
+    "greenSurfaceOnly": true,
+    "allTrunksUpright": true,
+    "nearestExistingMinimumM": 6.099799390955191,
+    "nearestAddedMinimumM": 2.065196303042344,
+    "groundMaxErrorM": 3.4406233702100053e-06,
+    "modelDimensions": "Approved display defaults, not measured CAD glyph dimensions"
+  },
+  "ravinePlants": {
+    "passed": true,
+    "addedPlants": 468,
+    "byModel": {
+      "compact": 234,
+      "growth": 163,
+      "bush": 71
+    },
+    "parentInstancesUnchanged": 30263,
+    "allParentGeometryAndMaterialsUnchanged": true,
+    "terrainSurveyAndRoadFieldsIdentical": true,
+    "confirmedGreenOnly": true,
+    "greenMarginM": 2.5,
+    "groundMaxErrorM": 1.4996874315720277e-05,
+    "nearestNewMinimumM": 2.3515742013529484,
+    "coordinates": "approximate panorama-guided infill, not survey"
+  }
+}

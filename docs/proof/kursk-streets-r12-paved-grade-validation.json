@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "immutableFiles": [
+    "canonical/terrain.npz",
+    "canonical/survey-field.npz",
+    "survey-terrain.json",
+    "survey-outliers.json"
+  ],
+  "historicalReceipts": 7,
+  "waterAuthoredStructuresAndTemplatesByteIdentical": [
+    0,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    29,
+    59,
+    98,
+    99,
+    100
+  ],
+  "retainedSurveyMarks": 3321,
+  "surveyMarkMaxErrorM": 3.126388037344441e-13,
+  "unchangedRoofAndUpperBuildingVertices": 3553702,
+  "footingAdjustmentMaxErrorM": 1.907280775981235e-06,
+  "sourceInstanceIDsXYScaleYawPreserved": 30641,
+  "recoveredSourcePlants": 412,
+  "sourcePlantsDeferredAfterGrading": 0,
+  "checkedFinishedGroundContacts": 3529,
+  "contactMaxErrorM": 0.0,
+  "serializedRoadVerticesMatchingSolvedGrade": 758793,
+  "roadGradeMaxErrorM": 3.8125774182162786e-06,
+  "inheritedRoadFootprintOverhangM": 18.567131569465978,
+  "continuousCollarCheckedCells": 3479,
+  "continuousCollarMaxResidualM": 1.0186877119622295e-08,
+  "restoredSourceGreenM2": 29540.02602973978,
+  "restoredSourceParkingM2": 1736.926055933608,
+  "pavingM2": {
+    "circus-front-terracotta": 6655.438394550514,
+    "philharmonic-red-grey": 613.4673505071523
+  }
+}

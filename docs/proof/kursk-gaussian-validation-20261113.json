@@ -1,0 +1,155 @@
+{
+  "passed": true,
+  "sourceHeaderSha256": "f08aad30a74a75272dbe753db230a04a7059ab22cedf10a55c351526c9a496d7",
+  "models": [
+    {
+      "model": "broadleaf",
+      "source": {
+        "file": "weavy-tree-existing-03.ply",
+        "sha256": "f255e21d364caa581a097cd8b8eadce0076f28a998bdd67e420a380bf600c45a",
+        "provider": "Weavy / tripo3d/triposplat",
+        "rawGaussians": 32768,
+        "orientation": {
+          "inputUp": "-y",
+          "root": [
+            -0.013277649879455566,
+            -0.5002200603485107,
+            0.010566920042037964
+          ],
+          "height": 0.9895279407501221
+        }
+      },
+      "bytes": 2789824,
+      "sha256": "d5179e107ed24b84640417702f5abfda96e977383df4e546eda2aa694e5dff58",
+      "levels": [
+        {
+          "offset": 0,
+          "count": 32713
+        },
+        {
+          "offset": 32713,
+          "count": 8190
+        },
+        {
+          "offset": 40903,
+          "count": 2048
+        },
+        {
+          "offset": 42951,
+          "count": 512
+        },
+        {
+          "offset": 43463,
+          "count": 128
+        }
+      ],
+      "finite": true,
+      "minCovarianceEigenvalue": 8.492103892542567e-07
+    },
+    {
+      "model": "spruce",
+      "source": {
+        "file": "weavy-spruce-32768.ply",
+        "sha256": "30f04de10109280ec649f5d5cc42fe8db54fe2904e9c54cdab7dc78635457654",
+        "provider": "Weavy / tripo3d/triposplat",
+        "rawGaussians": 32768,
+        "orientation": {
+          "inputUp": "-y",
+          "root": [
+            -0.00032579898834228516,
+            -0.5002418756484985,
+            -0.005772113800048828
+          ],
+          "height": 0.9942589998245239
+        }
+      },
+      "bytes": 2786624,
+      "sha256": "18f0e5bef57335e9c9119387f24b01e47a897d2c620d9631224a36a9bd44419a",
+      "levels": [
+        {
+          "offset": 0,
+          "count": 32662
+        },
+        {
+          "offset": 32662,
+          "count": 8192
+        },
+        {
+          "offset": 40854,
+          "count": 2047
+        },
+        {
+          "offset": 42901,
+          "count": 512
+        },
+        {
+          "offset": 43413,
+          "count": 128
+        }
+      ],
+      "finite": true,
+      "minCovarianceEigenvalue": 8.411515400792674e-07
+    },
+    {
+      "model": "shrub",
+      "source": {
+        "file": "weavy-shrub-32768.ply",
+        "sha256": "5eecb4391d175c8b53d89cf69e5f7281c8af90e54c9ebe6ed01f012f51f82aea",
+        "provider": "Weavy / tripo3d/triposplat",
+        "rawGaussians": 32768,
+        "orientation": {
+          "inputUp": "-y",
+          "root": [
+            0.001567840576171875,
+            -0.4206152856349945,
+            -0.000493168830871582
+          ],
+          "height": 0.8348086774349213
+        }
+      },
+      "bytes": 2791744,
+      "sha256": "848c124b247664bf51fd53867dab3cd46220963a7f4f4bf1049c6c39cfa21516",
+      "levels": [
+        {
+          "offset": 0,
+          "count": 32744
+        },
+        {
+          "offset": 32744,
+          "count": 8189
+        },
+        {
+          "offset": 40933,
+          "count": 2048
+        },
+        {
+          "offset": 42981,
+          "count": 512
+        },
+        {
+          "offset": 43493,
+          "count": 128
+        }
+      ],
+      "finite": true,
+      "minCovarianceEigenvalue": 1.1931600213726483e-06
+    }
+  ],
+  "instanceCounts": {
+    "nuray-approved-bush": 364,
+    "nuray-approved-open": 258,
+    "nuray-approved-spruce": 115
+  },
+  "rootPositionsExact": true,
+  "sourceBasisScaledOnly": true,
+  "duplicateSourceInstances": false,
+  "scope": {
+    "center": [
+      0,
+      0
+    ],
+    "radiusM": 600
+  },
+  "proxyShadows": "original low-poly shared meshes, no splat shadow pass",
+  "publication": "local only"
+}

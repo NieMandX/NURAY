@@ -1,0 +1,57 @@
+{
+  "benchmark": {
+    "layout": "merged-glb",
+    "camera": {
+      "yaw": 10.578874999999977,
+      "pitch": 0.548,
+      "distance": 183.39906140670325,
+      "target": [
+        102.49463004450743,
+        16,
+        -138.0963506135299
+      ]
+    },
+    "gpu": 6.22592,
+    "frame": 16.700000000004366,
+    "triangles": 24685812,
+    "vertices": 15225540,
+    "geometryBytes": 619381160,
+    "textureBytes": 103659902.66666666,
+    "buildMs": 5674.5,
+    "uploadMs": 2805.7000000476837,
+    "submitted": 24621730,
+    "draws": 18,
+    "oceanBytes": 94806015.99999999,
+    "frameMeasured": true,
+    "tabHidden": false,
+    "waterFrozen": true,
+    "bvhBytes": 105645856,
+    "bvhBuildMs": 0,
+    "uniqueTriangles": 9289846,
+    "meshCount": 13,
+    "sharedInstances": 29798,
+    "gaussians": 55552,
+    "gaussianBytes": 12634000,
+    "gaussianPlants": 128,
+    "materials": 73,
+    "resolution": "813 × 1137",
+    "shadowMs": 16.252928
+  },
+  "gaussians": {
+    "enabled": true,
+    "active": true,
+    "plants": 128,
+    "count": 55552,
+    "bytes": 12634000,
+    "sortMs": 16.899999856948853,
+    "error": null
+  },
+  "consoleErrors": [],
+  "checks": {
+    "globalVisibilityToggle": true,
+    "meshFallbackToggle": true,
+    "proxyShadows": true,
+    "webglFallback": true
+  },
+  "limitation": "Static camera benchmark, not evidence of faster camera movement"
+}

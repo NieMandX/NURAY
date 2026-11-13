@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-12",
+  "url": "http://127.0.0.1:8786/prototype/tiles/?catalog=assets-kursk-3km-20261112-r5%2Ftileset.json&layout=merged&renderer=webgpu&engine=raster&view=center&sunDate=2026-06-21&sunMinute=1206&camera=%7B%22yaw%22%3A-8.402249999999981%2C%22pitch%22%3A0.9800000000000004%2C%22distance%22%3A1022.6795780579553%2C%22target%22%3A%5B92.15097360813023%2C66.78306308726813%2C-144.13267719681335%5D%7D",
+  "title": "NURAY · Курск · радиус 3 км",
+  "settingsPreserved": true,
+  "consoleWarningsAndErrors": [],
+  "renderer": "WebGPU",
+  "engine": "raster",
+  "fullSceneLoaded": true,
+  "surveyViewPressed": "true",
+  "screenshot": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-survey-20261112.png"
+}

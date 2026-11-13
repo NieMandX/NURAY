@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-12",
+  "catalog": "assets-kursk-3km-20261112-r1",
+  "scope": {
+    "centerLonLat": [
+      36.189045,
+      51.725354
+    ],
+    "radiusM": 3000
+  },
+  "webgpu": {
+    "layout": "merged",
+    "views": [
+      "overview",
+      "circus-review"
+    ],
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "uniqueTriangles": 2559606,
+    "expandedTriangles": 18517810,
+    "instances": 31047,
+    "geometryBlocks": 9,
+    "materials": 54,
+    "gpuMeshAndBVHMiB": 161.64,
+    "canvas": [
+      960,
+      607
+    ],
+    "vegetationAndFenceToggleRestoresCounts": true
+  },
+  "webgl2": {
+    "layout": "tiles",
+    "view": "circus-review",
+    "streaming": "camera",
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "instances": 2881,
+    "frameTriangles": 1589409,
+    "vegetationToggleRestoresCounts": true
+  },
+  "limitations": [
+    "WebGL uses the existing residency/coarse budget; not all scene geometry is resident.",
+    "GPU last-frame timings are observations, not a benchmark.",
+    "Trace cache was validated on disk; visual ray tracing QA not performed."
+  ]
+}

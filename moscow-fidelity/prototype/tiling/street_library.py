@@ -91,8 +91,9 @@ def bench(m,back=True):
 def model(name):
     m=Mesh()
     if name.startswith('lamppost'):
-        high=name in ['lamppost1','lamppost2'];double=name in ['lamppost2','lamppost4'];h=6.09 if high else 3.97
-        m.beam([0,0,0],[0,h-.2,0],.095,r2=.055);m.beam([0,0,0],[0,.28,0],.18,2)
+        concrete=name=='lamppost-concrete1'
+        high=name in ['lamppost1','lamppost2','lamppost-concrete1'];double=name in ['lamppost2','lamppost4'];h=6.09 if high else 3.97
+        m.beam([0,0,0],[0,h-.2,0],.13 if concrete else .095,2 if concrete else 0,r2=.09 if concrete else .055);m.beam([0,0,0],[0,.28,0],.18,2)
         if high or double:
             for side in ([1,-1] if double else [1]):
                 m.beam([0,h-.65,0],[0,h,side*1.2],.045)

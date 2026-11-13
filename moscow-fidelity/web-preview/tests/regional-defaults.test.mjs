@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {VIEWER_DEFAULTS,MOSCOW_DEFAULTS,viewerDefaults,catalogKey,defaultSunPreset} from '../src/district/viewer-defaults.js';
+import {VIEWER_DEFAULTS,MOSCOW_DEFAULTS,KURSK_DEFAULTS,WATER_ONLY_KEYS,migrateKurskWater,viewerDefaults,catalogKey,defaultSunPreset} from '../src/district/viewer-defaults.js';
 import {cleanWaterSettings} from '../src/district/ocean/settings.js';
 test('Moscow preset survives hosting prefixes without changing Petersburg',()=>{
  for(const path of ['assets-moscow-style-20261024-r14/tileset.json','https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-style-20261024-r14/tileset.json','https://nuray-scenes.s3.cloud.ru/releases/20261027/assets-moscow-style-20261024-r14/tileset.json?cache=1'])assert.equal(viewerDefaults(path),MOSCOW_DEFAULTS);
@@ -32,4 +32,16 @@ test('partial user edits and reset are relative to the current city',()=>{
  assert.equal(p.waterIOR,1.333);assert.equal(p.windSpeed,2);assert.equal(p.hwExposure,3.3);
  assert.deepEqual(defaultSunPreset(new URLSearchParams(),MOSCOW_DEFAULTS),{date:'2026-06-21',minute:1206});
  assert.equal(defaultSunPreset(new URLSearchParams('sunMinute=0'),MOSCOW_DEFAULTS).minute,0);
+});
+
+test('Kursk inherits only Moscow water while preserving edited light and later water edits',()=>{
+ const previous={...VIEWER_DEFAULTS.water,hwExposure:1.7,sunIntensity:45,lighting:'classic',groundReflectionEnabled:true,foam:3,waterTime:1};
+ const migrated=migrateKurskWater(previous);
+ for(const key of WATER_ONLY_KEYS)assert.deepEqual(migrated[key],MOSCOW_DEFAULTS.water[key]);
+ for(const key of ['hwExposure','sunIntensity','lighting','groundReflectionEnabled'])assert.equal(migrated[key],previous[key]);
+ assert.equal(migrated.waterTime,MOSCOW_DEFAULTS.waterTime);
+ assert.equal(viewerDefaults('https://example.test/releases/assets-kursk-3km-20261113-r10/tileset.json'),KURSK_DEFAULTS);
+ assert.equal(KURSK_DEFAULTS.water.hwExposure,VIEWER_DEFAULTS.water.hwExposure);
+ assert.equal(cleanWaterSettings({...migrated,foam:.2},KURSK_DEFAULTS.water).foam,.2);
+ assert.equal(previous.foam,3);
 });

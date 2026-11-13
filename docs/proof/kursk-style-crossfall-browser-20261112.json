@@ -1,0 +1,20 @@
+{
+  "catalog": "assets-kursk-3km-20261112-r4",
+  "webgpu": {
+    "camera": "{\"yaw\":-8.402249999999981,\"pitch\":0.9800000000000004,\"distance\":1022.6795780579553,\"target\":[92.15097360813023,66.78306308726813,-144.13267719681335]}",
+    "error": "",
+    "stats": "Производительность\nFPS\nСтоп-кадр\nИнтервал кадра\n—\nGPU · весь кадр\n21.50 мс\nТреугольников в кадре\n22 916 979\nВызовы отрисовки\n52\nУникальные треугольники\n7 521 013\nС учётом инстансов\n22 916 979\nБлоки геометрии\n12\nЭкземпляры общих моделей\n29 798\nМатериалы\n73\nРазрешение\n678 × 1122\n\nСтоп-кадр: GPU показывает время последней отрисовки. Пока камера и настройки неподвижны, новые кадры не отправляются.\n\nПамять и подготовка\n\nСчётчики относятся к включённым объектам всей карты. Рейтрейс учитывает их и вне кадра; отключённые объекты не видны лучам.",
+    "sun": "{\"date\":\"2026-06-21\",\"minute\":1206,\"direction\":[-0.8484971119858306,0.09640763673625494,-0.5203443268938706],\"altitude\":5.532343373303614,\"azimuth\":301.51887804199,\"geo\":{\"latitude\":51.725354,\"longitude\":36.189045,\"timeZone\":\"Europe/Moscow\",\"utcOffset\":3,\"label\":\"Курск\"}}",
+    "water": "{\"windSpeed\":9.9,\"windDir\":181,\"fetchKm\":22,\"swellHs\":1,\"swellLength\":191,\"swellDir\":196,\"swellSpread\":48,\"choppy\":0.19,\"turbidity\":0.62,\"absorptionColor\":\"#8ac6d1\",\"scatteringColor\":\"#2c3f36\",\"attenuationDistance\":4.4,\"waterIOR\":1.4,\"foam\":3,\"shoreFoam\":2,\"haze\":3,\"clouds\":0.4,\"veil\":0.36,\"exposure\":1.2,\"bloom\":0.08,\"animated\":false,\"lighting\":\"hosek\",\"lightingMix\":50,\"hwTurbidity\":3,\"hwAlbedo\":0.2,\"hwExposure\":2.55,\"hwSkyIntensity\":180,\"sunIntensity\":15,\"shadowStrength\":100,\"waterModel\":\"ocean\",\"groundReflectionEnabled\":false,\"groundReflectionQuality\":50,\"groundReflectionStrength\":75,\"groundReflectionBlur\":2,\"groundReflectionDetail\":true,\"reflectionEnabled\":false,\"reflectionQuality\":50,\"reflectionStrength\":100,\"reflectionBlur\":1,\"reflectionDistortion\":1,\"reflectionDetail\":true,\"seaHeight\":0.6,\"seaFrequency\":0.16,\"seaChoppy\":4,\"seaSpeed\":0.8,\"seaExposure\":1}"
+  },
+  "webgl": {
+    "camera": "{\"yaw\":-0.65,\"pitch\":1.17,\"distance\":130,\"target\":[559.1271769205729,24.607775638012992,-628.5501505533854]}",
+    "error": "",
+    "stats": "Производительность\nFPS\nСтоп-кадр\nИнтервал кадра\n—\nGPU · весь кадр\n33.43 мс\nТреугольников в кадре\n728 483\nВызовы отрисовки\n1 038\nУникальные треугольники\n523 564\nС учётом инстансов\n1 129 690\nБлоки геометрии\n428\nЭкземпляры общих моделей\n1 204\nМатериалы\n73\nРазрешение\n678 × 1122\n\nСтоп-кадр: GPU показывает время последней отрисовки. Пока камера и настройки неподвижны, новые кадры не отправляются.\n\nПамять и подготовка\n\nСчётчики относятся к загруженным тайлам. «В кадре» — отправленные треугольники после отсечения блоков вне ракурса, до проверки глубины.",
+    "water": "{\"windSpeed\":9.9,\"windDir\":181,\"fetchKm\":22,\"swellHs\":1,\"swellLength\":191,\"swellDir\":196,\"swellSpread\":48,\"choppy\":0.19,\"turbidity\":0.62,\"absorptionColor\":\"#8ac6d1\",\"scatteringColor\":\"#2c3f36\",\"attenuationDistance\":4.4,\"waterIOR\":1.4,\"foam\":3,\"shoreFoam\":2,\"haze\":3,\"clouds\":0.4,\"veil\":0.36,\"exposure\":1.2,\"bloom\":0.08,\"animated\":false,\"lighting\":\"hosek\",\"lightingMix\":50,\"hwTurbidity\":3,\"hwAlbedo\":0.2,\"hwExposure\":2.55,\"hwSkyIntensity\":180,\"sunIntensity\":15,\"shadowStrength\":100,\"waterModel\":\"ocean\",\"groundReflectionEnabled\":false,\"groundReflectionQuality\":50,\"groundReflectionStrength\":75,\"groundReflectionBlur\":2,\"groundReflectionDetail\":true,\"reflectionEnabled\":false,\"reflectionQuality\":50,\"reflectionStrength\":100,\"reflectionBlur\":1,\"reflectionDistortion\":1,\"reflectionDetail\":true,\"seaHeight\":0.6,\"seaFrequency\":0.16,\"seaChoppy\":4,\"seaSpeed\":0.8,\"seaExposure\":1}"
+  },
+  "cameraPreserved": true,
+  "waterPreserved": true,
+  "sunPreserved": true,
+  "scope": "WebGPU merged and WebGL2 tiles raster; merged WebGL2 intentionally unsupported; ray tracing and native Safari not visually tested"
+}

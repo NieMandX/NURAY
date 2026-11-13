@@ -91,14 +91,19 @@ vec4 lightingOutput(vec3 light){if(waterP[3].y>3.5)return vec4(hwGrade(light),1)
 void main(){
   vec4 m=texelFetch(materials,ivec2(0,int(material)),0),physical=texelFetch(materials,ivec2(1,int(material)),0);
   vec4 info=texelFetch(materials,ivec2(2,int(material)),0);float layer=info.x;
+  vec3 dp1=dFdx(world),dp2=dFdy(world),faceCross=cross(dp1,dp2);
   vec4 tex=texture(albedo,vec3(texcoord,layer));if(tex.a<physical.w)discard;
   vec3 n=normalize(normal),color=clamp(m.rgb*shade,vec3(0),vec3(1))*tex.rgb;
   vec3 geometricNormal=n;
+  // PCF uses the actual receiver plane; PBR keeps smooth shading normals.
+  float faceLength2=dot(faceCross,faceCross);
+  vec3 faceNormal=faceCross*inversesqrt(max(faceLength2,1e-20));
+  vec3 receiverNormal=faceLength2>1e-20?faceNormal*(dot(faceNormal,geometricNormal)>=0.?1.:-1.):geometricNormal;
   if(info.y>.5){vec3 map=texture(facadeNormal,texcoord).xyz*2.-1.,up=normalize(vec3(0,1,0)-n*n.y),right=normalize(cross(up,n));n=normalize(right*map.x+up*map.y+n*map.z);}
   float rough=m.w,metal=physical.x;
-  float footprint=max(length(dFdx(world).xz),length(dFdy(world).xz));
+  float footprint=max(length(dp1.xz),length(dp2.xz));
   if(int(physical.z)==12&&waterP[3].z>.5){
-    float rawShadow=visibility(world,geometricNormal);
+    float rawShadow=visibility(world,receiverNormal);
     vec3 light=seascapeShade(world,world-camera,surfaceDistance(world,false),sunVisibility(rawShadow))*shadowFill(rawShadow);
     result=lightingOutput(light);return;
   }
@@ -114,7 +119,7 @@ void main(){
   float a=max(.001,rough*rough),a2=a*a,den=nh*nh*(a2-1.)+1.,D=a2/(3.14159265*den*den);
   float Gv=2.*nv/(nv+sqrt(a2+(1.-a2)*nv*nv)),Gl=2.*nl/max(.0001,nl+sqrt(a2+(1.-a2)*nl*nl));
   vec3 spec=F*D*Gv*Gl/max(.0001,4.*nv*nl),diffuse=(1.-F)*color*(1.-metal)/3.14159265;
-  float rawShadow=visibility(world,geometricNormal),shadeSun=sunVisibility(rawShadow);
+  float rawShadow=visibility(world,receiverNormal),shadeSun=sunVisibility(rawShadow);
   vec3 light=(diffuse+spec)*waterSunColor()*nl*shadeSun*sunPower;
   light+=color*(1.-metal)*waterAmbient(n);
   vec3 environment=sky(reflect(-wo,n),rough);

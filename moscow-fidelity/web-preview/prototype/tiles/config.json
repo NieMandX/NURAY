@@ -233,6 +233,13 @@
       "timeZone": "Europe/Moscow",
       "utcOffset": 3,
       "label": "Москва"
+    },
+    "assets-kursk-3km-20261113-r12/tileset.json": {
+      "latitude": 51.725354,
+      "longitude": 36.189045,
+      "timeZone": "Europe/Moscow",
+      "utcOffset": 3,
+      "label": "Курск"
     }
   },
   "assetBase": "https://storage.yandexcloud.net/nuray-assets-niemandx/",
@@ -240,7 +247,8 @@
   "fenceLibraryPreview": "fence-library/preview.png",
   "meshPacks": {
     "assets-moscow-style-20261024-r14/tileset.json": "moscow-mesh-pack.json",
-    "assets-moscow-10km-20261108-r1/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/mesh-pack.json"
+    "assets-moscow-10km-20261108-r1/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-10km-20261108-r1/mesh-pack.json",
+    "assets-kursk-3km-20261113-r12/tileset.json": "https://storage.yandexcloud.net/nuray-assets-niemandx/assets-kursk-3km-20261113-r12/mesh-pack.json"
   },
   "visibilityMetadata": {
     "assets-moscow-style-20261024-r14/tileset.json": "moscow-visibility.json"
@@ -417,6 +425,79 @@
             "offset": 3780400879,
             "bytes": 65536,
             "sha256": "11e40388e0d239ec383d627ec7f5cc56f8c3b5271f27137a5a18e37033e653b3"
+          }
+        ]
+      }
+    },
+    "assets-kursk-3km-20261113-r12/tileset.json": {
+      "version": 1,
+      "sourceCatalogSha256": "e8d0376a27eb33adc1ddde08a60d6dcc156e52ac51e310c631746d097db34e54",
+      "excludedBuildFields": [
+        "geometryRevision",
+        "sourceChunks"
+      ],
+      "catalog": {
+        "url": "delivery-20261113-v1/tileset-runtime.json.gz",
+        "encoding": "gzip",
+        "bytes": 4425123,
+        "sha256": "003feddd88d9c2fb6122989f4a7b83b789eb1e330ed1cc1ea4f8f91738c003b3",
+        "decodedBytes": 14470543,
+        "decodedSha256": "6eb4e17f0a83a7f5cb7a7da2eaadf28c7971f94284d890aefc40485f2943ca2b",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 65536,
+            "sha256": "f62815b539dce7b20328a3459e6dd9f0b2100971c49bd71cbcf63556d1ecf4af"
+          },
+          {
+            "offset": 2179793,
+            "bytes": 65536,
+            "sha256": "af50f76a6ed088788bb9605d9ed4a3f6745720f1b2763efb8af3c4e37c53a1e2"
+          },
+          {
+            "offset": 4359587,
+            "bytes": 65536,
+            "sha256": "0a8f21870a3c80df8dc199611441ae0fa6d013e29341b20422c353a59df92542"
+          }
+        ]
+      },
+      "validation": {
+        "url": "delivery-20261113-v1/validation-summary.json.gz",
+        "encoding": "gzip",
+        "bytes": 95,
+        "sha256": "e462dbb1c0e54bfc283087dd03e966914c002f102be0fade5ccd9e26b1d59e60",
+        "decodedBytes": 83,
+        "decodedSha256": "b4f2d57979b44e1248c750b0941e3a09c70d3540e1ff8da0af37775867b24d3f",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 95,
+            "sha256": "e462dbb1c0e54bfc283087dd03e966914c002f102be0fade5ccd9e26b1d59e60"
+          }
+        ]
+      },
+      "merged": {
+        "url": "delivery-20261113-v1/model.glb.gz",
+        "encoding": "gzip",
+        "bytes": 353711595,
+        "sha256": "c4f06174cee6f495bd265cad0afd2cef652d0dae0001ae6dbc0e63ec4ea4230d",
+        "decodedBytes": 891319732,
+        "decodedSha256": "6ad305ff8a6fe48646707cbdc897156984a91eef92a2abe3cf34df16e2f10e2f",
+        "rangeProofs": [
+          {
+            "offset": 0,
+            "bytes": 65536,
+            "sha256": "6a411357852fc3b17591d78f87fbf3f78899ad55cef429e969bbbbaac1ae5f1a"
+          },
+          {
+            "offset": 176823029,
+            "bytes": 65536,
+            "sha256": "fec488d424f2eb5235b25893cf5239ed74677f4f2328b5043051da58f6d7e38f"
+          },
+          {
+            "offset": 353646059,
+            "bytes": 65536,
+            "sha256": "61803d85803494a31295696dd61b48ddc54c98e5c5d9cfda384065038955c937"
           }
         ]
       }

@@ -1,0 +1,62 @@
+{
+  "at": "2026-11-13T02:31:55.804Z",
+  "url": "http://127.0.0.1:8786/prototype/tiles/?catalog=assets-kursk-3km-20261113-r9%2Ftileset.json&layout=merged&renderer=webgpu&engine=raster&view=survey-plants-review&sunDate=2026-06-21&sunMinute=1206&splats=1&splatCatalog=assets-kursk-splats-20261113-r4%2Fvegetation.json&instanceCulling=1&camera=%7B%22yaw%22%3A-0.8%2C%22pitch%22%3A0.65%2C%22distance%22%3A150%2C%22target%22%3A%5B5.655004748703525%2C18.57799323047348%2C-335.34046800020514%5D%7D",
+  "ui": {
+    "activity": "Карта загружена целиком",
+    "enabled": true,
+    "error": "",
+    "scene": {
+      "backend": "webgpu",
+      "camera": "{\"yaw\":0.31,\"pitch\":0.35,\"distance\":155,\"target\":[309.49140411936463,3.1149207002355297,-85.7070740321045]}",
+      "gaussians": "{\"enabled\":true,\"active\":true,\"plants\":360,\"count\":215803,\"bytes\":11209024,\"sortMs\":29,\"error\":null}",
+      "groundReflection": "{\"enabled\":false,\"size\":[1,1],\"updates\":0,\"triangles\":0,\"gpuMs\":null,\"bytes\":12}",
+      "instanceCulling": "{\"enabled\":true,\"total\":30173,\"visible\":2863,\"culled\":26950,\"substituted\":360,\"prepareMs\":2.8999998569488525,\"bytes\":1448352}",
+      "reflection": "{\"enabled\":false,\"size\":[1,1],\"updates\":0,\"triangles\":0,\"gpuMs\":null,\"bytes\":12}",
+      "residency": "{\"modes\":[[\"whole\",\"full\"]],\"bytes\":700063436,\"released\":0,\"revision\":14,\"gpuPages\":4,\"gpuPageLimit\":1073741824,\"wholeSceneTrace\":false}",
+      "sceneLayers": "{\"vegetation\":true,\"fences\":true,\"playgrounds\":true,\"lights\":true}",
+      "water": "{\"time\":43.217200000000034,\"renders\":7,\"updates\":1,\"animated\":false,\"backend\":\"FFT\",\"waterModel\":\"ocean\",\"lighting\":\"hosek\",\"lightingMix\":50,\"sunIntensity\":15,\"shadowStrength\":100,\"settings\":1}"
+    }
+  },
+  "cameraPreservedOnReload": true,
+  "settingsPreservedOnReload": true,
+  "webgl": {
+    "at": "2026-11-13T02:29:54.502Z",
+    "url": "http://127.0.0.1:8786/prototype/tiles/?catalog=assets-kursk-3km-20261113-r9%2Ftileset.json&layout=tiles&renderer=webgl2&engine=raster&view=survey-plants-review&sunDate=2026-06-21&sunMinute=1206&splats=1&splatCatalog=assets-kursk-splats-20261113-r4%2Fvegetation.json&camera=%7B%22yaw%22%3A-0.8%2C%22pitch%22%3A0.65%2C%22distance%22%3A150%2C%22target%22%3A%5B5.655004748703525%2C18.57799323047348%2C-335.34046800020514%5D%7D&streaming=camera",
+    "ui": {
+      "activity": "Участки загружены",
+      "backend": "webgl2",
+      "enabled": true,
+      "error": ""
+    },
+    "logs": [
+      {
+        "level": "error",
+        "message": "Пробная зелень 3DGS доступна в полной сцене WebGPU",
+        "timestamp": "2026-11-13T02:21:37.866Z",
+        "url": "http://127.0.0.1:8786/prototype/tiles/app.js?v=gs-11"
+      }
+    ]
+  },
+  "rayTrace": {
+    "completedSamples": 64,
+    "totalSamples": 64,
+    "scope": "whole merged scene",
+    "vegetation": "original polygon models",
+    "proof": "kursk-r9-trace-20261113.png"
+  },
+  "logs": [
+    {
+      "level": "error",
+      "message": "Error while parsing WGSL: :10:7 error: 'ref' is a reserved keyword\n  let ref=order[index];let g=gaussians[ref.x];let m=instances[ref.y];\n      ^^^\n\n\n - While calling [Device].CreateShaderModule([ShaderModuleDescriptor \"\"Vegetation 3DGS\"\"]).\n",
+      "timestamp": "2026-11-13T00:12:16.117Z",
+      "url": "http://127.0.0.1:8786/prototype/tiles/app.js?v=gs-1"
+    },
+    {
+      "level": "warn",
+      "message": "Сплаты не подключены: 10: 'ref' is a reserved keyword",
+      "timestamp": "2026-11-13T00:12:16.117Z",
+      "url": "http://127.0.0.1:8786/prototype/tiles/gaussian-panel.js?v=gs-1"
+    }
+  ],
+  "historicLogNote": "WebGPU gs-1 messages at00:12:16 and WebGL fallback error at02:21:37 predate the fixes; no new errors after gs-12 reload."
+}

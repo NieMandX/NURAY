@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "waterMatchesApprovedMoscow": true,
+  "allNonWaterControlsPreserved": true,
+  "frozenWaterTime": 48.38810000000599,
+  "visibleSplats": 349824,
+  "splatGpuBytes": 19621744,
+  "backend": "webgpu"
+}

@@ -1,0 +1,38 @@
+{
+  "nonFenceMeshesByteIdentical": 78,
+  "nonFenceInstancesIdentical": 29868,
+  "retainedPlants": 29798,
+  "fenceTrianglesBefore": 1964553,
+  "fenceTrianglesAfter": 1816453,
+  "matchedLengthByClassM": {
+    "short-match": 16.88470499147564,
+    "unmatched": 476.89326636277906,
+    "fence-metal-high": 188.03578920614254,
+    "fence-stone-high": 189.287981394545,
+    "fence-wire": 18.65349690877497,
+    "conflict": 4.687022359562037
+  },
+  "unsupportedGroundM": 0.8768033301285646,
+  "surveyValidation": {
+    "passed": true,
+    "groundMarkMaxErrorM": 3.126388037344441e-13,
+    "patchSeamMaxErrorM": 8.526512829121202e-14,
+    "unchangedTerrainOutsidePatchMaxErrorM": 2.842170943040401e-14,
+    "outsideSamples": 19321,
+    "patchCoverageGapM2": 0.0,
+    "waterGeometryByteIdentical": true,
+    "neutralSurfaceTintsPreserved": true,
+    "authorModelTintsPreserved": true,
+    "authorModelRigidShiftMaxSpreadM": 3.814697265625e-06,
+    "plantXYScaleYawPreserved": true,
+    "retainedPlantInstances": 29798,
+    "checkedFootingTriangles": 69018,
+    "footingMaxErrorM": 1.7176245364680653e-05,
+    "acceptedVerticalDatum": "BS-77 user assumption",
+    "retainedSurveyMarks": 3321,
+    "quarantinedSurveyMarks": 1,
+    "quarantinedSourcePreserved": true,
+    "checkedFacadeFootingCorners": 33355,
+    "facadeFootingCornerMaxErrorM": 0.00016188668269023765
+  }
+}

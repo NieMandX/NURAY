@@ -1,13 +1,13 @@
 import {installSceneLayers} from './scene-layers.js?v=scene-layers-1';
-import {installWaterPanel} from './water-panel.js?v=shore-water-1';
+import {installWaterPanel} from './water-panel.js?v=kursk-water-1';
 import {installHeliodon,sceneGeography} from './heliodon.js?v=moscow-defaults-1';
-import {MergedGlbRenderer} from './merged-glb-renderer.js?v=large-region-2';
-import {TileRenderer} from './tile-renderer.js?v=manual-areas-1';
-import {WebGLTileRenderer} from './webgl-renderer.js?v=manual-areas-1';
+import {MergedGlbRenderer} from './merged-glb-renderer.js?v=gs-11';
+import {TileRenderer} from './tile-renderer.js?v=gs-11';
+import {WebGLTileRenderer} from './webgl-renderer.js?v=gs-11';
 import {areaTileIds,hydrateAreas,installAreaPicker,drawAreaOutline} from './manual-areas.js?v=manual-areas-1';
 import {bindCameraInput} from './camera-input.js?v=moscow-defaults-1';
-import {createStatsPanel} from './viewer-stats.js?v=moscow-defaults-1';
-import {viewerDefaults,catalogKey,defaultSunPreset} from '../../src/district/viewer-defaults.js?v=moscow-10km-1';
+import {createStatsPanel} from './viewer-stats.js?v=gs-11';
+import {viewerDefaults,catalogKey,defaultSunPreset} from '../../src/district/viewer-defaults.js?v=kursk-water-1';
 import {readAssetJSON} from '../../src/district/asset-fetch.js?v=asset-delivery-1';
 const $=id=>document.getElementById(id),showStats=createStatsPanel();
 const mergedMode=new URLSearchParams(location.search).get('layout')==='merged';
@@ -148,6 +148,7 @@ try{
   }
   readAssetJSON((!mergedMode&&config.assetDelivery?.[config.catalog]?.validation)||{url:validationURL.href,cache:'no-cache'},catalogURL).then(r=>{
     if(mergedMode){$('validation').textContent=r.passed?`Единая сцена проверена: ${r.objects} объекта, ${r.gpuBatches} групп отрисовки. Атрибуты вершин и матрицы инстансов сохранены; геометрия не упрощена.`:'Проверка сцены выявила расхождения';return;}
+    if(r.adapter==='yandex-2gis'){$('validation').textContent=r.passed?`Проверено ${r.chunks} блоков: контрольные суммы, BVH, материалы, сохранение геометрии и ${r.plantInstances.toLocaleString('ru-RU')} инстансов растений.`:'Проверка сцены выявила расхождения';return;}
     $('validation').textContent=r.passed?`Границы и BVH проверены. Максимальное расхождение шва: ${(r.seams.maxGapM*1000).toFixed(4)} мм. Все ${r.meshes} блоков сохраняют происхождение граней.${r.roadInterfaces?.passed?` Проверены ${r.roadInterfaces.interfaces} стыков дорожных и пешеходных поверхностей: поперечных бетонных препятствий нет.`:''}${r.roadSeams?.passed?` Проверены ${r.roadSeams.passages} сшитых дорожных проходов: поперечных бордюров и поднятой земли нет.`:''}`:'Проверка выявила расхождения — см. JSON';
     if(r.roadPaint?.passed)$('validation').textContent+=` Разметка проверена по полотну: ${r.roadPaint.trianglesChecked.toLocaleString('ru-RU')} граней, заступов на недорожные поверхности нет.`;
     if(r.transportClearance?.fullWidth?.passed){
@@ -233,7 +234,7 @@ try{
   }
   if(isGL)for(const button of document.querySelectorAll('[data-view="overview"]'))button.textContent='Обзор окрестностей';
   views.center.target=mergedMode?target:[bounds[0]+data.tileSizeM*Math.floor((data.grid?.columns??2)/2)-ox,0,oy-bounds[1]-data.tileSizeM*Math.floor((data.grid?.rows??2)/2)];
-  const title=manualMode?'NURAY · Москва · сектор 3 × 3 км':`NURAY · ${data.extentMetres/1000} × ${data.extentMetres/1000} км`;
+  const title=manualMode?'NURAY · Москва · сектор 3 × 3 км':data.radiusM?`NURAY · ${data.regionName} · радиус ${data.radiusM/1000} км`:`NURAY · ${data.extentMetres/1000} × ${data.extentMetres/1000} км`;
   document.title=title;$('region-title').textContent=title;
   const regionName=data.regionName||'Кутузовская',isMoscow=approvedDefaults.id.startsWith('moscow-');
   $('region-subtitle').textContent=mergedMode?`${regionName} · единая сцена · ${data.nodes} объекта`:`${regionName} · ${data.tiles.length} тайлов по ${data.tileSizeM} м`;
@@ -309,6 +310,7 @@ try{
   if(data.witnessViews){
     Object.assign(views,data.witnessViews);
     const labels={'water-sky-review':'Вода · небо и блики','water-ripples-review':'Вода · рябь и берег','vegetation-contact-review':'Растительность · контакт с землёй','contact-shadows-review':'Тени · здания и деревья','facade-bands-review':'Фасады · этажные пояса','parking-asphalt-review':'Парковки · светлый асфальт','waterfront-review':'Набережная · гранит','waterfront-parapet-review':'Набережная · каменный парапет','waterfront-bridge-review':'Вода · дорожный разрыв','flat-roof-review':'Крыша · парапет','pitched-roof-review':'Скатная кровля · матовый металл','paving-asphalt':'Покрытие · асфальт','paving-stone':'Покрытие · брусчатка','paving-gravel':'Покрытие · гравий','paving-sand':'Покрытие · песок','paving-wood':'Покрытие · настил'};
+    Object.assign(labels,data.witnessViewLabels??{});
     const group=document.createElement('div');group.className='views';
     for(const [key,label] of Object.entries(labels))if(data.witnessViews[key]){const button=document.createElement('button');button.dataset.view=key;button.textContent=label;group.append(button);}
     $('tile-grid').after(group);
@@ -343,7 +345,10 @@ try{
     if(selected)$('view-name').textContent=button.firstChild.textContent;
   });
   if(approvedCamera)$('view-name').textContent='Сохранённый вид';
-  await renderer.updateTiles(renderer.chooseTiles({full:$('streaming').value==='full'}));await installSceneLayers(renderer,config.catalog,applySceneLayers);initialized=true;$('measure-scene').disabled=false;$('settings').disabled=false;$('views').disabled=false;$('area-picker').disabled=false;$('loading').hidden=true;renderer.publish(true);
+  await renderer.updateTiles(renderer.chooseTiles({full:$('streaming').value==='full'}));await installSceneLayers(renderer,config.catalog,applySceneLayers);
+  if(params.get('instanceCulling')==='1')(await import('./main-instance-culling.js?v=gs-11')).installInstanceCulling(renderer);
+  if(params.get('splats')==='1')await (await import('./gaussian-panel.js?v=gs-12')).installGaussianPanel(renderer,params.has('splatCatalog')?new URL(params.get('splatCatalog'),assetBase):undefined);
+  initialized=true;$('measure-scene').disabled=false;$('settings').disabled=false;$('views').disabled=false;$('area-picker').disabled=false;$('loading').hidden=true;renderer.publish(true);
 }catch(e){fail(e.message);}
 window.addEventListener('pagehide',()=>renderer?.dispose(),{once:true});
 document.addEventListener('visibilitychange',()=>renderer?.publish(true));

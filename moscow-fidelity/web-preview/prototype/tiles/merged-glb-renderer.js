@@ -1,5 +1,5 @@
 import {MergedFenceVisibility,validateVisibility} from './merged-visibility.js?v=scene-layers-1';
-import {TileRenderer} from './tile-renderer.js?v=large-region-2';
+import {TileRenderer} from './tile-renderer.js?v=gs-11';
 import {loadCityMaterials} from '../../src/district/city-materials.js?v=large-region-1';
 import {orthographic,lookAt,multiply} from '../../src/district/math.js?v=moscow-defaults-1';
 import {planMergedTrace,mergedInstances,sha256} from './merged-trace.js?v=large-region-1';
@@ -30,6 +30,7 @@ export class MergedGlbRenderer extends TileRenderer {
     this.streamStats.requests=asset.format==='gltf'?3:2;
     try{
       const data=doc.extras?.nuray;if(data?.format!=='nuray-merged-glb-v1')throw Error('Этот GLB не содержит данных объединённой сцены NURAY');
+      this.mergedHeaderSha256=await sha256(header);
       {
         const response=await fetch(this.visibilityURL??new URL('merged/visibility.json',catalogURL));
         if(!response.ok&&(this.visibilityURL||response.status!==404))throw Error('Не найдена карта категорий GLB');
@@ -75,6 +76,11 @@ export class MergedGlbRenderer extends TileRenderer {
           const buffer=descriptor?this.mergedArenas[descriptor.page]:this.device.createBuffer({label:`Merged ${kind} ${action.draw.id}`,size:bytes.byteLength,usage:usage|GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_DST});
           this.device.queue.writeBuffer(buffer,offset,bytes);uploadMs+=performance.now()-begun;
           let mesh=this.rasterMeshes.get(action.draw.id);if(!mesh){mesh={...action.draw};this.rasterMeshes.set(mesh.id,mesh);}mesh[kind]=buffer;mesh[kind+'Offset']=offset;
+          if(kind==='vertex'&&mesh.instanced){
+            const v=new Float32Array(bytes.buffer,bytes.byteOffset,bytes.byteLength/4),min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
+            for(let i=0;i<v.length;i+=8)for(let axis=0;axis<3;axis++){min[axis]=Math.min(min[axis],v[i+axis]);max[axis]=Math.max(max[axis],v[i+axis]);}
+            mesh.localBounds={min,max};
+          }
           this.streamStats.residentBytes+=bytes.byteLength;
           // Keep the upload queue bounded as well as decoded CPU memory.
           if(kind==='index')await this.device.queue.onSubmittedWorkDone();

@@ -1,5 +1,5 @@
 import {GpuOcean} from './ocean/gpu-ocean.js?v=shore-water-1';
-import {withCityOcean} from './ocean/city-shader.js?v=dry-ground-1';
+import {withCityOcean} from './ocean/city-shader.js?v=receiver-plane-1';
 import {ENVIRONMENT_BRDF_WGSL} from './environment-brdf.js?v=dry-ground-1';
 import {WaterClock,WATER_DEFAULTS,waterFrameKey} from './ocean/settings.js?v=moscow-preset-2';
 import {installSurfaceField,loadSurfaceField} from './surface-effects.js?v=moscow-defaults-1';
@@ -211,7 +211,10 @@ export class DistrictRenderer {
     if(this.state.engine!=='raster'){this.tracer.frame(time);return;}
     if(!this.waterFrame(time))return;
     const dt=this.lastTime?time-this.lastTime:16.7;this.lastTime=time;this.frameMs=this.frameMs*.92+dt*.08;
-    const matrix=this.matrices();const chunks=this.state.culling?this.chunks.filter(c=>this.isChunkVisible(c)&&((this.sceneName!=='moscow'&&c.id===48)||visible(c.bounds,matrix))):this.chunks.filter(c=>this.isChunkVisible(c));
+    const matrix=this.matrices();let chunks=this.state.culling?this.chunks.filter(c=>this.isChunkVisible(c)&&((this.sceneName!=='moscow'&&c.id===48)||visible(c.bounds,matrix))):this.chunks.filter(c=>this.isChunkVisible(c));
+    this.gaussianVegetation?.prepare(matrix);
+    if(this.instanceCulling){this.instanceCulling.prepare(matrix);chunks=this.instanceCulling.chunks(chunks);}
+    else if(this.gaussianVegetation)chunks=this.gaussianVegetation.chunks(chunks);
     this.stats.submitted=chunks.reduce((n,c)=>n+c.triangles*c.instanceCount,0);this.stats.draws=chunks.length+(this.state.contactAO?2:0);
     const encoder=this.device.createCommandEncoder();const slot=this.timer.begin({revision:this.revision,dt,submitted:this.stats.submitted});
     this.ocean?.prepare(encoder,slot,this.waterDt);
@@ -229,9 +232,10 @@ export class DistrictRenderer {
     }
     this.reflection?.draw(encoder,slot,matrix);this.groundReflection?.draw(encoder,slot,matrix);
     const pass=encoder.beginRenderPass({...this.timer.pass(slot,'geometry'),colorAttachments:[{view:this.state.contactAO?this.contactAO.color.createView():(this.ocean?this.ocean.hdr.createView():this.context.getCurrentTexture().createView()),clearValue:{r:.70,g:.735,b:.745,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:this.depth.createView(),depthClearValue:0,depthLoadOp:'clear',depthStoreOp:'store'}});
-    pass.setPipeline(this.pipeline);pass.setBindGroup(0,this.mainGroup);if(this.ocean){pass.setBindGroup(1,this.ocean.cityGroups[this.ocean.foamCur]);pass.setBindGroup(2,this.reflection.group);pass.setBindGroup(3,this.groundReflection.group);}
+    pass.setPipeline(this.pipeline);pass.setBindGroup(0,this.instanceCulling?.group(this.mainGroup)??this.gaussianVegetation?.meshGroup(this.mainGroup)??this.mainGroup);if(this.ocean){pass.setBindGroup(1,this.ocean.cityGroups[this.ocean.foamCur]);pass.setBindGroup(2,this.reflection.group);pass.setBindGroup(3,this.groundReflection.group);}
     for(const c of chunks){pass.setVertexBuffer(0,c.vertex,c.vertexOffset??0,c.vertexBytes);pass.setIndexBuffer(c.index,'uint32',c.indexOffset??0,c.indexBytes);pass.drawIndexed(c.triangles*3,c.instanceCount,0,0,c.instanceFirst);}this.ocean?.drawSky(pass);pass.end();
     if(this.state.contactAO)this.contactAO.draw(encoder,slot,inverseMatrix(matrix,this.eye),[0,0,0]);
+    this.gaussianVegetation?.draw(encoder,slot);
     this.ocean?.post(encoder,slot);
     this.timer.resolve(encoder,slot);this.device.queue.submit([encoder.finish()]);this.inFlight++;
     this.timer.read(slot);
@@ -254,6 +258,7 @@ export class DistrictRenderer {
   cancelMeasurement(reason){if(this.measurement){this.measurement.reject(new Error(reason));this.measurement=null;}}
   publish(force=false){
     const now=performance.now();if(!force&&now-this.lastStatus<200)return;this.lastStatus=now;
+    this.gaussianVegetation?.updateStatus();
     this.onStatus({...this.stats,gpu:this.gpu,shadowMs:this.shadowMs,frameMs:this.frameMs,timer:!!this.timer?.enabled,
       resolutionLimited:!!this.resolutionLimited,ready:this.ready,loading:this.loading,phase:this.phase,progress:this.progress??0,targetTriangles:this.plannedTriangles,width:this.canvas.width,height:this.canvas.height,materials:this.state.materials,engine:this.state.engine,samples:this.tracer.samples,sampleLimit:this.tracer.limit,cacheSamples:this.tracer.cache.samples,cacheLimit:this.tracer.cache.limit,cacheVersion:this.tracer.cache.version,cacheUpdates:this.tracer.cache.updates,cacheMs:this.tracer.cache.ms,cacheBytes:this.tracer.cache.bytes,reconstructionMs:this.tracer.reconstruction.ms,guideMs:this.tracer.reconstruction.guideMs,reconstructionBytes:this.tracer.reconstruction.bytes,reconstructionVersion:this.tracer.reconstruction.version,pathMs:this.tracer.pathMs,batch:this.tracer.batch,cacheSpan:this.tracer.cache.field?.size[0]});
   }
@@ -275,5 +280,5 @@ export class DistrictRenderer {
       target:[(id%6-2.5)*10.5,roof?6.4:stone?1.0:3.8,(Math.floor(id/6)-3.5)*11.5+(stone||glass?2.7:0)]};
   }
   fail(message){this.running=false;cancelAnimationFrame(this.raf);this.cancelBuild();this.cancelMeasurement(message);this.onError(message);}
-  dispose(){this.running=false;cancelAnimationFrame(this.raf);this.cancelBuild();this.cancelMeasurement('Страница закрыта.');this.resizeObserver?.disconnect();this.timer?.dispose();this.reflection?.dispose();this.groundReflection?.dispose();this.ocean?.dispose();this.device?.destroy();}
+  dispose(){this.running=false;cancelAnimationFrame(this.raf);this.cancelBuild();this.cancelMeasurement('Страница закрыта.');this.resizeObserver?.disconnect();this.timer?.dispose();this.gaussianVegetation?.dispose();this.instanceCulling?.dispose();this.reflection?.dispose();this.groundReflection?.dispose();this.ocean?.dispose();this.device?.destroy();}
 }

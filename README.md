@@ -4,6 +4,7 @@
 
 **Актуальная кодовая база находится в `moscow-fidelity/`.** Старые корневые `src/` и прототипы сохранены для истории; GitHub Pages публикует `moscow-fidelity/web-preview/`.
 
+- [Курск · радиус 3 км](https://niemandx.github.io/NURAY/kursk/)
 - [Открыть viewer](https://niemandx.github.io/NURAY/)
 - [База знаний и видение проекта](docs/knowledge/README.md)
 - [Продолжить работу на другом компьютере](docs/knowledge/HANDOFF.md)

@@ -6,13 +6,13 @@ import {installSurfaceField,isRoad} from '../../src/district/surface-effects.js?
 import {sunCascades,shadowUniform,inverseMatrix} from '../../src/district/sun-shadows.js?v=moscow-defaults-1';
 import {isFacade,facadePixels} from '../../src/district/facade-relief.js?v=moscow-defaults-1';
 import {contactVertex,contactFragment,contactComposite} from './webgl-contact-ao.js?v=moscow-defaults-1';
-import {TileRenderer} from './tile-renderer.js?v=manual-areas-1';
+import {TileRenderer} from './tile-renderer.js?v=gs-9';
 import {mapConcurrent} from '../../src/district/asset-fetch.js?v=asset-delivery-1';
 import {activeChunkIds,sceneInstances,rasterLayout} from './tile-scene.js?v=moscow-defaults-1';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from '../../src/district/math.js?v=moscow-defaults-1';
 import {budgetTiles,overviewDistance} from './webgl-budget.js?v=moscow-defaults-1';
 import {WebGLReflection} from './planar-webgl.js?v=dry-ground-1';
-import {vertex,fragment,shadowFragment,captureFragment} from './webgl-shaders.js?v=dry-ground-1';
+import {vertex,fragment,shadowFragment,captureFragment} from './webgl-shaders.js?v=gs-9';
 
 function program(gl,vs,fs){
   const shaders=[];const p=gl.createProgram();

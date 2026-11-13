@@ -134,6 +134,11 @@ fn srgb(x:vec3f)->vec3f {return select(1.055*pow(x,vec3f(1/2.4))-.055,x*12.92,x<
   let tangent=normalize((dp1*duv2.y-dp2*duv1.y)*handed+vec3f(1e-15));
   let bitangent=normalize((-dp1*duv2.x+dp2*duv1.x)*handed+vec3f(1e-15));
   let geometricNormal=normalize(v.normal);var n=geometricNormal;var color=clamp(m.color.rgb*v.tint,vec3f(0),vec3f(1));var rough=m.color.w;var ao=1.0;
+  // Shadow depth belongs to the triangle plane, not its interpolated shading
+  // normal. Smooth terrain normals must not tilt the PCF receiver plane.
+  let faceCross=cross(dp1,dp2);let faceLength2=dot(faceCross,faceCross);
+  let faceNormal=faceCross*inverseSqrt(max(faceLength2,1e-20));
+  let receiverNormal=select(geometricNormal,faceNormal*select(-1.0,1.0,dot(faceNormal,geometricNormal)>=0),faceLength2>1e-20);
   if frame.settings.y>.5 {
     let tex=textureSample(albedo,surfaceSampler,uv,i32(v.material));
     if tex.a<m.physical.w {discard;}
@@ -157,7 +162,7 @@ fn srgb(x:vec3f)->vec3f {return select(1.055*pow(x,vec3f(1/2.4))-.055,x*12.92,x<
   let Gv=2*nv/(nv+sqrt(a2+(1-a2)*nv*nv));let Gl=2*nl/max(.0001,nl+sqrt(a2+(1-a2)*nl*nl));
   let spec=F*D*Gv*Gl/max(.0001,4*nv*nl);
   let diffuse=(1-F)*color*(1-metal)/3.14159265;
-  let shadow=visibility(v.world,geometricNormal);
+  let shadow=visibility(v.world,receiverNormal);
   var light=(diffuse+spec)*vec3f(4.2,3.77,3.1)*nl*shadow*frame.sun.w;
   light+=color*(1-metal)*mix(vec3f(.17,.18,.20),vec3f(.45,.51,.58),n.y*.5+.5)*ao;
   var environmentWeight=fresnel(nv,f0)*mix(1.0,.40,rough);

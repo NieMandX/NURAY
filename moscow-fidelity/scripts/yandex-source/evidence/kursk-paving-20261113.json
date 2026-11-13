@@ -1,0 +1,174 @@
+{
+  "reviewDate": "2026-11-13",
+  "source": "Yandex street/aerial panoramas",
+  "imageryYears": [
+    2016,
+    2020,
+    2021
+  ],
+  "precision": "Visual material-zone annotations, clipped to source pedestrian domains. Not a survey or exact recreation of the ornamental paving pattern.",
+  "references": [
+    {
+      "name": "sonina-east-building",
+      "url": "https://yandex.ru/maps/8/kursk/?l=stv%2Csta&ll=36.191650%2C51.726600&panorama%5Bdirection%5D=356.440325%2C0.000000&panorama%5Bfull%5D=true&panorama%5Bpoint%5D=36.194580%2C51.727277&panorama%5Bspan%5D=63.117653%2C60.000000&z=17",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-sonina-east-building-20261113.png"
+    },
+    {
+      "name": "sonina-east-slope",
+      "url": "https://yandex.ru/maps/8/kursk/?l=stv%2Csta&ll=36.191650%2C51.726600&panorama%5Bdirection%5D=110.027589%2C0.000000&panorama%5Bfull%5D=true&panorama%5Bpoint%5D=36.194580%2C51.727277&panorama%5Bspan%5D=63.117653%2C60.000000&z=17",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-sonina-east-slope-20261113.png"
+    },
+    {
+      "name": "sonina-east-next",
+      "url": "https://yandex.ru/maps/8/kursk/?l=stv%2Csta&ll=36.191650%2C51.726600&panorama%5Bdirection%5D=110.027589%2C0.000000&panorama%5Bfull%5D=true&panorama%5Bpoint%5D=36.194376%2C51.727126&panorama%5Bspan%5D=63.117653%2C60.000000&z=17",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-sonina-east-next-20261113.png"
+    },
+    {
+      "name": "sonina-lookout",
+      "url": "https://yandex.ru/maps/8/kursk/?l=stv%2Csta&ll=36.191650%2C51.726600&panorama%5Bdirection%5D=221.913935%2C0.000000&panorama%5Bfull%5D=true&panorama%5Bpoint%5D=36.193547%2C51.726516&panorama%5Bspan%5D=63.117653%2C60.000000&z=17",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-sonina-lookout-20261113.png"
+    },
+    {
+      "name": "sonina-philharmonic-paving",
+      "url": "https://yandex.ru/maps/8/kursk/?l=stv%2Csta&ll=36.191650%2C51.726600&panorama%5Bdirection%5D=307.864673%2C0.000000&panorama%5Bfull%5D=true&panorama%5Bpoint%5D=36.192645%2C51.725848&panorama%5Bspan%5D=63.117653%2C60.000000&z=17",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-sonina-philharmonic-paving-20261113.png"
+    },
+    {
+      "name": "sonina-south-junction",
+      "url": "https://yandex.ru/maps/8/kursk/?l=stv%2Csta&ll=36.191650%2C51.726600&panorama%5Bdirection%5D=346.182094%2C0.000000&panorama%5Bfull%5D=true&panorama%5Bpoint%5D=36.189993%2C51.724223&panorama%5Bspan%5D=63.117653%2C60.000000&z=17",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-sonina-south-junction-20261113.png"
+    },
+    {
+      "name": "nevskogo-circus-west",
+      "url": "https://yandex.ru/maps/8/kursk/?l=stv%2Csta&ll=36.191650%2C51.726600&panorama%5Bdirection%5D=319.499553%2C0.000000&panorama%5Bfull%5D=true&panorama%5Bpoint%5D=36.188344%2C51.725338&panorama%5Bspan%5D=63.117653%2C60.000000&z=17",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-nevskogo-circus-west-20261113.png"
+    },
+    {
+      "name": "nevskogo-north-junction",
+      "url": "https://yandex.ru/maps/8/kursk/?l=stv%2Csta&ll=36.191650%2C51.726600&panorama%5Bdirection%5D=334.110744%2C0.000000&panorama%5Bfull%5D=true&panorama%5Bpoint%5D=36.187003%2C51.726874&panorama%5Bspan%5D=63.117653%2C60.000000&z=17",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-nevskogo-north-junction-20261113.png"
+    },
+    {
+      "name": "circus-west-trees-sidewalk",
+      "url": "https://yandex.ru/maps/8/kursk/?l=stv%2Csta&ll=36.191650%2C51.726600&panorama%5Bdirection%5D=47.794429%2C0.000000&panorama%5Bfull%5D=true&panorama%5Bpoint%5D=36.187003%2C51.726874&panorama%5Bspan%5D=63.117653%2C60.000000&z=17",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-circus-west-trees-sidewalk-20261113.png"
+    },
+    {
+      "name": "cathedral-north-spruce",
+      "url": "https://yandex.ru/maps/8/kursk/?l=stv%2Csta&ll=36.191650%2C51.726600&panorama%5Bdirection%5D=70.124706%2C0.000000&panorama%5Bfull%5D=true&panorama%5Bpoint%5D=36.192727%2C51.728128&panorama%5Bspan%5D=63.117653%2C60.000000&z=17",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-cathedral-north-spruce-20261113.png"
+    },
+    {
+      "name": "lower-embankment",
+      "url": "https://yandex.ru/maps/8/kursk/?l=stv%2Csta&ll=36.191650%2C51.726600&panorama%5Bdirection%5D=14.311790%2C0.000000&panorama%5Bfull%5D=true&panorama%5Bpoint%5D=36.196153%2C51.727589&panorama%5Bspan%5D=63.117653%2C60.000000&z=17",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-lower-embankment-20261113.png"
+    },
+    {
+      "name": "circus-air-east-lawn-stairs",
+      "url": "https://yandex.ru/maps/8/kursk/?l=sat%2Cstv%2Csta&ll=36.187920%2C51.726113&panorama%5Bair%5D=true&panorama%5Bdirection%5D=39.268664%2C-45.532818&panorama%5Bfull%5D=true&panorama%5Bid%5D=1289618743_713793472_23_1633433873&panorama%5Bpoint%5D=36.189189%2C51.725817&panorama%5Bspan%5D=63.117653%2C60.000000&z=18",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-circus-air-east-lawn-stairs-20261113.png"
+    },
+    {
+      "name": "circus-air-front-red-paving",
+      "url": "https://yandex.ru/maps/8/kursk/?l=sat%2Cstv%2Csta&ll=36.187920%2C51.726113&panorama%5Bair%5D=true&panorama%5Bdirection%5D=318.509077%2C-45.532818&panorama%5Bfull%5D=true&panorama%5Bid%5D=1289618743_713793472_23_1633433873&panorama%5Bpoint%5D=36.189189%2C51.725817&panorama%5Bspan%5D=63.117653%2C60.000000&z=18",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-circus-air-front-red-paving-20261113.png"
+    },
+    {
+      "name": "circus-air-north-woodland",
+      "url": "https://yandex.ru/maps/8/kursk/?l=sat%2Cstv%2Csta&ll=36.187920%2C51.726113&panorama%5Bair%5D=true&panorama%5Bdirection%5D=93.081019%2C-39.792243&panorama%5Bfull%5D=true&panorama%5Bid%5D=1289611105_713779143_23_1633355891&panorama%5Bpoint%5D=36.187908%2C51.727308&panorama%5Bspan%5D=63.117653%2C60.000000&z=18",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-circus-air-north-woodland-20261113.png"
+    },
+    {
+      "name": "sonina-air-lookout-paving",
+      "url": "https://yandex.ru/maps/8/kursk/?l=sat%2Cstv%2Csta&ll=36.192959%2C51.727371&panorama%5Bair%5D=true&panorama%5Bdirection%5D=69.957723%2C-42.643970&panorama%5Bfull%5D=true&panorama%5Bid%5D=1289640815_713792778_23_1631702160&panorama%5Bpoint%5D=36.192889%2C51.725889&panorama%5Bspan%5D=63.117653%2C60.000000&z=18",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-sonina-air-lookout-paving-20261113.png"
+    },
+    {
+      "name": "cathedral-air-terraces",
+      "url": "https://yandex.ru/maps/8/kursk/?l=sat%2Cstv%2Csta&ll=36.192959%2C51.727371&panorama%5Bair%5D=true&panorama%5Bdirection%5D=320.029826%2C-42.643970&panorama%5Bfull%5D=true&panorama%5Bid%5D=1289640815_713792778_23_1631702160&panorama%5Bpoint%5D=36.192889%2C51.725889&panorama%5Bspan%5D=63.117653%2C60.000000&z=18",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-cathedral-air-terraces-20261113.png"
+    },
+    {
+      "name": "sonina-air-flowerbeds",
+      "url": "https://yandex.ru/maps/8/kursk/?l=sat%2Cstv%2Csta&ll=36.192959%2C51.727371&panorama%5Bair%5D=true&panorama%5Bdirection%5D=226.251729%2C-42.643970&panorama%5Bfull%5D=true&panorama%5Bid%5D=1289640815_713792778_23_1631702160&panorama%5Bpoint%5D=36.192889%2C51.725889&panorama%5Bspan%5D=63.117653%2C60.000000&z=18",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-sonina-air-flowerbeds-20261113.png"
+    },
+    {
+      "name": "sonina-air-north-profile",
+      "url": "https://yandex.ru/maps/8/kursk/?l=sat%2Cstv%2Csta&ll=36.192959%2C51.727371&panorama%5Bair%5D=true&panorama%5Bdirection%5D=53.890845%2C-42.643970&panorama%5Bfull%5D=true&panorama%5Bid%5D=1289640815_713792778_23_1631702160&panorama%5Bpoint%5D=36.192889%2C51.725889&panorama%5Bspan%5D=63.117653%2C60.000000&z=18",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-sonina-air-north-profile-20261113.png"
+    },
+    {
+      "name": "park-1-may-alley-2016",
+      "url": "https://yandex.ru/maps/8/kursk/?l=sat%2Cstv%2Csta&ll=36.192959%2C51.727371&panorama%5Bdirection%5D=331.530805%2C0.000000&panorama%5Bfull%5D=true&panorama%5Bpoint%5D=36.194194%2C51.728669&panorama%5Bspan%5D=63.117653%2C60.000000&z=18",
+      "image": "/Users/niemandx/Documents/ChatGPT/IDEAS/NURAY/docs/proof/kursk-streets-park-1-may-alley-2016-20261113.png"
+    }
+  ],
+  "zones": [
+    {
+      "id": "circus-front-terracotta",
+      "polygon": [
+        [
+          -118,
+          215
+        ],
+        [
+          -60,
+          248
+        ],
+        [
+          25,
+          107
+        ],
+        [
+          -34,
+          73
+        ]
+      ],
+      "material": {
+        "name": "Площадь · красное мощение",
+        "family": "pedestrian-stone-terracotta",
+        "color": [
+          0.25,
+          0.1,
+          0.075
+        ],
+        "roughness": 0.91
+      },
+      "evidence": "2021 aerial panorama at circus: red brick-coloured paving with light ornamental inlays; actual lawn islands retain source boundaries."
+    },
+    {
+      "id": "philharmonic-red-grey",
+      "polygon": [
+        [
+          191,
+          31
+        ],
+        [
+          243,
+          92
+        ],
+        [
+          259,
+          79
+        ],
+        [
+          207,
+          18
+        ]
+      ],
+      "material": {
+        "name": "Мощение · красно-серое",
+        "family": "pedestrian-stone-red-grey",
+        "color": [
+          0.26,
+          0.16,
+          0.135
+        ],
+        "roughness": 0.91
+      },
+      "evidence": "2020 Sonina street and 2021 aerial panorama: muted red-grey pavers before Philharmonic.",
+      "includeUnclassifiedGround": true
+    }
+  ]
+}

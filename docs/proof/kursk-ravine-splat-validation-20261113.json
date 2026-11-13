@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "templates": 6,
+  "instances": 1762,
+  "existingSplatMatricesPreserved": 849,
+  "newInfillSplats": 468,
+  "byTemplate": {
+    "shrub": 583,
+    "ravine-thicket": 71,
+    "ravine-broad": 234,
+    "ravine-young": 163,
+    "broadleaf": 554,
+    "spruce": 157
+  },
+  "templateBytes": 16737088,
+  "sourceHeaderSha256": "f3da05459b89118a033634f0721591382aa4f1bbe5953f92e1155a221a87755a",
+  "newRawSourcesDistinct": true
+}

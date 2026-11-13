@@ -9,6 +9,7 @@ import {execFileSync} from 'node:child_process';
 import {buildMeshBvh,transformBounds} from '../../web-preview/src/district/bvh.js';
 import {packingKey,readPacked,savePacked,sha} from './transport_cache.mjs';
 import {tileTriangleIndex} from './tile_triangle_index.mjs';
+import {survivesFloat32} from './float32_triangle.mjs';
 const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(process.argv[2]??path.resolve(here,'../../web-preview/prototype/tiles/assets'));
 const patchFile=process.argv[3], incremental=patchFile?JSON.parse(await fs.readFile(patchFile)):null;
 const changed=incremental?new Set(incremental.changedChunks):null;
@@ -26,7 +27,7 @@ const [x0,y0,x1,y1]=city.boundsMSK,[ox,oy]=city.originMSK;
 const columns=Math.ceil((x1-x0)/tileSize),rows=Math.ceil((y1-y0)/tileSize);
 const cacheEnabled=city.sourceSnapshot?.freshAcquisition&&city.sourceSnapshot?.receiptSha256&&process.env.NURAY_DISABLE_PACK_CACHE!=='1';
 const codeHash=createHash('sha256');
-for(const file of [fileURLToPath(import.meta.url),path.join(here,'transport_cache.mjs'),path.join(here,'tile_triangle_index.mjs'),path.join(here,'../../web-preview/src/district/bvh.js')])codeHash.update(await fs.readFile(file));
+for(const file of [fileURLToPath(import.meta.url),path.join(here,'transport_cache.mjs'),path.join(here,'tile_triangle_index.mjs'),path.join(here,'float32_triangle.mjs'),path.join(here,'../../web-preview/src/district/bvh.js')])codeHash.update(await fs.readFile(file));
 const cacheFolder=cacheEnabled?path.join(root,'..','.transport-cache',city.sourceSnapshot.receiptSha256,codeHash.digest('hex')):null;
 const cacheContext={bounds:city.boundsMSK,origin:city.originMSK,tileSize,columns,rows};
 for(let north=0;north<rows;north++)for(let east=0;east<columns;east++){
@@ -62,7 +63,7 @@ function clip(input,b){
  return Array.from({length:v.length-2},(_,i)=>[v[0],v[i+1],v[i+2]]);
 }
 function faceArea(t){const a=t[1].map((x,i)=>x-t[0][i]),b=t[2].map((x,i)=>x-t[0][i]);return Math.hypot(a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]);}
-let originalTriangles=0,exportedTriangles=0;
+let originalTriangles=0,exportedTriangles=0,quantizedSliversDiscarded=0;
 for(const c of manifest.chunks){
  if(incremental&&!changed.has(c.id)){
   originalTriangles+=c.triangles;sourceChunks.push(previous.sourceChunks.find(s=>s.id===c.id));
@@ -119,6 +120,7 @@ for(const c of manifest.chunks){
  function appendTriangle(bucket,tri,b,material,primitive){
   for(const t of clip(tri,b)){
    if(faceArea(t)<1e-9)continue;
+   if(!survivesFloat32(t,tri)){quantizedSliversDiscarded++;continue;}
    const ids=t.map(v=>{const row=pack(v,material),key=row.join(',');let id=bucket.seen.get(key);if(id===undefined){id=bucket.words.length/8;bucket.words.push(...row);bucket.seen.set(key,id);}return id;});
    bucket.indices.push(...ids);bucket.lineage.push(primitive);
   }
@@ -179,13 +181,14 @@ for(const tile of tiles){
 const scene={version:1,format:'nuray-spatial-tiles-v1',name:`${city.name||'Кутузовская'} · ${columns*rows} тайлов`,regionName:city.name||'Кутузовская',crsProj:city.crsProj,extentMetres:Math.max(x1-x0,y1-y0),tileSizeM:tileSize,grid:{columns,rows},
  origin:manifest.origin,axes:manifest.axes,boundsMSK:city.boundsMSK,materials:manifest.materials,textures:manifest.textures,sourceSnapshot:city.sourceSnapshot,
  tiles,chunks:list,sourceChunks,stats:{originalTriangles,fullTriangles:exportedTriangles,coarseTriangles:tiles.reduce((n,t)=>n+t.coarseTriangles,0),
-  uniqueTriangles:list.reduce((n,c)=>n+c.triangles,0),objectLayer:city.objectLayer?.stats,
+  uniqueTriangles:list.reduce((n,c)=>n+c.triangles,0),objectLayer:city.objectLayer?.stats,quantizedSliversDiscardedThisRun:quantizedSliversDiscarded,
   fullDownloadBytes:list.reduce((n,c)=>n+c.downloadBytes,0),coarseDownloadBytes:list.filter(c=>!['paint','unbound-paint'].includes(c.name)).reduce((n,c)=>n+c.downloadBytes,0)},
  bvh:{version:1,nodeStride:32,vertexStride:32,leafSize:8,strategy:'sah',prebuilt:true},
  rules:{cut:'clip canonical triangle attributes, do not generate boundary walls; unique ownership for cut-aligned vertical faces',
   preview:'far tiles reuse exact surfaces and structures, omitting road paint only; no geometric simplification yet',
   coordinates:'one region frame; UVs, heights and normals are interpolated from the same canonical triangles',
-  identity:'each emitted triangle retains canonical source chunk and primitive index'},
+  identity:'each emitted triangle retains canonical source chunk and primitive index',
+  quantization:'drop only collapsed or winding-inverted sub-grid clipping slivers after Float32 conversion; reject non-numeric inversions'},
  limitations:city.limitations,objectLayer:city.objectLayer?{stats:city.objectLayer.stats,policy:city.objectLayer.policy,variation:city.objectLayer.variation,customLibrary:city.objectLayer.customLibrary,foundations:city.objectLayer.foundations?{stats:city.objectLayer.foundations.stats,policy:city.objectLayer.foundations.policy}:undefined}:undefined,
  railwayLayer:city.railwayLayer?{stats:city.railwayLayer.stats,policy:city.railwayLayer.policy,texture:city.railwayLayer.texture}:undefined,
  streetLayer:city.streetLayer?{stats:city.streetLayer.stats,policy:city.streetLayer.policy,witnessViews:city.streetLayer.witnessViews,fences:city.streetLayer.fences}:undefined};

@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "instances": 2067,
+  "models": [
+    "broadleaf.json",
+    "spruce.json",
+    "shrub.json",
+    "ravine-broad.json",
+    "ravine-young.json",
+    "ravine-thicket.json"
+  ],
+  "sourceHeaderSha256": "cf7661d728a1dc4a17f621df518f368e2dc9f93d211c57153af99fffd8dd9bc8",
+  "unchangedTemplateFiles": [
+    "VALIDATED.txt",
+    "ravine-provenance.json",
+    "ravine-young.json",
+    "broadleaf.json",
+    "ravine-thicket.json",
+    "spruce.json",
+    "ravine-broad.json",
+    "ravine-broad.gsbin",
+    "ravine-young.gsbin",
+    "ravine-thicket.gsbin",
+    "shrub.json",
+    "spruce.gsbin",
+    "broadleaf.gsbin",
+    "shrub.gsbin"
+  ]
+}

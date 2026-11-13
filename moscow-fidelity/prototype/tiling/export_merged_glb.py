@@ -104,7 +104,7 @@ def main():
             if count+len(vertices)>LIMIT:flush()
             pending_v.append(vertices);pending_i.append(remap.reshape(-1,3).astype('<u4')+count);count+=len(vertices)
     flush();stream.close();binary_size=binary.stat().st_size
-    meta={k:catalog[k] for k in ('regionName','origin','boundsMSK','extentMetres','witnessViews','crsProj','axes','geography') if k in catalog}
+    meta={k:catalog[k] for k in ('regionName','origin','boundsMSK','extentMetres','radiusM','witnessViews','witnessViewLabels','crsProj','axes','geography') if k in catalog}
     meta.update(version=1,format='nuray-merged-glb-v1',sourceCatalog='../tileset.json',materials=scene['materials'],imageNames=image_ids,draws=draws,transformsView=transform_view,nodes=len(nodes),sourceTiles=len(catalog['tiles']))
     stats=dict(passed=True,staticCityObjects=1,sharedTemplateObjects=len(shared),objects=len(nodes),gpuBatches=len(draws),uniqueTriangles=source_triangles,expandedTriangles=sum(d['triangles']*d['instanceCount'] for d in draws),sourceVertices=source_vertices,vertices=welded_vertices,geometryBytes=sum(d['vertexBytes']+d['indexBytes'] for d in draws)+transform_array.nbytes,sharedInstances=sum(d['instanceCount'] for d in draws if d['instanced']),allVertexAttributesBitIdentical=True,instanceMatricesPreserved=True,sourceValidationSha256=hashlib.sha256((root/'validation.json').read_bytes()).hexdigest(),batches=proof)
     assert source_triangles==scene['stats']['uniqueTriangles'];assert stats['expandedTriangles']==scene['stats']['expandedTriangles']

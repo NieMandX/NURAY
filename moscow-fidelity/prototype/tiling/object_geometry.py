@@ -51,7 +51,10 @@ def pack(triangles,materials,path,tints=None):
     words[:,6]=np.repeat(materials,3).astype(np.uint32)|0x80000000
     if tints is not None:
         tints=np.asarray(tints,dtype='<f4').reshape(-1)
-        assert len(tints)==len(words) and np.isfinite(tints).all() and np.all(tints>0)
+        # Zero is the packed format's neutral/unset tint sentinel. Preserve it
+        # when replaying mixed source buffers; replacing it with epsilon makes
+        # an originally untinted surface almost black in the viewer.
+        assert len(tints)==len(words) and np.isfinite(tints).all() and np.all(tints>=0)
         floats[:,7]=tints
     verts,ix=unique_vertex_words(words);ix=ix.reshape(-1,3).astype('<u4')
     pp=verts.view('<f4')[ix,:3];keep=np.linalg.norm(np.cross(pp[:,1]-pp[:,0],pp[:,2]-pp[:,0]),axis=1)>1e-9

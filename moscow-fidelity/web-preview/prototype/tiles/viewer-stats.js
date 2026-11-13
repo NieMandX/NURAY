@@ -22,7 +22,7 @@ export function statsText(s,stream){
     'trace-batch':trace?number(s.batch):'—',
     'geometry-memory':mib(s.geometryBytes),'bvh-memory':mib(s.bvhBytes??0),'texture-memory':mib(s.textureBytes),'surface-memory':mib(s.surfaceEffectBytes??0),
     'ocean-memory':mib(s.oceanBytes??0),
-    'memory':mib(stream.residentBytes),'peak':mib(stream.peakResidentBytes),'released':mib(stream.releasedGpuBytes),
+    'memory':mib(stream.residentBytes+(s.gaussianBytes??0)),'peak':mib(stream.peakResidentBytes+(s.gaussianBytes??0)),'released':mib(stream.releasedGpuBytes),
     'cpu':mib(stream.cpuCacheBytes),'network':mib(stream.downloadBytes),'requests':`${stream.requests} / ${stream.cacheHits}`,
     'tile-count':`${stream.fullTiles??0} / ${stream.coarseTiles??0}`,
     'build-time':loaded?seconds(s.buildMs):'—','upload-time':loaded?ms(s.uploadMs):'—',
@@ -30,7 +30,7 @@ export function statsText(s,stream){
     'shadow-time':trace?'Лучевые':s.timer&&measured?ms(s.shadowMs):'—',
     'brief-fps':fps,'brief-gpu':gpu,'brief-submitted':submitted,
     'brief-submitted-label':trace?'Треугольники · лучам':'Треугольники · в кадре',
-    'brief-draws':trace?'Compute':measured?number(s.draws):'—','brief-memory':mib(stream.residentBytes),
+    'brief-draws':trace?'Compute':measured?number(s.draws):'—','brief-memory':mib(stream.residentBytes+(s.gaussianBytes??0)),
     'brief-resolution':`${s.width} × ${s.height}`,
     'timing-note':s.waterFrozen&&!trace?'Стоп-кадр: GPU показывает время последней отрисовки. Пока камера и настройки неподвижны, новые кадры не отправляются.':s.timer?'GPU — сумма измеренных проходов кадра. Интервал кадра включает ожидание браузера; это не время CPU.':'Измерение времени GPU недоступно в этом браузере. FPS и интервал кадра измеряются отдельно.',
   };
@@ -38,11 +38,18 @@ export function statsText(s,stream){
 
 export function createStatsPanel(){
   const elements=new Map(),traceRows=document.getElementById('trace-stats');
-  let lastUpdate=-Infinity,lastState='';
-  return (s,stream)=>{
+  let lastUpdate=-Infinity,lastState='',pending=null,timer=null;
+  const update=(s,stream)=>{
     // Camera changes can publish on every pointer event; keep the HUD lightweight.
     const state=`${s.engine}:${s.ready}:${s.loading}:${s.tabHidden}:${s.timer}:${s.waterFrozen}:${Number.isFinite(s.gpu)}:${s.frameMeasured}`,now=performance.now();
-    if(state===lastState&&now-lastUpdate<200)return;
+    if(state===lastState&&now-lastUpdate<200){
+      // A frozen frame may never publish again. Retain the final GPU result
+      // instead of leaving the first frame's counters on screen indefinitely.
+      pending=[s,{...stream}];
+      if(timer===null)timer=setTimeout(()=>{timer=null;const args=pending;pending=null;if(args)update(...args);},Math.ceil(200-(now-lastUpdate)));
+      return;
+    }
+    if(timer!==null){clearTimeout(timer);timer=null;}pending=null;
     lastState=state;lastUpdate=now;
     traceRows.hidden=s.engine==='raster';
     for(const [id,value] of Object.entries(statsText(s,stream))){
@@ -51,4 +58,5 @@ export function createStatsPanel(){
       if(element.textContent!==value)element.textContent=value;
     }
   };
+  return update;
 }

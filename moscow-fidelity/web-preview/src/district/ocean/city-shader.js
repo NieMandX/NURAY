@@ -67,7 +67,7 @@ export function withCityOcean(source,{planar=false}={}){
  const start=source.indexOf('  if u32(m.physical.z)==12u {');
  const end=source.indexOf('  let wo=',start);
  source=source.slice(0,start)+`  if u32(m.physical.z)==12u {
-   let rawShadow=visibility(v.world,geometricNormal);let sunShadow=sunVisibility(rawShadow);
+   let rawShadow=visibility(v.world,receiverNormal);let sunShadow=sunVisibility(rawShadow);
    var water:vec4f;
    if F.windP[1].z>.5 {water=seascapeShade(v.world,surfaceDistance(v.world,false),sunShadow);}
    else {water=oceanShade(v.world,surfaceDistance(v.world,false),sunShadow);}
@@ -77,7 +77,7 @@ export function withCityOcean(source,{planar=false}={}){
  `+source.slice(end);
  source=source.replaceAll('vec3f(4.2,3.77,3.1)','oceanSun()');
  source=source.replace('mix(vec3f(.17,.18,.20),vec3f(.45,.51,.58),n.y*.5+.5)','oceanAmbient(n)');
- source=source.replace('let shadow=visibility(v.world,geometricNormal);','let rawShadow=visibility(v.world,geometricNormal);let shadow=sunVisibility(rawShadow);');
+ source=source.replace('let shadow=visibility(v.world,receiverNormal);','let rawShadow=visibility(v.world,receiverNormal);let shadow=sunVisibility(rawShadow);');
  source=source.replace('light*=mix(1.0/1.4,1.0,shadow);','light*=mix(1.0/1.4,1.0,shadow)*shadowFill(rawShadow);');
  source=source.replace('mix(3.0,.12,rough)*frame.sun.w','mix(3.0,.12,rough)*frame.sun.w*F.viewProj[1].w');
  source=source.replace('return vec4f(srgb(toneMap(light*frame.display.x)),1);','return lightingOutput(light);');
