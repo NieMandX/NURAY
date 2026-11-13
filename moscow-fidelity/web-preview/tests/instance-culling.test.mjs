@@ -1,5 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {installInstanceCulling} from '../prototype/tiles/main-instance-culling.js';
+
+test('merged review URLs can switch to WebGL and tile renderers without GPU allocation',()=>{
+  for(const owner of [{merged:false},{merged:false,device:{}},{merged:true}]){
+    assert.equal(installInstanceCulling(owner),null);
+    assert.equal(owner.instanceCulling,undefined);
+  }
+});
 import {instanceBounds,clipPlanes,instanceVisible,compactVisibleInstances} from '../src/district/instance-culling.js';
 import {perspective,orthographic,multiply,lookAt,visible} from '../src/district/math.js';
 

@@ -34,9 +34,12 @@ export class MainInstanceCulling {
 }
 
 export function installInstanceCulling(owner){
-  if(!owner.merged||!owner.device)throw Error('Пробное отсечение инстансов доступно в объединённой WebGPU-сцене');
+  // Review URLs retain this opt-in when switching to WebGL or tiled geometry.
+  // Those renderers already choose visible tiles and have no merged transform buffer.
+  if(!owner.merged||!owner.device)return null;
   const c=new MainInstanceCulling(owner);owner.instanceCulling=c;
   const label=document.createElement('label'),check=document.createElement('input');check.type='checkbox';check.checked=true;
   label.append(check,document.createTextNode(' Отсекать экземпляры вне кадра · проба'));document.getElementById('settings').append(label);
   check.onchange=()=>{c.enabled=check.checked;owner.revision++;};
+  return c;
 }

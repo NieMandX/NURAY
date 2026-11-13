@@ -347,7 +347,7 @@ try{
   });
   if(approvedCamera)$('view-name').textContent='Сохранённый вид';
   await renderer.updateTiles(renderer.chooseTiles({full:$('streaming').value==='full'}));await installSceneLayers(renderer,config.catalog,applySceneLayers);
-  if(params.get('instanceCulling')==='1')(await import('./main-instance-culling.js?v=gs-11')).installInstanceCulling(renderer);
+  if(params.get('instanceCulling')==='1')(await import('./main-instance-culling.js?v=gs-13')).installInstanceCulling(renderer);
   if(params.get('splats')==='1')await (await import('./gaussian-panel.js?v=gs-12')).installGaussianPanel(renderer,params.has('splatCatalog')?new URL(params.get('splatCatalog'),assetBase):undefined);
   initialized=true;$('measure-scene').disabled=false;$('settings').disabled=false;$('views').disabled=false;$('area-picker').disabled=false;$('loading').hidden=true;renderer.publish(true);
 }catch(e){fail(e.message);}
