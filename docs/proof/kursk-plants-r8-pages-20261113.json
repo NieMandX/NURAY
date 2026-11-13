@@ -1,0 +1,28 @@
+{
+  "date": "2026-11-13",
+  "url": "https://niemandx.github.io/NURAY/kursk/",
+  "deployedCommit": "09f6acef53652fe1cbddafe11904793caa7827e1",
+  "pagesRun": "https://github.com/NieMandX/NURAY/actions/runs/43421383702",
+  "pagesConclusion": "success",
+  "scene": "assets-kursk-3km-20261113-r13",
+  "vegetation": "assets-kursk-splats-20261113-r8",
+  "backend": "webgpu",
+  "layout": "merged",
+  "engine": "raster",
+  "interactiveRotation": {
+    "before": {
+      "visiblePlants": 1646,
+      "replaced": 30842,
+      "gaussians": 349657,
+      "error": null
+    },
+    "after": {
+      "visiblePlants": 659,
+      "replaced": 30842,
+      "gaussians": 349940,
+      "error": null
+    }
+  },
+  "consoleErrors": [],
+  "sourceGeometryRebuilt": false
+}

@@ -90,3 +90,5 @@ PY
 Публикация r13 завершена: commit `f8b12af`, workflow `43416314113`, success. Публичный маршрут загрузил полную сцену и r7 сплаты без ошибок консоли, с прежними водой/светом и закрытыми панелями. Квитанция: `docs/proof/kursk-r13-pages-20261113.json`, изображение: `kursk-r13-published-20261113.png`.
 
 - Kursk GS r8 (2026-11-13): new immutable prefix `assets-kursk-splats-20261113-r8/`, 21 objects / 33,127,958 bytes. `/kursk/` selects r8 with the existing r13 GLB. Workflow validates its new manifest before deployment. Old r7 and r13 objects retained; bucket access unchanged.
+
+GS r8 deployment verified: commit `09f6acef53652fe1cbddafe11904793caa7827e1`, Pages run `43421383702` succeeded. The public route loads r8 in WebGPU merged raster; rotating the camera retains all 30,842 replacements with no console error. Proof: `docs/proof/kursk-plants-r8-pages-20261113.json`.
