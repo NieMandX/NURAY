@@ -4,7 +4,7 @@ import {installHeliodon,sceneGeography} from './heliodon.js?v=moscow-defaults-1'
 import {MergedGlbRenderer} from './merged-glb-renderer.js?v=gs-16';
 import {TileRenderer} from './tile-renderer.js?v=gs-16';
 import {WebGLTileRenderer} from './webgl-renderer.js?v=gs-16';
-import {areaTileIds,hydrateAreas,installAreaPicker,drawAreaOutline} from './manual-areas.js?v=manual-areas-1';
+import {areaTileIds,hydrateAreas,installAreaPicker} from './manual-areas.js?v=manual-areas-2';
 import {bindCameraInput} from './camera-input.js?v=moscow-defaults-1';
 import {createStatsPanel} from './viewer-stats.js?v=gs-16';
 import {viewerDefaults,catalogKey,defaultSunPreset} from '../../src/district/viewer-defaults.js?v=kursk-water-1';
@@ -18,7 +18,7 @@ function fail(message){$('error').hidden=false;$('error').textContent=message;$(
 function report(s){
   const st=renderer.streamStats;canvas.dataset.camera=JSON.stringify(renderer.camera);
   if(mergedMode)$('stats-scope').textContent='Счётчики относятся к включённым объектам всей карты. Рейтрейс учитывает их и вне кадра; отключённые объекты не видны лучам.';
-  if(manualMode){canvas.dataset.selectedTiles=JSON.stringify([...(renderer.manualTiles??[])]);drawAreaOutline(renderer);}
+  if(manualMode)canvas.dataset.selectedTiles=JSON.stringify([...(renderer.manualTiles??[])]);
   canvas.dataset.sceneLayers=JSON.stringify(renderer.sceneLayers);
   canvas.dataset.residency=JSON.stringify({modes:[...renderer.tileModes],bytes:st.residentBytes,released:st.releasedGpuBytes,revision:renderer.revision,gpuPages:renderer.mergedArenas?.length??renderer.tilePages.size,gpuPageLimit:renderer.pageLimit,wholeSceneTrace:!!renderer.mergedTraceReady});
   showStats(s,st);
@@ -98,7 +98,6 @@ $('sun-shadows').onchange=e=>{renderer.state.shadows=e.target.checked;renderer.s
 $('quality').onchange=e=>{renderer.state.pixels=Number(e.target.value);renderer.resize();};
 $('samples').onchange=e=>{renderer.tracer.limit=Number(e.target.value);renderer.tracer.reset();renderer.publish(true);};
 $('streaming').onchange=()=>schedule({immediate:true});
-$('area-boundary').onchange=()=>drawAreaOutline(renderer);
 $('views').onclick=e=>{
   const b=e.target.closest('[data-view]');if(!b||!initialized)return;
   renderer.camera=b.dataset.view==='overview'&&renderer.backend==='webgl2'&&!manualMode
@@ -343,7 +342,7 @@ try{
   const requestedView=params.get('view');
   if(manualMode){
     for(const b of document.querySelectorAll('[data-view]'))if(b.dataset.view!=='overview')b.hidden=true;
-    const b=document.createElement('button');b.dataset.view='selected-site';b.textContent='Отмеченный участок · ближе';$('views').append(b);
+    const b=document.createElement('button');b.dataset.view='selected-site';b.textContent='Начальный участок · ближе';$('views').append(b);
   }
   const initialView=Object.hasOwn(views,requestedView)?requestedView:(isGL&&!manualMode?'center':'overview');
   renderer.camera=structuredClone(views[initialView]);
