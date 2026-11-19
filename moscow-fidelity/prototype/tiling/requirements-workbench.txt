@@ -1,0 +1,9 @@
+# Python 3.12 environment for the Moscow, Petersburg and Kursk builders.
+-r requirements-region.txt
+-r ../../scripts/yandex-source/requirements-crossfall.txt
+numpy==2.5.3
+Shapely==2.1.2
+pyproj==3.8.0
+Pillow==13.0.0
+DracoPy==2.2.0
+matplotlib==3.11.2

@@ -26,5 +26,5 @@ for name in ['Terrain_2GIS_TIN','Administrative_quarter']:
         grass=[h for n,h in r['hits'].items() if n not in ['Terrain_2GIS_TIN','Administrative_quarter']]
         if grass and name in r['hits'] and r['hits'][name]>max(grass)+.002:bad.append(r)
     summary[name]={'occluded_grass_samples':len(bad),'examples':bad[:5]}
-Path('/Users/niemandx/Documents/ChatGPT/IDEAS/moscow-fidelity/output/ground-overlap.json').write_text(json.dumps(summary,indent=2))
+(Path(__file__).resolve().parents[1]/'output/ground-overlap.json').write_text(json.dumps(summary,indent=2))
 print('GROUND CHECK',json.dumps(summary),flush=True)

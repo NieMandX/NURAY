@@ -8,9 +8,10 @@ import numpy as np
 from pyproj import CRS, Transformer
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'prototype'))
 from source_objects import exterior_record, BUILDING_LAYERS
+from source_config import project_path
 
 plan_path=Path(sys.argv[1]).resolve()
-plan=json.loads(plan_path.read_text()); OUT=Path(plan['output']); ROOT=plan_path.parents[2]; CACHE=ROOT/'source/cache'
+plan=json.loads(plan_path.read_text()); OUT=project_path(plan['output']); ROOT=plan_path.parents[2]; CACHE=ROOT/'source/cache'
 proj=Transformer.from_crs('EPSG:4326',CRS.from_proj4(plan['crs_proj']),always_xy=True)
 MPM=2**32/(2*math.pi*6378137)
 B=plan['extent_msk_east_north']; cx,cy=plan['center_msk_east_north']

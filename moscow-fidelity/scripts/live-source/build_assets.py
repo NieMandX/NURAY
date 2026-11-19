@@ -11,8 +11,9 @@ import subprocess
 import sys
 import ijson
 from verify_snapshot import verify
-sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'prototype/tiling'))
+sys.path[:0] = [str(Path(__file__).resolve().parents[2] / folder) for folder in ('prototype', 'prototype/tiling')]
 from canonical_store import open_canonical,archive_intermediate_glb
+from source_config import project_path
 
 
 def main():
@@ -38,7 +39,7 @@ def main():
     # of surface rows instead of materializing another complete city in RAM.
     with open_canonical(surface/'canonical/urban-model.json','rb') as stream:
         source_snapshot=next(ijson.items(stream,'sourceSnapshot',use_float=True),None)
-    if not source_snapshot or Path(source_snapshot['path']).resolve()!=snapshot or not source_snapshot['freshAcquisition']:
+    if not source_snapshot or project_path(source_snapshot['path']).resolve()!=snapshot or not source_snapshot['freshAcquisition']:
         raise ValueError('Surface belongs to another source capture')
     archive_intermediate_glb(surface)
     objects=output.with_name(output.name+'-objects')

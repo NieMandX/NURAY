@@ -14,6 +14,7 @@ from vegetation_variation import apply as apply_variation
 from custom_vegetation import install as install_vegetation
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from source_objects import partition, receipt
+from source_config import project_path
 from canonical_store import load_canonical, save_canonical, copy_asset
 
 def main():
@@ -26,7 +27,7 @@ def main():
     print('OBJECTS CANONICAL INPUT',len(city['surfaces']),'surfaces',flush=True)
     manifest=json.loads((folder/'scene.json').read_text());extraction=json.loads((args.extraction/'extraction.json').read_text())
     extraction['objects'],excluded_objects=partition(extraction['objects'])
-    source_path=Path(extraction['pbrSource']);source=json.loads(source_path.read_text())
+    source_path=project_path(extraction['pbrSource']);source=json.loads(source_path.read_text())
     origin=np.asarray(city['originMSK']);x0,y0,x1,y1=city['boundsMSK'];clip=[x0-origin[0],origin[1]-y1,x1-origin[0],origin[1]-y0]
     # Use the very same raised ground cells as the road prototype. A tree root
     # samples a surface once; a building's complete source hierarchy moves rigidly.

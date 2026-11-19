@@ -19,6 +19,7 @@ from pyproj import Transformer
 REPO=Path(__file__).resolve().parents[2]
 sys.path[:0]=[str(REPO/'prototype'),str(REPO/'prototype/tiling'),str(REPO/'scripts')]
 from semantics import classify
+from source_config import project_path
 from source_objects import exterior_record, INFORMATION_LAYERS, BUILDING_LAYERS
 from profiles import AXES
 from streaming_json import Document
@@ -196,7 +197,7 @@ def analyze(base,new,release,out):
         data=json.loads((root/'output'/p.get('output_subdir','area_5000')/'models.json').read_text());result={}
         for m in data:
             props=m['properties'];identity=json.dumps([props.get('building_id') or props.get('db_id'),m['geometry'],m.get('sourceChannel')],sort_keys=True)
-            result[identity]=(m,{k:sha(Path(v)) for k,v in m['local_files'].items()})
+            result[identity]=(m,{k:sha(project_path(v)) for k,v in m['local_files'].items()})
         return result
     ma=model_index(base,oldplan);mb=model_index(new,plan);model_changes=[]
     for k in ma.keys()|mb.keys():

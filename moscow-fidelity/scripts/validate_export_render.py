@@ -3,7 +3,7 @@ import bpy,sys,json,runpy,time
 from pathlib import Path
 from mathutils import Vector
 
-WORK=Path('/Users/niemandx/Documents/ChatGPT/IDEAS/moscow-fidelity')
+WORK=Path(__file__).resolve().parents[1]
 SCRIPTS=WORK/'scripts'
 MODEL=WORK/'web-preview/assets/moscow-city-5km-v2'
 assert bpy.context.scene.get('fidelity_repair_version')==1

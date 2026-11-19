@@ -9,6 +9,7 @@ from shapely.ops import unary_union,triangulate,transform
 from shapely.affinity import scale,translate
 from svgpathtools import parse_path
 import xml.etree.ElementTree as ET
+from source_config import project_path
 
 def apply_waffle_pattern(scene):
     plan=scene['plan'];crs=CRS.from_proj4(plan['crs_proj'])
@@ -22,7 +23,7 @@ def apply_waffle_pattern(scene):
     def to_coordinates(x,y,z=None):
         x=np.asarray(x);y=np.asarray(y);lon=(x/world_pixels-.5)*360;lat=np.degrees(np.arctan(np.sinh((y/world_pixels-.5)*2*math.pi)))
         return to_msk.transform(lon,lat)
-    root_dir=Path(plan['output']).parents[1]
+    root_dir=project_path(plan['output']).parents[1]
     style=json.loads((root_dir/'source/map_style.json').read_text())['result']
     svg=root_dir/'source/cache'/('style_'+style['icons']['waffle']['url'])
     root=ET.parse(svg).getroot();box=[float(v) for v in root.attrib['viewBox'].split()];shapes=[]

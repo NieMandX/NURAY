@@ -3,6 +3,8 @@ gc.disable()  # Large acyclic JSON arrays; reference counting still releases tem
 from pathlib import Path
 from mathutils import Matrix,Vector,Euler
 sys.path.insert(0,str(Path(__file__).resolve().parent))
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'prototype'))
+from source_config import project_path
 OUT=Path(sys.argv[sys.argv.index('--')+1]);data=json.load(gzip.open(OUT/('scene_terrain.json.gz' if (OUT/'scene_terrain.json.gz').exists() else 'scene_with_icons.json.gz'),'rt'));plan=data['plan'];B=plan['extent_msk_east_north'];cx,cy=plan['center_msk_east_north'];size=plan['size_m'];ground_center=data.get('terrain',{}).get('height_center_m',0)
 data.pop('building_footprints',None);data.pop('icons',None)
 print('Loaded prepared scene',size,'m',flush=True)
@@ -36,7 +38,7 @@ def create_mesh(d):
         attr=mesh.attributes.new('2gis_tier','INT','FACE');attr.data.foreach_set('value',[max(t or [0]) for t in d['face_tiers']])
     return obj
 def import_objects(file):
-    before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=file,import_pack_images=True);return [o for o in bpy.data.objects if o not in before]
+    before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=str(project_path(file)),import_pack_images=True);return [o for o in bpy.data.objects if o not in before]
 def clip_mesh(obj):
     bm=bmesh.new();bm.from_mesh(obj.data)
     for co,no in [((B[0],0,0),(-1,0,0)),((B[2],0,0),(1,0,0)),((0,B[1],0),(0,-1,0)),((0,B[3],0),(0,1,0))]:

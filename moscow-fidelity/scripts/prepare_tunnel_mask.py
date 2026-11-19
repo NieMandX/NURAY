@@ -3,7 +3,7 @@ import json,math,sys
 from pathlib import Path
 import numpy as np,shapely
 from pyproj import CRS,Transformer
-root=Path('/Users/niemandx/AI_Modeling/moscow_10x10');out=Path('/Users/niemandx/Documents/ChatGPT/IDEAS/moscow-fidelity/output/source-masks')
+root=Path('/Users/niemandx/AI_Modeling/moscow_10x10');out=Path(__file__).resolve().parents[1]/'output/source-masks'
 plan=json.loads((root/'output/area_10000/plan.json').read_text());project=Transformer.from_crs('EPSG:4326',CRS.from_proj4(plan['crs_proj']),always_xy=True)
 bounds=shapely.box(*plan['extent_msk_east_north']);parts=[];records=[]
 for tile in plan['tiles']:

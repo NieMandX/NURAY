@@ -15,7 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'prototype'))
 from source_objects import EXCLUDED_SOURCE_LAYERS
 from tiling.canonical_store import load_canonical, canonical_digest
-from source_config import output_path,plan_path as source_plan_path
+from source_config import output_path,project_path,plan_path as source_plan_path
 
 
 ROTATIONS = ('db_model_rotation_angle', 'db_rotation_angle')
@@ -122,7 +122,7 @@ def additional_sources(source, city):
             enumerations=doc.get('enumerationValues'),
             version=doc.get('version'), zenithVersion=doc.get('zenithVersion'))
     return dict(
-        detailedModelRecords=[{**f, 'cachedFileExists':Path(f['local_file']).is_file()} for f in detailed],
+        detailedModelRecords=[{**f, 'cachedFileExists':project_path(f['local_file']).is_file()} for f in detailed],
         detailedModelCount=len(detailed),
         currentDetailedModelGroups=[r for r in city['objectLayer']['buildings'] if r['category']=='landmark'],
         historicalUnavailableRequests=unavailable,

@@ -3,9 +3,12 @@ from pathlib import Path
 from svgpathtools import parse_path
 from shapely.geometry import Polygon
 from shapely.ops import triangulate
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'prototype'))
+from source_config import project_path
+
 out=Path(sys.argv[1]);scene=json.load(gzip.open(out/'scene.json.gz','rt'));cache={};meshes={}
 for icon in scene['icons']:
-    file=icon['file']
+    file=project_path(icon['file'])
     if file not in cache:
         root=ET.parse(file).getroot();box=[float(x) for x in root.attrib['viewBox'].split()];polys=[]
         for node in root.iter():

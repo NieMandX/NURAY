@@ -4,6 +4,7 @@ import gzip
 import os
 import shapely as sh
 from checkpoint_stream import save as dump_checkpoint, load as load_checkpoint
+from source_config import project_path
 
 
 def restore_surface_identity(module):
@@ -66,6 +67,9 @@ def restore(module,path):
     with (gzip.open(path,'rb') if path.suffix=='.gz' else path.open('rb')) as f:state,inputs=load_checkpoint(f)
     expected=state.pop('_checkpointSourceReceiptSha256',None)
     state.pop('_geometryPrecisionVersion',None)
+    for key in ('SOURCE', 'DATA', 'DIAG'):
+        if key in state:
+            state[key] = project_path(state[key])
     if expected is not None:
         receipt=state['SOURCE']/'sources.json'
         if hashlib.sha256(receipt.read_bytes()).hexdigest()!=expected:

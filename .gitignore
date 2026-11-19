@@ -8,7 +8,10 @@ __pycache__/
 *.pyc
 moscow-fidelity/source/
 moscow-fidelity/output/
+moscow-fidelity/web-preview/assets/
+moscow-fidelity/web-preview/prototype/assets/
 moscow-fidelity/web-preview/prototype/tiles/assets*/
+moscow-fidelity/web-preview/prototype/tiles/assets-hosek-check
 moscow-fidelity/web-preview/prototype/tiles/.bvh-validation-cache/
 moscow-fidelity/web-preview/prototype/tiles/.source-topology-cache/
 moscow-fidelity/web-preview/prototype/tiles/.transport-cache/

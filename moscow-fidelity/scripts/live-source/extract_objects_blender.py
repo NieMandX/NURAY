@@ -11,8 +11,10 @@ from mathutils import Matrix,Euler
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'scripts'))
 sys.path.insert(0,str(ROOT/'prototype/tiling'))
+sys.path.insert(0,str(ROOT/'prototype'))
 from gltf_static import bake_static_nodes
 from approved_vegetation import FAMILIES
+from source_config import project_path
 p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
 a=p.parse_args(sys.argv[sys.argv.index('--')+1:]);a.output.mkdir(parents=True,exist_ok=True)
 plan=json.loads((a.source/'plan.json').read_text())
@@ -77,7 +79,7 @@ def save(name,category,parts,**meta):
     (templates if category=='tree-template' else objects).append(row)
 
 def imported(file,transform):
-    before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=str(file),import_pack_images=True)
+    before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=str(project_path(file)),import_pack_images=True)
     nodes=[o for o in bpy.data.objects if o not in before];bpy.context.view_layer.update();bake_static_nodes(nodes,transform)
     return nodes
 

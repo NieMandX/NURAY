@@ -3,6 +3,7 @@ import json
 import argparse
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import time
@@ -14,6 +15,17 @@ WORK = CITY / 'diagnostics/moscow-10km-20261108'
 PREPARED = SOURCE / 'output/area_10000'
 SURFACE = CITY / 'web-preview/prototype/tiles/assets-moscow-10km-20261108-surface'
 WORK.mkdir(parents=True, exist_ok=True)
+
+
+def blender_command():
+    override = os.environ.get('NURAY_BLENDER') or shutil.which('blender')
+    if override:
+        return override
+    for application in ('Blender 2.app', 'Blender.app'):
+        executable = Path('/Applications') / application / 'Contents/MacOS/Blender'
+        if executable.is_file():
+            return str(executable)
+    raise SystemExit('Blender not found. Set NURAY_BLENDER to its executable.')
 
 
 def stage(name, command, env=None):
@@ -63,7 +75,7 @@ if __name__ == '__main__':
         require_stages(['01-prepare-source'], args.wait)
         env = dict(os.environ)
         env.pop('PYTHONPATH', None)
-        stage('05-extract-objects', ['/Applications/Blender 2.app/Contents/MacOS/Blender',
+        stage('05-extract-objects', [blender_command(),
             '--background', '--factory-startup', '--python', live / 'extract_objects_blender.py',
             '--', '--source', SOURCE, '--output', SOURCE / 'extraction'], env=env)
         sys.exit(0)

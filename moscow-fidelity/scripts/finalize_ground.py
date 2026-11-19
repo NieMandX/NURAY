@@ -1,6 +1,6 @@
 import bpy,sys,json,runpy
 from pathlib import Path
-WORK=Path('/Users/niemandx/Documents/ChatGPT/IDEAS/moscow-fidelity')
+WORK=Path(__file__).resolve().parents[1]
 sys.path[:0]=[str(WORK/'scripts'),'/private/tmp/nuray-fidelity-deps311']
 import shapely
 from repair_blender import resolve_background,restore_open_descents
