@@ -1,0 +1,70 @@
+.viewer-actions :is(#distance-tool, #area-tool)[aria-pressed="true"] {
+  color: #16282c;
+  background: #c5e5de;
+  border-color: #c5e5de;
+}
+canvas.measure-active { cursor: crosshair }
+.measure-overlay {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  color: #edfaf7;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.measure-lines { display: block; width: 100%; height: 100% }
+.measure-edge {
+  fill: none;
+  stroke: #e6fffa;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 1px #102720);
+}
+.measure-hatch { fill: none; stroke: #ddfff3; stroke-width: 1.5; opacity: .8 }
+.measure-draft .measure-edge { stroke-dasharray: 6 4 }
+.measure-object[data-selected="true"] .measure-edge, .measure-draft .measure-edge { stroke: #9dffdf }
+.measure-dot, .measure-close-dot { fill: #1b473a; stroke: #dcfff3; stroke-width: 1.5 }
+.measure-close-dot { stroke-width: 2.5 }
+.measure-tag, .measure-hint {
+  position: absolute;
+  color: #f2faf8;
+  background: #14231fee;
+  border: 1px solid #bce4d66e;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px #17232052;
+}
+.measure-tag {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  transform: translate(-50%, calc(-100% - 5px));
+}
+.measure-tag[hidden], .measure-hint[hidden], .measure-delete[hidden] { display: none }
+.measure-tag[data-selected="true"] { border-color: #9dffdf }
+.measure-label, .measure-delete {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 6px;
+  min-height: 22px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+button.measure-label, button.measure-delete { pointer-events: auto; touch-action: manipulation }
+.measure-delete { min-width: 24px; border-left: 1px solid #8eafa251; border-radius: 0 4px 4px 0; font-size: 16px }
+button.measure-label:hover, .measure-delete:hover { background: #a7cfc422 }
+.measure-hint {
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  text-align: center;
+}

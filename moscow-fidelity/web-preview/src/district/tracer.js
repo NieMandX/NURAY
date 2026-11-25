@@ -28,6 +28,7 @@ export class MeshTracer {
       return vec4f(mix(classic,sea,t),1);`);
     const modules=[d.createShaderModule({label:'Mesh transport: refractive water + BVH',code:common+'\n'+mesh+'\n'+transport+'\n'+path}),d.createShaderModule({code:display})];
     for(const m of modules){const errors=(await m.getCompilationInfo()).messages.filter(e=>e.type==='error');if(errors.length)throw new Error(errors.map(e=>`${e.lineNum}: ${e.message}`).join('\n'));}
+    this.pickModule=modules[0];
     this.pipeline=await d.createComputePipelineAsync({layout:'auto',compute:{module:modules[0],entryPoint:'meshMain'}});
     this.display=await d.createRenderPipelineAsync({layout:'auto',vertex:{module:modules[1],entryPoint:'vertex'},fragment:{module:modules[1],entryPoint:'fragment',targets:[{format:this.owner.format}]},primitive:{topology:'triangle-list'}});
     this.uniform=d.createBuffer({size:144,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});

@@ -183,3 +183,16 @@ fn waterAbsorption()->vec3f {return vec3f(0);}
 fn waterScatteringRate()->f32 {return 0;}
 fn waterScatteringTint()->vec3f {return vec3f(1);}
 fn waterIndex()->f32 {return 1.333;}
+
+// A single measurement ray through the same transformed mesh TLAS/BLAS as
+// primary visibility. Binding 1 points to two temporary vec4s for this pass.
+@compute @workgroup_size(1)
+fn pickSurface(){
+  let origin=meshAccumulation[0].xyz;
+  let direction=meshAccumulation[1].xyz;
+  let hit=traceMesh(origin,direction,false);
+  if hit.t>=INF {meshAccumulation[0]=vec4f(0);return;}
+  let n=meshGeometricNormal(hit);
+  meshAccumulation[0]=vec4f(origin+direction*hit.t,hit.t);
+  meshAccumulation[1]=vec4f(select(n,-n,dot(n,direction)>0),0);
+}

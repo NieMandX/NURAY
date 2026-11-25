@@ -48,24 +48,24 @@ export const MOSCOW_DEFAULTS=Object.freeze({
   }),
 });
 
-// Kursk uses the approved Moscow water, with its existing sky/light unchanged.
+// Only the Ocean surface and its reflection pass are shared between cities.
 export const WATER_ONLY_KEYS=Object.freeze([
   'windSpeed','windDir','fetchKm','swellHs','swellLength','swellDir','swellSpread','choppy',
   'turbidity','absorptionColor','scatteringColor','attenuationDistance','waterIOR','foam','shoreFoam','animated','waterModel',
   'reflectionEnabled','reflectionQuality','reflectionStrength','reflectionBlur','reflectionDistortion','reflectionDetail',
 ]);
+const moscowWater=Object.fromEntries(WATER_ONLY_KEYS.map(key=>[key,MOSCOW_DEFAULTS.water[key]]));
+const regionalWater=Object.freeze({...VIEWER_DEFAULTS.water,...moscowWater});
+export const PETERSBURG_DEFAULTS=Object.freeze({
+  ...VIEWER_DEFAULTS,id:'spb-moscow-water-20261125-01',
+  waterTime:MOSCOW_DEFAULTS.waterTime,water:Object.freeze({...regionalWater,reflectionEnabled:false}),
+});
 export const KURSK_DEFAULTS=Object.freeze({
   ...VIEWER_DEFAULTS,id:'kursk-moscow-water-20261113-01',
   sun:Object.freeze({date:'2026-06-21',minute:1127}),
   display:Object.freeze({...VIEWER_DEFAULTS.display,engine:'raster'}),
-  waterTime:MOSCOW_DEFAULTS.waterTime,
-  water:Object.freeze({...VIEWER_DEFAULTS.water,...Object.fromEntries(WATER_ONLY_KEYS.map(k=>[k,MOSCOW_DEFAULTS.water[k]]))}),
+  waterTime:MOSCOW_DEFAULTS.waterTime,water:regionalWater,
 });
-export function migrateKurskWater(previous={}){
-  const saved={...previous,waterTime:KURSK_DEFAULTS.waterTime};
-  for(const key of WATER_ONLY_KEYS)saved[key]=KURSK_DEFAULTS.water[key];
-  return saved;
-}
 
 // A cloud prefix must not change a scene's visual identity or saved defaults.
 export function catalogKey(catalog=''){
@@ -74,7 +74,23 @@ export function catalogKey(catalog=''){
 export function viewerDefaults(catalog=''){
   const key=catalogKey(catalog);
   if(/^assets-kursk-3km-[^/]+\/tileset\.json$/.test(key))return KURSK_DEFAULTS;
+  if(key==='assets-hosek-check/tileset.json'||key.startsWith('assets-spb-')&&key.endsWith('/tileset.json'))return PETERSBURG_DEFAULTS;
   return MOSCOW_DEFAULTS.scene.catalogs.includes(key)?MOSCOW_DEFAULTS:VIEWER_DEFAULTS;
+}
+export function waterStorageKey(defaults,catalog){
+  return `nuray-water:${defaults.id}:${catalogKey(catalog)}`;
+}
+export function loadSavedWater(storage,defaults,catalog){
+  const current=storage.getItem(waterStorageKey(defaults,catalog));
+  let saved={};
+  if(current!==null){
+    saved=JSON.parse(current);
+  }else if(defaults===KURSK_DEFAULTS||defaults===PETERSBURG_DEFAULTS){
+    const previous=JSON.parse(storage.getItem(waterStorageKey(VIEWER_DEFAULTS,catalog))||'{}');
+    saved={...previous,...moscowWater,waterTime:MOSCOW_DEFAULTS.waterTime};
+  }
+  // Petersburg's full-city mirror is opt-in for each visit.
+  return defaults===PETERSBURG_DEFAULTS?{...saved,reflectionEnabled:false}:saved;
 }
 export function defaultSunPreset(params,defaults=VIEWER_DEFAULTS){
   const date=params.get('sunDate')??defaults.sun.date;

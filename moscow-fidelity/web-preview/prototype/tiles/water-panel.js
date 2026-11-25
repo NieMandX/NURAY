@@ -1,18 +1,11 @@
 import {WATER_CONTROLS,WATER_COLORS,cleanWaterSettings} from '../../src/district/ocean/settings.js?v=moscow-preset-2';
-import {viewerDefaults,catalogKey,KURSK_DEFAULTS,VIEWER_DEFAULTS,migrateKurskWater} from '../../src/district/viewer-defaults.js?v=kursk-water-1';
+import {viewerDefaults,waterStorageKey,loadSavedWater} from '../../src/district/viewer-defaults.js?v=spb-water-2';
 export function installWaterPanel(renderer,catalog,onChange){
  // A new approved baseline must not be masked by old experimental browser settings.
  // Later edits are still remembered; earlier keys are retained, not deleted.
  const defaults=viewerDefaults(catalog);
- const $=id=>document.getElementById(id),key=`nuray-water:${defaults.id}:${catalogKey(catalog)}`;
- let saved={};try{
-  const current=localStorage.getItem(key);
-  saved=JSON.parse(current||'{}');
-  if(current===null&&defaults===KURSK_DEFAULTS){
-   const previous=JSON.parse(localStorage.getItem(`nuray-water:${VIEWER_DEFAULTS.id}:${catalogKey(catalog)}`)||'{}');
-   saved=migrateKurskWater(previous);
-  }
- }catch{}
+ const $=id=>document.getElementById(id),key=waterStorageKey(defaults,catalog);
+ let saved={};try{saved=loadSavedWater(localStorage,defaults,catalog);}catch{}
  renderer.waterSettings=cleanWaterSettings(saved,defaults.water);
  if(new URLSearchParams(location.search).get('reflection')==='1')renderer.waterSettings.reflectionEnabled=true;
  if(new URLSearchParams(location.search).get('groundReflection')==='1')renderer.waterSettings.groundReflectionEnabled=true;

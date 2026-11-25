@@ -6,7 +6,7 @@ import {installSurfaceField,isRoad} from '../../src/district/surface-effects.js?
 import {sunCascades,shadowUniform,inverseMatrix} from '../../src/district/sun-shadows.js?v=moscow-defaults-1';
 import {isFacade,facadePixels} from '../../src/district/facade-relief.js?v=moscow-defaults-1';
 import {contactVertex,contactFragment,contactComposite} from './webgl-contact-ao.js?v=moscow-defaults-1';
-import {TileRenderer} from './tile-renderer.js?v=gs-9';
+import {TileRenderer} from './tile-renderer.js?v=city-measure-1';
 import {mapConcurrent} from '../../src/district/asset-fetch.js?v=asset-delivery-1';
 import {activeChunkIds,sceneInstances,rasterLayout} from './tile-scene.js?v=moscow-defaults-1';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from '../../src/district/math.js?v=moscow-defaults-1';
@@ -255,12 +255,13 @@ export class WebGLTileRenderer extends TileRenderer {
       }
       this.shadowDirty=false;
     }
-    gl.bindFramebuffer(gl.FRAMEBUFFER,this.state.contactAO?this.contactFramebuffer:null);gl.viewport(0,0,this.canvas.width,this.canvas.height);
+    const retainDepth=this.state.contactAO||this.requestMeasurementDepth;
+    gl.bindFramebuffer(gl.FRAMEBUFFER,retainDepth?this.contactFramebuffer:null);gl.viewport(0,0,this.canvas.width,this.canvas.height);
     gl.clearColor(.70,.735,.745,1);gl.clearDepth(1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
     const P=this.waterSettings;const waterData=new Float32Array([P.windSpeed,P.windDir*Math.PI/180,P.fetchKm,P.choppy,P.swellHs,P.swellLength,P.swellDir*Math.PI/180,P.turbidity,P.foam,P.shoreFoam,P.haze,P.clouds,P.veil,P.lighting==='classic'?1:P.lighting==='seascape'?2:P.lighting==='blend'?3:P.lighting==='hosek'?4:0,P.waterModel==='seascape'?1:0,P.lightingMix/100,P.seaHeight,P.seaFrequency,P.seaChoppy,P.seaSpeed,P.seaExposure,P.sunIntensity/100,P.shadowStrength/100,0,...absorptionCoefficients(P),P.waterIOR,...linearColor(P.scatteringColor),0]);
     const bindCapture=(target,m,e)=>this.bindCityProgram(target,m,e,shadowData,cascades,waterData);
     const reflectionDraws=this.reflection.draw(matrix,eye,bindCapture)+this.groundReflection.draw(matrix,eye,bindCapture);
-    gl.bindFramebuffer(gl.FRAMEBUFFER,this.state.contactAO?this.contactFramebuffer:null);gl.viewport(0,0,this.canvas.width,this.canvas.height);
+    gl.bindFramebuffer(gl.FRAMEBUFFER,retainDepth?this.contactFramebuffer:null);gl.viewport(0,0,this.canvas.width,this.canvas.height);
     this.bindCityProgram(this.mainProgram,matrix,eye,shadowData,cascades,waterData);this.reflection.bind(this.mainProgram.uniforms);this.groundReflection.bind(this.mainProgram.uniforms);
     this.draw(chunks);
     if(P.lighting!=='classic'){
@@ -273,13 +274,26 @@ export class WebGLTileRenderer extends TileRenderer {
     }
     this.canvas.dataset.water=JSON.stringify({time:this.waterClock.time,renders:this.waterRenders=(this.waterRenders||0)+1,animated:P.animated,backend:'WebGL',waterModel:P.waterModel,lighting:P.lighting,lightingMix:P.lightingMix,sunIntensity:P.sunIntensity,shadowStrength:P.shadowStrength,settings:this.waterRevision||0});
     if(this.state.contactAO)this.drawContact(matrix,eye);
+    else if(retainDepth){
+      const {width,height}=this.canvas;
+      gl.bindFramebuffer(gl.READ_FRAMEBUFFER,this.contactFramebuffer);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,null);
+      gl.blitFramebuffer(0,0,width,height,0,0,width,height,gl.COLOR_BUFFER_BIT,gl.NEAREST);
+      gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+    }
+    this.measurementDepthFrame=retainDepth?{matrix,eye,width:this.canvas.width,height:this.canvas.height,reverse:false}:null;
+    this.requestMeasurementDepth=false;
     if(query){gl.endQuery(this.timerExtension.TIME_ELAPSED_EXT);this.queries.push({query,revision:this.revision});}
     this.stats.submitted=chunks.reduce((n,c)=>n+c.triangles*c.instanceCount,0);this.stats.draws=chunks.length+(this.state.contactAO?2:0)+shadowDraws+reflectionDraws+(P.lighting!=='classic'?1:0);
     const dt=this.lastTime?time-this.lastTime:16.7;this.lastTime=time;this.frameMs=this.frameMs*.92+dt*.08;this.publish();
   }
   dispose(){
     this.running=false;cancelAnimationFrame(this.raf);this.resizeObserver?.disconnect();this.canvas.removeEventListener('webglcontextlost',this.onContextLost);
-    const gl=this.gl;if(!gl)return;this.groundReflection?.dispose();this.reflection?.dispose();
+    const gl=this.gl;if(!gl)return;
+    if(this.measurementGL){
+      gl.deleteProgram(this.measurementGL.p);gl.deleteFramebuffer(this.measurementGL.target);gl.deleteRenderbuffer(this.measurementGL.color);
+      this.measurementGL=null;
+    }
+    this.groundReflection?.dispose();this.reflection?.dispose();
     for(const c of this.rasterMeshes.values())this.releaseMesh(c);this.rasterMeshes.clear();this.meshCache.clear();
     gl.deleteBuffer(this.instanceBuffer);gl.deleteTexture(this.albedo);gl.deleteTexture(this.materialTexture);gl.deleteTexture(this.shadowTexture);
     for(const texture of [this.surfaceField,this.facadeNormal,this.contactColor,this.contactDepth,this.contactResult])gl.deleteTexture(texture);gl.deleteFramebuffer(this.contactFramebuffer);gl.deleteFramebuffer(this.contactResultFramebuffer);gl.deleteProgram(this.waterSkyProgram?.program);gl.deleteProgram(this.contactProgram?.program);gl.deleteProgram(this.contactComposite?.program);

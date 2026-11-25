@@ -4,7 +4,7 @@ Read `docs/knowledge/README.md`, `HANDOFF.md`, and `DECISIONS.md` before making 
 
 - Current source of truth: `moscow-fidelity/`. Root `src/` is a legacy prototype.
 - Preserve the user's live water/light settings before reloading the viewer.
-- Moscow and Saint Petersburg defaults are independent. Moscow starts in WebGPU raster mode, Ocean water and Hosek–Wilkie sky. Do not restore retired lighting modes.
+- Moscow, Saint Petersburg and Kursk share the approved Moscow Ocean surface and frozen phase. Saint Petersburg starts with raster reflections of city geometry off on each ordinary visit. Users can enable them in the water panel or with `reflection=1`. Lighting, camera and saved preferences are per city. Moscow starts in WebGPU raster mode, Ocean water and Hosek–Wilkie sky. Do not restore retired lighting modes.
 - Geometry fixes belong in algorithms, not object-ID patches. Preserve source identity, levels, terrain, instancing, and already-approved models/materials.
 - Heavy files belong in versioned Yandex Cloud releases, not Git. Do not overwrite public immutable releases or widen bucket access to private backups.
 - Viewing assets does not require rebuilding the city. Change only affected layers; regenerate matching derived artifacts when geometry changes.

@@ -1,18 +1,20 @@
 import {installSceneLayers} from './scene-layers.js?v=scene-layers-1';
-import {installWaterPanel} from './water-panel.js?v=kursk-water-1';
+import {installWaterPanel} from './water-panel.js?v=spb-water-2';
 import {installHeliodon,sceneGeography} from './heliodon.js?v=moscow-defaults-1';
-import {MergedGlbRenderer} from './merged-glb-renderer.js?v=gs-16';
-import {TileRenderer} from './tile-renderer.js?v=gs-16';
-import {WebGLTileRenderer} from './webgl-renderer.js?v=gs-16';
+import {MergedGlbRenderer} from './merged-glb-renderer.js?v=city-measure-1';
+import {TileRenderer} from './tile-renderer.js?v=city-measure-1';
+import {WebGLTileRenderer} from './webgl-renderer.js?v=city-measure-1';
 import {areaTileIds,hydrateAreas,installAreaPicker} from './manual-areas.js?v=manual-areas-2';
 import {bindCameraInput} from './camera-input.js?v=moscow-defaults-1';
+import {createMeasurementGeometry} from './measurement-pick.js?v=city-measure-1';
+import {createMeasureTools} from './viewer-measure-tools.js?v=city-measure-1';
 import {createStatsPanel} from './viewer-stats.js?v=gs-16';
-import {viewerDefaults,catalogKey,defaultSunPreset} from '../../src/district/viewer-defaults.js?v=kursk-water-1';
+import {viewerDefaults,catalogKey,defaultSunPreset} from '../../src/district/viewer-defaults.js?v=spb-water-2';
 import {readAssetJSON} from '../../src/district/asset-fetch.js?v=asset-delivery-1';
 const $=id=>document.getElementById(id),showStats=createStatsPanel();
 const mergedMode=new URLSearchParams(location.search).get('layout')==='merged';
 let manualMode=new URLSearchParams(location.search).get('layout')==='sectors';
-let canvas=$('scene'),renderer;
+let canvas=$('scene'),renderer,measureTools;
 let initialized=false,pending=false,draining=false,layerChanging=false,debounce,currentDrain=Promise.resolve();
 function fail(message){$('error').hidden=false;$('error').textContent=message;$('loading').hidden=true;$('retry').hidden=false;console.error(message);}
 function report(s){
@@ -61,7 +63,7 @@ const views={
   crackMain:{yaw:.3,pitch:.55,distance:30,target:[-45.24155,1.6,-13.35367]},
   crackLocal:{yaw:2.570370614359168,pitch:.08,distance:8.41857081436576,target:[42.40180911369523,0,168.13779004027322]},
 };
-function moved(){renderer.revision++;renderer.gpu=null;renderer.tracer.reset();renderer.publish(true);schedule();}
+function moved(){renderer.revision++;renderer.gpu=null;renderer.tracer.reset();measureTools?.update();renderer.publish(true);schedule();}
 function schedule({immediate=false}={}){
   if(!initialized)return;clearTimeout(debounce);
   if(immediate){pending=true;void drain();}else debounce=setTimeout(()=>{pending=true;void drain();},140);
@@ -105,7 +107,17 @@ $('views').onclick=e=>{
   $('view-name').textContent=b.firstChild.textContent;
   document.querySelectorAll('[data-view]').forEach(v=>v.setAttribute('aria-pressed',v===b));moved();schedule({immediate:true});
 };
-$('backend').onchange=e=>{const url=new URL(location.href);url.searchParams.set('renderer',e.target.value);location.href=url.href;};
+$('backend').onchange=e=>{
+  const url=new URL(location.href),backend=e.target.value;
+  url.searchParams.set('renderer',backend);
+  if(viewerDefaults(url.searchParams.get('catalog')||'').id.startsWith('spb-')){
+    const gpu=backend!=='webgl2'&&!!navigator.gpu;
+    url.searchParams.set('layout',gpu?'merged':'tiles');
+    if(gpu)url.searchParams.delete('streaming');
+    else{url.searchParams.set('streaming','camera');url.searchParams.set('engine','raster');}
+  }
+  location.href=url.href;
+};
 $('retry').onclick=()=>location.reload();
 $('measure-scene').onclick=async()=>{
   const button=$('measure-scene'),output=$('benchmark-result');button.disabled=true;output.hidden=false;delete output.dataset.result;output.textContent='Замер: 8 кадров прогрева + 48 кадров. Камеру пока не двигать.';
@@ -177,12 +189,19 @@ try{
   $('layout-link').hidden=!mergedMode;
   if(!mergedMode)fetch(new URL('merged/metadata.json',catalogURL),{method:'HEAD'}).then(r=>{$('layout-link').hidden=!r.ok;}).catch(()=>{});
   const approvedDefaults=viewerDefaults(config.catalog),defaults=approvedDefaults.display;
+  const isPetersburg=approvedDefaults.id.startsWith('spb-');
+  const isKursk=approvedDefaults.id.startsWith('kursk-');
+  const header=document.querySelector('.viewer-header');
+  header.classList.toggle('viewer-header-centered',isPetersburg||isKursk);
+  header.classList.toggle('viewer-header-petersburg',isPetersburg);
+  if(isPetersburg)$('region-title').textContent='Санкт-Петербург · SSA · LSR';
+  if(isKursk)$('region-title').textContent='SSA · KURSK';
   const requestedBackend=params.get('renderer')||defaults.renderer;
   $('quality').value=String(defaults.pixels);$('samples').value=String(defaults.samples);
   $('contact-shadows').checked=defaults.contactAO;$('sun-shadows').checked=defaults.shadows;
   $('backend').value=['auto','webgpu','webgl2'].includes(requestedBackend)?requestedBackend:'auto';
   const touchDevice=matchMedia('(pointer: coarse)').matches||/iPad|iPhone|Android/.test(navigator.userAgent);
-  const useGL=requestedBackend==='webgl2'||!navigator.gpu||(requestedBackend==='auto'&&touchDevice);
+  const useGL=requestedBackend==='webgl2'||!navigator.gpu||(requestedBackend==='auto'&&touchDevice&&!(isPetersburg&&mergedMode));
   if(mergedMode&&useGL)throw Error('Пробная цельная сцена требует WebGPU. Тайловая версия доступна по ссылке внизу.');
   renderer=mergedMode?new MergedGlbRenderer(canvas,report,fail):useGL?new WebGLTileRenderer(canvas,report,fail):new TileRenderer(canvas,report,fail);
   const requestedEngine=params.get('engine')??defaults.engine;
@@ -247,10 +266,8 @@ try{
   if(isGL)for(const button of document.querySelectorAll('[data-view="overview"]'))button.textContent='Обзор окрестностей';
   views.center.target=mergedMode?target:[bounds[0]+data.tileSizeM*Math.floor((data.grid?.columns??2)/2)-ox,0,oy-bounds[1]-data.tileSizeM*Math.floor((data.grid?.rows??2)/2)];
   const title=manualMode?'Москва · сектор 3 × 3 км':data.radiusM?`${data.regionName} · радиус ${data.radiusM/1000} км`:`${data.regionName||'Участок'} · ${data.extentMetres/1000} × ${data.extentMetres/1000} км`;
-  const isKursk=approvedDefaults.id.startsWith('kursk-');
   document.title=`Inn.vision · ${title}`;
-  $('region-title').textContent=isKursk?'SSA · KURSK':title;
-  document.querySelector('.viewer-header').classList.toggle('viewer-header-centered',isKursk);
+  if(!isPetersburg&&!isKursk)$('region-title').textContent=title;
   const regionName=data.regionName||'Кутузовская',isMoscow=approvedDefaults.id.startsWith('moscow-');
   $('region-subtitle').textContent=mergedMode?`${regionName} · единая сцена · ${data.nodes} объекта`:`${regionName} · ${data.tiles.length} тайлов по ${data.tileSizeM} м`;
   if(manualMode){
@@ -363,7 +380,10 @@ try{
   await renderer.updateTiles(renderer.chooseTiles({full:$('streaming').value==='full'}));await installSceneLayers(renderer,config.settingsCatalogs?.[config.catalog]||config.catalog,applySceneLayers);
   if(params.get('instanceCulling')==='1')(await import('./main-instance-culling.js?v=gs-16')).installInstanceCulling(renderer);
   if(params.get('splats')==='1')await (await import('./gaussian-panel.js?v=gs-16')).installGaussianPanel(renderer,params.has('splatCatalog')?new URL(params.get('splatCatalog'),assetBase):undefined);
+  const distanceButton=$('distance-tool'),areaButton=$('area-tool');
+  measureTools=createMeasureTools({canvas,distanceButton,areaButton,geometry:createMeasurementGeometry(()=>renderer)});
+  distanceButton.disabled=false;areaButton.disabled=false;
   initialized=true;$('measure-scene').disabled=false;$('settings').disabled=false;$('views').disabled=false;$('area-picker').disabled=false;$('loading').hidden=true;renderer.publish(true);
 }catch(e){fail(e.message);}
-window.addEventListener('pagehide',()=>renderer?.dispose(),{once:true});
+window.addEventListener('pagehide',()=>{measureTools?.dispose();renderer?.dispose();},{once:true});
 document.addEventListener('visibilitychange',()=>renderer?.publish(true));

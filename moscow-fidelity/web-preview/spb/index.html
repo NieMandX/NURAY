@@ -8,7 +8,10 @@
 <p><a id="viewer" href="../prototype/tiles/?catalog=assets-spb-10km-live-20261024-r13%2Ftileset.json&amp;layout=merged&amp;renderer=webgpu&amp;engine=raster">Открыть Санкт-Петербург</a></p>
 <script>
 const url=new URL(document.getElementById('viewer').href);
-if(!navigator.gpu||matchMedia('(pointer:coarse)').matches){url.searchParams.set('renderer','webgl2');url.searchParams.delete('layout');url.searchParams.set('streaming','camera');}
 for(const [key,value] of new URLSearchParams(location.search))url.searchParams.set(key,value);
+if(!navigator.gpu||url.searchParams.get('renderer')==='webgl2'){
+  url.searchParams.set('renderer','webgl2');url.searchParams.set('layout','tiles');
+  url.searchParams.set('streaming','camera');url.searchParams.set('engine','raster');
+}
 location.replace(url.href);
 </script></html>

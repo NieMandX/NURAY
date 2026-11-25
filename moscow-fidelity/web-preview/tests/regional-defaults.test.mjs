@@ -1,11 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {VIEWER_DEFAULTS,MOSCOW_DEFAULTS,KURSK_DEFAULTS,WATER_ONLY_KEYS,migrateKurskWater,viewerDefaults,catalogKey,defaultSunPreset} from '../src/district/viewer-defaults.js';
+import {VIEWER_DEFAULTS,MOSCOW_DEFAULTS,KURSK_DEFAULTS,PETERSBURG_DEFAULTS,WATER_ONLY_KEYS,loadSavedWater,waterStorageKey,viewerDefaults,catalogKey,defaultSunPreset} from '../src/district/viewer-defaults.js';
 import {cleanWaterSettings} from '../src/district/ocean/settings.js';
-test('Moscow preset survives hosting prefixes without changing Petersburg',()=>{
+test('city water presets survive hosting prefixes and catalog aliases',()=>{
  for(const path of ['assets-moscow-style-20261024-r14/tileset.json','https://storage.yandexcloud.net/nuray-assets-niemandx/assets-moscow-style-20261024-r14/tileset.json','https://nuray-scenes.s3.cloud.ru/releases/20261027/assets-moscow-style-20261024-r14/tileset.json?cache=1'])assert.equal(viewerDefaults(path),MOSCOW_DEFAULTS);
- for(const path of ['assets-hosek-check/tileset.json','assets-spb-10km-live-20261024-r13/tileset.json','assets-unknown/tileset.json'])assert.equal(viewerDefaults(path),VIEWER_DEFAULTS);
+ for(const path of ['assets-hosek-check/tileset.json','assets-spb-10km-live-20261023-r9/tileset.json','https://storage.yandexcloud.net/nuray-assets-niemandx/assets-spb-10km-live-20261024-r13/tileset.json?cache=1'])assert.equal(viewerDefaults(path),PETERSBURG_DEFAULTS);
+ assert.equal(viewerDefaults('assets-unknown/tileset.json'),VIEWER_DEFAULTS);
  assert.equal(catalogKey('https://test/a/assets-hosek-check/tileset.json'),'assets-hosek-check/tileset.json');
 });
 test('fresh Moscow visit preserves the approved complete optical and rendering state',()=>{
@@ -34,14 +35,34 @@ test('partial user edits and reset are relative to the current city',()=>{
  assert.equal(defaultSunPreset(new URLSearchParams('sunMinute=0'),MOSCOW_DEFAULTS).minute,0);
 });
 
-test('Kursk inherits only Moscow water while preserving edited light and later water edits',()=>{
- const previous={...VIEWER_DEFAULTS.water,hwExposure:1.7,sunIntensity:45,lighting:'classic',groundReflectionEnabled:true,foam:3,waterTime:1};
- const migrated=migrateKurskWater(previous);
- for(const key of WATER_ONLY_KEYS)assert.deepEqual(migrated[key],MOSCOW_DEFAULTS.water[key]);
- for(const key of ['hwExposure','sunIntensity','lighting','groundReflectionEnabled'])assert.equal(migrated[key],previous[key]);
- assert.equal(migrated.waterTime,MOSCOW_DEFAULTS.waterTime);
- assert.equal(viewerDefaults('https://example.test/releases/assets-kursk-3km-20261113-r10/tileset.json'),KURSK_DEFAULTS);
- assert.equal(KURSK_DEFAULTS.water.hwExposure,VIEWER_DEFAULTS.water.hwExposure);
- assert.equal(cleanWaterSettings({...migrated,foam:.2},KURSK_DEFAULTS.water).foam,.2);
- assert.equal(previous.foam,3);
+test('Petersburg and Kursk share approved Moscow water and preserve city light, camera and user edits',()=>{
+ const previous={...VIEWER_DEFAULTS.water,hwExposure:1.7,sunIntensity:45,lighting:'classic',groundReflectionEnabled:true,waterTime:1};
+ for(const [catalog,defaults] of [
+  ['assets-spb-10km-live-20261024-r13/tileset.json',PETERSBURG_DEFAULTS],
+  ['https://example.test/releases/assets-kursk-3km-20261113-r10/tileset.json',KURSK_DEFAULTS],
+ ]){
+  assert.equal(viewerDefaults(catalog),defaults);
+  const records=new Map(),storage={getItem:key=>records.get(key)??null};
+  const legacyKey=waterStorageKey(VIEWER_DEFAULTS,catalog),newKey=waterStorageKey(defaults,catalog);
+  assert.notEqual(legacyKey,newKey);
+  const fresh=cleanWaterSettings(loadSavedWater(storage,defaults,catalog),defaults.water);
+  const expectedWater={...MOSCOW_DEFAULTS.water,reflectionEnabled:defaults===KURSK_DEFAULTS};
+  for(const key of WATER_ONLY_KEYS)assert.equal(fresh[key],expectedWater[key],key);
+  assert.equal(fresh.hwExposure,VIEWER_DEFAULTS.water.hwExposure);
+  records.set(legacyKey,JSON.stringify(previous));
+  const migrated=loadSavedWater(storage,defaults,catalog);
+  for(const key of WATER_ONLY_KEYS)assert.equal(migrated[key],expectedWater[key],key);
+  for(const key of ['hwExposure','sunIntensity','lighting','groundReflectionEnabled'])assert.equal(migrated[key],previous[key]);
+  assert.equal(migrated.waterTime,MOSCOW_DEFAULTS.waterTime);
+  const edited={...migrated,foam:.2,reflectionEnabled:true,waterTime:6};
+  records.set(newKey,JSON.stringify(edited));
+  assert.deepEqual(loadSavedWater(storage,defaults,catalog),{...edited,reflectionEnabled:expectedWater.reflectionEnabled});
+  edited.reflectionEnabled=false;
+  records.set(newKey,JSON.stringify(edited));
+  assert.deepEqual(loadSavedWater(storage,defaults,catalog),edited);
+  assert.deepEqual(JSON.parse(records.get(legacyKey)),previous);
+ }
+ assert.equal(PETERSBURG_DEFAULTS.scene,VIEWER_DEFAULTS.scene);
+ assert.equal(PETERSBURG_DEFAULTS.display,VIEWER_DEFAULTS.display);
+ assert.equal(PETERSBURG_DEFAULTS.sun,VIEWER_DEFAULTS.sun);
 });

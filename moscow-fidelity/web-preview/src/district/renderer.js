@@ -8,7 +8,7 @@ import {ContactAO} from './contact-ao.js?v=moscow-defaults-1';
 import {GpuTimer} from '../gpu-timer.js?v=moscow-defaults-1';
 import {makeMaterials,TEXTURE_SIZE,textureBytes} from './materials.js?v=moscow-defaults-1';
 import {lookAt,perspective,orthographic,multiply,normalize,visible} from './math.js?v=moscow-defaults-1';
-import {MeshTracer} from './tracer.js?v=shore-water-1';
+import {MeshTracer} from './tracer.js?v=city-measure-1';
 import {loadCityMaterials} from './city-materials.js?v=dry-ground-1';
 import {identityTransform} from './bvh.js?v=moscow-defaults-1';
 import {cityManifest} from './city-config.js?v=moscow-defaults-1';
@@ -238,6 +238,7 @@ export class DistrictRenderer {
     this.gaussianVegetation?.draw(encoder,slot);
     this.ocean?.post(encoder,slot);
     this.timer.resolve(encoder,slot);this.device.queue.submit([encoder.finish()]);this.inFlight++;
+    this.measurementDepthFrame={matrix,eye:this.eye,width:this.canvas.width,height:this.canvas.height,reverse:true};
     this.timer.read(slot);
     this.device.queue.onSubmittedWorkDone().then(()=>{this.inFlight--;if(!this.timer.enabled)this.collect(null,{revision:this.revision,dt});}).catch(e=>{if(this.running)this.fail(e.message);});
     this.publish();
